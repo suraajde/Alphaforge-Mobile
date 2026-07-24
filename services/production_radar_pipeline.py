@@ -49,6 +49,8 @@ class ProductionRadarPipeline:
         radar_limit=30,
         screen_batch_size=100,
         deep_batch_size=10,
+        alpha_target_count=12,
+        alpha_reserve_count=8,
     ):
 
         self.candidate_limit = max(
@@ -59,6 +61,16 @@ class ProductionRadarPipeline:
         self.radar_limit = max(
             1,
             int(radar_limit),
+        )
+
+        self.alpha_target_count = max(
+            1,
+            int(alpha_target_count),
+        )
+
+        self.alpha_reserve_count = max(
+            0,
+            int(alpha_reserve_count),
         )
 
         self.universe_service = (
@@ -771,8 +783,10 @@ class ProductionRadarPipeline:
 
         alpha12_result = (
             Alpha12SelectionService(
-                target_count=12,
-                reserve_count=8,
+                target_count=
+                    self.alpha_target_count,
+                reserve_count=
+                    self.alpha_reserve_count,
             )
             .select(
                 ranked
