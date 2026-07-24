@@ -122,6 +122,110 @@ class PortfolioConstructionService:
 
         return None
 
+    def _investment_quality_score(
+        self,
+        item,
+    ):
+        """
+        Build direct long-term investment quality evidence.
+
+        Granular business factors are preferred when sufficient
+        evidence is available:
+
+        - profitability: 30%
+        - growth: 30%
+        - financial strength: 25%
+        - valuation: 15%
+
+        Valuation is intentionally a restraint rather than the
+        dominant factor so an exceptional compounder is not
+        mechanically suppressed solely because it trades at a
+        premium valuation.
+
+        When fewer than two granular factors are available, the
+        aggregate fundamental score is used as a backward-compatible
+        fallback.
+        """
+
+        profitability = self._available_score(
+            item,
+            (
+                "profitability_score",
+                "portfolio_profitability_score",
+            ),
+        )
+
+        growth = self._available_score(
+            item,
+            (
+                "growth_score",
+                "portfolio_growth_score",
+            ),
+        )
+
+        financial_strength = self._available_score(
+            item,
+            (
+                "financial_strength_score",
+                "portfolio_financial_strength_score",
+            ),
+        )
+
+        valuation = self._available_score(
+            item,
+            (
+                "valuation_score",
+                "portfolio_valuation_score",
+            ),
+        )
+
+        granular = [
+            (
+                profitability,
+                0.30,
+            ),
+            (
+                growth,
+                0.30,
+            ),
+            (
+                financial_strength,
+                0.25,
+            ),
+            (
+                valuation,
+                0.15,
+            ),
+        ]
+
+        available = [
+            (
+                score,
+                weight,
+            )
+            for score, weight in granular
+            if score is not None
+        ]
+
+        if len(available) >= 2:
+
+            total_weight = sum(
+                weight
+                for _, weight in available
+            )
+
+            return sum(
+                score * weight
+                for score, weight in available
+            ) / total_weight
+
+        return self._available_score(
+            item,
+            (
+                "fundamental_score",
+                "portfolio_fundamental_score",
+            ),
+        )
     def _conviction_score(
         self,
         item,
@@ -129,26 +233,40 @@ class PortfolioConstructionService:
         """
         Build an investment-oriented portfolio conviction score.
 
-        Selection strength remains the anchor.
+        Alpha 12 selection strength remains the anchor so portfolio
+        construction does not become a second independent stock
+        selection engine.
 
-        Fundamental quality receives more influence than market
-        readiness because Alpha 12 is a long-term investment
-        portfolio, not a trading portfolio.
+        Direct investment quality materially influences capital
+        sizing. Risk resilience is meaningful but secondary, while
+        readiness remains a small timing influence.
 
-        Readiness is intentionally a secondary modifier so temporary
-        momentum weakness does not mechanically force strong
-        businesses out of meaningful portfolio allocation.
+        Architecture:
+
+        - selection strength: 50%
+        - direct investment quality: 40%
+        - risk resilience: 7%
+        - readiness: 3%
+
+        Available components are dynamically renormalized for
+        backward compatibility with historical payloads.
         """
 
         selection = self._quality_score(
             item
         )
 
-        fundamental = self._available_score(
+        investment_quality = (
+            self._investment_quality_score(
+                item
+            )
+        )
+
+        risk = self._available_score(
             item,
             (
-                "fundamental_score",
-                "portfolio_fundamental_score",
+                "risk_score",
+                "portfolio_risk_score",
             ),
         )
 
@@ -163,16 +281,25 @@ class PortfolioConstructionService:
         components = [
             (
                 selection,
-                0.60,
+                0.50,
             ),
         ]
 
-        if fundamental is not None:
+        if investment_quality is not None:
 
             components.append(
                 (
-                    fundamental,
-                    0.30,
+                    investment_quality,
+                    0.40,
+                )
+            )
+
+        if risk is not None:
+
+            components.append(
+                (
+                    risk,
+                    0.07,
                 )
             )
 
@@ -181,7 +308,7 @@ class PortfolioConstructionService:
             components.append(
                 (
                     readiness,
-                    0.10,
+                    0.03,
                 )
             )
 
@@ -197,7 +324,6 @@ class PortfolioConstructionService:
             score * weight
             for score, weight in components
         ) / total_weight
-
     def _sector_adjusted_scores(
         self,
         selected,
