@@ -511,9 +511,34 @@ class ResearchRadarService:
                         "fundamental_score"
                     ),
 
+                "profitability_score":
+                    fundamental_scores.get(
+                        "profitability_score"
+                    ),
+
+                "growth_score":
+                    fundamental_scores.get(
+                        "growth_score"
+                    ),
+
+                "financial_strength_score":
+                    fundamental_scores.get(
+                        "financial_strength_score"
+                    ),
+
+                "valuation_score":
+                    fundamental_scores.get(
+                        "valuation_score"
+                    ),
+
                 "technical_score":
                     alpha.get(
                         "technical_score"
+                    ),
+
+                "risk_score":
+                    technical_scores.get(
+                        "risk_score"
                     ),
 
                 "composite_score":
