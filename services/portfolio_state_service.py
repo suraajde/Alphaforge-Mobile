@@ -1479,6 +1479,13 @@ class PortfolioStateService:
 
             )
 
+            position[
+                "allocation_state"
+            ] = self._allocation_state(
+                target_weight,
+                actual_weight,
+            )
+
         updated[
             "invested_market_value"
         ] = round(
@@ -1498,6 +1505,58 @@ class PortfolioStateService:
         ] = self._timestamp()
 
         return updated
+
+    def _allocation_state(
+        self,
+        target_weight,
+        actual_weight,
+        tolerance_pct=1.0,
+    ):
+        """
+        Classify allocation drift without creating a trade decision.
+
+        IMPORTANT:
+        - UNDER_TARGET may inform fresh-capital / Smart SIP allocation.
+        - NEAR_TARGET means no meaningful allocation drift.
+        - ABOVE_TARGET is informational only.
+        - ABOVE_TARGET must never, by itself, mean SELL or TRIM.
+
+        Alpha 12 is a low-churn investment portfolio. Strong holdings
+        are allowed to run above strategic target weight through market
+        appreciation unless a separate investment or concentration-risk
+        decision explicitly justifies action.
+        """
+
+        target = self._safe_float(
+            target_weight,
+            0.0,
+        )
+
+        actual = self._safe_float(
+            actual_weight,
+            0.0,
+        )
+
+        tolerance = max(
+            0.0,
+            self._safe_float(
+                tolerance_pct,
+                1.0,
+            ),
+        )
+
+        drift = (
+            actual
+            - target
+        )
+
+        if drift < -tolerance:
+            return "UNDER_TARGET"
+
+        if drift > tolerance:
+            return "ABOVE_TARGET"
+
+        return "NEAR_TARGET"
 
     def create_snapshot(
         self,
