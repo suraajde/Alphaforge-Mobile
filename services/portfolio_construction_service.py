@@ -71,6 +71,11 @@ class PortfolioConstructionService:
 
         if score is None:
             score = item.get(
+                "selection_score"
+            )
+
+        if score is None:
+            score = item.get(
                 "alpha12_base_score"
             )
 
@@ -146,6 +151,18 @@ class PortfolioConstructionService:
         aggregate fundamental score is used as a backward-compatible
         fallback.
         """
+        legacy = self._available_score(
+            item,
+            (
+                "investment_quality",
+                "investment_quality_score",
+                "fundamental_score",
+                "portfolio_fundamental_score",
+            ),
+        )
+
+        if legacy is not None:
+            return legacy
 
         profitability = self._available_score(
             item,
@@ -265,17 +282,19 @@ class PortfolioConstructionService:
         risk = self._available_score(
             item,
             (
-                "risk_score",
-                "portfolio_risk_score",
-            ),
+    "portfolio_risk",
+    "risk_score",
+    "portfolio_risk_score",
+)
         )
 
         readiness = self._available_score(
             item,
-            (
-                "readiness_score",
-                "portfolio_readiness_score",
-            ),
+           (
+    "portfolio_readiness",
+    "readiness_score",
+    "portfolio_readiness_score",
+)
         )
 
         components = [
