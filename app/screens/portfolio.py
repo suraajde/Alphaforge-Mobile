@@ -27,6 +27,15 @@ from services.stock_service import (
     get_stock_data,
 )
 
+from services.portfolio_analytics_service import (
+    PortfolioAnalyticsService,
+    PortfolioHolding,
+)
+
+from services.portfolio_health_service import (
+    PortfolioHealthService,
+)
+
 
 class Portfolio(QWidget):
 
@@ -46,6 +55,9 @@ class Portfolio(QWidget):
             create_portfolio_application_service()
         )
 
+        self.analytics_service = PortfolioAnalyticsService()
+
+        self.health_service = PortfolioHealthService()
         self._build_ui()
 
         self.initial_investment_btn = QPushButton(
@@ -2764,6 +2776,47 @@ class Portfolio(QWidget):
         ):
 
             positions = []
+            # --------------------------------------------
+            # Portfolio Analytics
+            # --------------------------------------------
+
+        # --------------------------------------------
+        # Portfolio Analytics
+        # --------------------------------------------
+
+        analytics_positions = [
+            PortfolioHolding(
+                symbol=str(
+                    position.get(
+                        "symbol",
+                        "",
+                    )
+                ),
+                weight=float(
+                    position.get(
+                        "actual_weight",
+                        0.0,
+                    )
+                ),
+            )
+            for position in positions
+            if position.get("symbol")
+        ]
+
+        analytics = self.analytics_service.analyze(
+            analytics_positions
+        )
+
+        health = self.health_service.evaluate(
+            analytics
+        )
+
+        print("\n===== PORTFOLIO HEALTH =====")
+        print(f"Overall Score        : {health.overall_score}")
+        print(f"Overall Grade        : {health.overall_grade}")
+        print(f"Diversification      : {health.diversification_score}")
+        print(f"Concentration        : {health.concentration_score}")
+        print("============================\n")
 
         self._populate_table(
             positions
