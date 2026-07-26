@@ -11,6 +11,11 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_constants import (
+    RecommendationPriority,
+    RecommendationAction,
+)
+
 
 class ConcentrationRule:
     """
@@ -35,8 +40,8 @@ class ConcentrationRule:
 
             Recommendation(
                 category="Risk",
-                priority="HIGH",
-                action="REDUCE CONCENTRATION",
+                priority=RecommendationPriority.HIGH,
+                action=RecommendationAction.REDUCE_CONCENTRATION,
                 confidence=92,
                 target="Portfolio",
                 title="Portfolio concentration is elevated",

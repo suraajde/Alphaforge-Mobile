@@ -11,6 +11,11 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_constants import (
+    RecommendationPriority,
+    RecommendationAction,
+)
+
 
 class PositionSizingRule:
     """
@@ -32,8 +37,8 @@ class PositionSizingRule:
             report.portfolio_recommendations.append(
                 Recommendation(
                     category="Position Sizing",
-                    priority="LOW",
-                    action="MAINTAIN",
+                    priority=RecommendationPriority.LOW,
+                    action=RecommendationAction.MAINTAIN,
                     confidence=97,
                     target="Portfolio",
                     title="Position sizing is well balanced",
@@ -66,8 +71,8 @@ class PositionSizingRule:
         report.portfolio_recommendations.append(
             Recommendation(
                 category="Position Sizing",
-                priority="MEDIUM",
-                action="REVIEW POSITION SIZES",
+                priority=RecommendationPriority.MEDIUM,
+                action=RecommendationAction.REVIEW_POSITION_SIZES,
                 confidence=91,
                 target="Portfolio",
                 title="Position sizing can be improved",

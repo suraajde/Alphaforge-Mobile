@@ -11,6 +11,11 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_constants import (
+    RecommendationPriority,
+    RecommendationAction,
+)
+
 
 class PortfolioStructureRule:
     """
@@ -52,8 +57,8 @@ class PortfolioStructureRule:
 
                 Recommendation(
                     category="Portfolio Structure",
-                    priority="LOW",
-                    action="MAINTAIN",
+                    priority=RecommendationPriority.LOW,
+                    action=RecommendationAction.MAINTAIN,
                     confidence=96,
                     target="Portfolio",
                     title="Portfolio structure is healthy",
@@ -70,8 +75,8 @@ class PortfolioStructureRule:
 
             Recommendation(
                 category="Portfolio Structure",
-                priority="MEDIUM",
-                action="REVIEW STRUCTURE",
+                priority=RecommendationPriority.MEDIUM,
+                action=RecommendationAction.REVIEW_STRUCTURE,
                 confidence=89,
                 target="Portfolio",
                 title="Portfolio structure can be improved",

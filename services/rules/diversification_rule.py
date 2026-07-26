@@ -11,6 +11,11 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_constants import (
+    RecommendationPriority,
+    RecommendationAction,
+)
+
 
 class DiversificationRule:
     """
@@ -31,8 +36,8 @@ class DiversificationRule:
 
                 Recommendation(
                     category="Diversification",
-                    priority="LOW",
-                    action="MAINTAIN",
+                    priority=RecommendationPriority.LOW,
+                    action=RecommendationAction.MAINTAIN,
                     confidence=97,
                     target="Portfolio",
                     title="Diversification is healthy",
@@ -52,8 +57,8 @@ class DiversificationRule:
 
                 Recommendation(
                     category="Diversification",
-                    priority="MEDIUM",
-                    action="MONITOR",
+                    priority=RecommendationPriority.MEDIUM,
+                    action=RecommendationAction.MONITOR,
                     confidence=90,
                     target="Portfolio",
                     title="Diversification can be improved",
@@ -73,8 +78,8 @@ class DiversificationRule:
 
                 Recommendation(
                     category="Diversification",
-                    priority="HIGH",
-                    action="INCREASE DIVERSIFICATION",
+                    priority=RecommendationPriority.HIGH,
+                    action=RecommendationAction.INCREASE_DIVERSIFICATION,
                     confidence=92,
                     target="Portfolio",
                     title="Portfolio diversification is weak",

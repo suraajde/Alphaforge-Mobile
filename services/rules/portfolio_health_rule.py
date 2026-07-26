@@ -11,6 +11,11 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_constants import (
+    RecommendationPriority,
+    RecommendationAction,
+)
+
 
 class PortfolioHealthRule:
     """
@@ -31,8 +36,8 @@ class PortfolioHealthRule:
 
                 Recommendation(
                     category="Portfolio",
-                    priority="LOW",
-                    action="HOLD",
+                    priority=RecommendationPriority.LOW,
+                    action=RecommendationAction.HOLD,
                     confidence=98,
                     target="Portfolio",
                     title="Portfolio is healthy",
@@ -50,8 +55,8 @@ class PortfolioHealthRule:
 
                 Recommendation(
                     category="Portfolio",
-                    priority="MEDIUM",
-                    action="MONITOR",
+                    priority=RecommendationPriority.MEDIUM,
+                    action=RecommendationAction.MONITOR,
                     confidence=90,
                     target="Portfolio",
                     title="Minor optimisation recommended",
@@ -69,8 +74,8 @@ class PortfolioHealthRule:
 
                 Recommendation(
                     category="Portfolio",
-                    priority="HIGH",
-                    action="REBALANCE",
+                    priority=RecommendationPriority.HIGH,
+                    action=RecommendationAction.REBALANCE,
                     confidence=88,
                     target="Portfolio",
                     title="Portfolio requires attention",
