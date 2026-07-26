@@ -2,150 +2,94 @@
 
 All notable changes to AlphaForge will be documented in this file.
 
-Project:
-AlphaForge – AI Portfolio Construction Engine
+The project follows a sprint-based development model.
 
 ---
 
-# Version 0.1.0
+# Sprint 12.5B
 
-Status
+## Added
 
-Development
-
----
-
-## Sprint 1
-
-### Project Foundation
-
-Completed
-
-Features
-
-- Initial Project Structure
-- Python Environment Setup
-- Git Repository Initialization
-- Basic Desktop Application
-- Theme Engine
-- Version Engine
+- Professional project README
+- Improved project overview
+- Updated architecture summary
+- Development progress section
+- Technology stack documentation
+- Vision statement
 
 ---
 
-## Sprint 2
+# Sprint 12.5A
 
-### Desktop UI
+## Added
 
-Completed
+- Recommendation constants module
 
-Features
+## Improved
 
-- Main Window
-- Sidebar Navigation
-- Dashboard
-- Stock Explorer Screen
-- Modular Folder Structure
+- Standardised recommendation priorities
+- Standardised recommendation actions
 
----
+## Regression
 
-## Sprint 3
-
-### Live Stock Explorer
-
-Completed
-
-Features
-
-- Live NSE Stock Search
-- Company Information
-- Current Price
-- Market Capitalization
-- PE Ratio
-- PB Ratio
-- ROE
-- Debt to Equity
-
-Git Commit
-
-Sprint 3 - Live Stock Search working
+- Recommendation engine regression tests passed successfully
 
 ---
 
-## Sprint 3.1
+# Sprint 12.5
 
-### Fundamental Engine
+## Added
 
-Completed
+- Portfolio Structure Recommendation Rule
 
-Features
+## Improved
 
-- ROCE Calculation Engine
-- Financial Statement Processing
+- Recommendation engine architecture
 
-Git Commit
+## Regression
 
-Sprint 3.1 - Added ROCE calculation engine
-
----
-
-## Sprint 3.2
-
-### Formatting Engine
-
-Completed
-
-Features
-
-- Price Formatting
-- Market Cap Formatting
-- Percentage Formatting
-- Number Formatting
-- Shared Formatter Utility
-
-Git Commit
-
-Sprint 3.2 - Added reusable formatting engine
+- Portfolio recommendation regression tests passed successfully
 
 ---
 
-# Upcoming
+# Sprint 12.4
 
-Sprint 4
+## Added
 
-Professional UI
-
-Sprint 5
-
-Fundamental Engine Expansion
-
-Sprint 6
-
-Technical Engine
-
-Sprint 7
-
-Quality Engine
-
-Sprint 8
-
-Alpha Score Engine
-
-Sprint 9
-
-Ranking Engine
-
-Sprint 10
-
-Portfolio Engine
-
-Sprint 11
-
-Research Radar
-
-Sprint 12
-
-AI Assistant
+- Position Sizing Recommendation Rule
 
 ---
 
-End of Changelog
+# Sprint 12.3
+
+## Added
+
+- Diversification Recommendation Rule
+
+---
+
+# Sprint 12.2A
+
+## Added
+
+- Recommendation Framework
+
+---
+
+# Sprint 12.1.1B
+
+## Added
+
+- Portfolio Analytics Engine
+
+---
+
+# Future
+
+Upcoming work includes:
+
+- Cash Deployment Recommendation Engine
+- Portfolio Rebalancing Engine
+- Opportunity Ranking
+- Decision Intelligence
+- Alpha Engine
