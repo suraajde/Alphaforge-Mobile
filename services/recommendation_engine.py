@@ -22,6 +22,10 @@ from services.rules.diversification_rule import (
     DiversificationRule,
 )
 
+from services.rules.position_sizing_rule import (
+    PositionSizingRule,
+)
+
 
 class RecommendationEngine:
     """
@@ -36,6 +40,7 @@ class RecommendationEngine:
             PortfolioHealthRule(),
             ConcentrationRule(),
             DiversificationRule(),
+            PositionSizingRule(),
         ]
 
     def generate(

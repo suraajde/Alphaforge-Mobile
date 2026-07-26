@@ -89,7 +89,7 @@ def test_recommendation_engine():
 
         print()
 
-    assert len(report.portfolio_recommendations) == 2
+    assert len(report.portfolio_recommendations) == 3
     assert report.portfolio_recommendations[0].action == "MONITOR"
 
     assert len(report.risk_recommendations) == 0
