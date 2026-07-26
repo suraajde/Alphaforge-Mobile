@@ -18,6 +18,10 @@ from services.rules.concentration_rule import (
     ConcentrationRule,
 )
 
+from services.rules.diversification_rule import (
+    DiversificationRule,
+)
+
 
 class RecommendationEngine:
     """
@@ -31,6 +35,7 @@ class RecommendationEngine:
         self._rules = [
             PortfolioHealthRule(),
             ConcentrationRule(),
+            DiversificationRule(),
         ]
 
     def generate(
