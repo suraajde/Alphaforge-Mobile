@@ -56,7 +56,6 @@ def test_recommendation_engine():
     print("=" * 70)
     print("AI RECOMMENDATION ENGINE")
     print("=" * 70)
-
     print()
 
     print(
@@ -68,6 +67,14 @@ def test_recommendation_engine():
     for recommendation in report.all_recommendations:
 
         print("-" * 70)
+
+        stars = "★" * max(
+            1,
+            min(5, recommendation.score // 20),
+        )
+
+        print(f"Score         : {recommendation.score}/100")
+        print(f"Rating        : {stars}")
         print(f"Category      : {recommendation.category}")
         print(f"Priority      : {recommendation.priority}")
         print(f"Action        : {recommendation.action}")
@@ -95,7 +102,7 @@ def test_recommendation_engine():
     assert len(report.risk_recommendations) == 0
 
     print("=" * 70)
-    print("Sprint 12.5 Recommendation Engine PASS")
+    print("Sprint 12.6 Recommendation Engine PASS")
     print("=" * 70)
 
 

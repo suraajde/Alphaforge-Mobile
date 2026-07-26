@@ -10,6 +10,10 @@ from services.recommendation_models import (
     RecommendationReport,
 )
 
+from services.recommendation_scoring_service import (
+    RecommendationScoringService,
+)
+
 from services.rules.portfolio_health_rule import (
     PortfolioHealthRule,
 )
@@ -35,7 +39,9 @@ class RecommendationEngine:
     """
     AlphaForge Recommendation Engine.
 
-    Orchestrates independent recommendation rules.
+    Orchestrates independent recommendation rules,
+    then prioritises recommendations using the
+    Recommendation Scoring Service.
     """
 
     def __init__(self):
@@ -48,6 +54,10 @@ class RecommendationEngine:
             PortfolioStructureRule(),
         ]
 
+        self._scoring_service = (
+            RecommendationScoringService()
+        )
+
     def generate(
         self,
         analytics: PortfolioAnalytics,
@@ -57,10 +67,15 @@ class RecommendationEngine:
         report = RecommendationReport()
 
         for rule in self._rules:
+
             rule.apply(
                 report,
                 analytics,
                 health,
             )
+
+        self._scoring_service.score_report(
+            report
+        )
 
         return report

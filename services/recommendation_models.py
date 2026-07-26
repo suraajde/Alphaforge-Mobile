@@ -19,6 +19,9 @@ class Recommendation:
 
     suggested_action: str = ""
 
+    # Computed by RecommendationScoringService
+    score: int = 0
+
 
 @dataclass
 class RecommendationReport:
