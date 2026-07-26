@@ -1,431 +1,162 @@
-# AlphaForge Roadmap
+# AlphaForge Development Roadmap
 
-Project Name:
-AlphaForge – AI Portfolio Construction Engine
-
-Current Version:
-v0.1.0
-
-Status:
-Active Development
+> **Version 2.0**
 
 ---
 
-# MASTER OBJECTIVE
+# Vision
 
-Build an AI-powered investment research and portfolio construction platform capable of discovering, ranking, monitoring and maintaining India's best long-term investment portfolio.
-
-Final Goal
-
-4000+ NSE Stocks
-
-↓
-
-300 Fundamentally Strong Stocks
-
-↓
-
-100 High Quality Companies
-
-↓
-
-30 Alpha Watchlist
-
-↓
-
-12 Alpha Portfolio
-
-↓
-
-Continuous Monitoring
-
-↓
-
-Automatic Re-ranking
-
-↓
-
-Suggested Portfolio Replacement
+AlphaForge aims to become a professional desktop platform for long-term portfolio research, analytics, portfolio health monitoring and intelligent investment decision support.
 
 ---
 
-# DEVELOPMENT ROADMAP
+# Current Status
 
-## Phase 1 — Foundation ✅
+Current Branch
 
-Status:
-Completed
+```
+sprint-12.1.0
+```
 
-Features
+Current Development Phase
 
-✓ Desktop Application
+```
+Decision Intelligence
+```
 
-✓ Modular Architecture
+Current Sprint
 
-✓ Git Version Control
-
-✓ Project Structure
-
-✓ Dashboard
-
-✓ Sidebar
-
-✓ Theme Engine
-
-✓ Version Engine
+```
+Sprint 12.5B
+```
 
 ---
 
-## Phase 2 — Stock Explorer ✅
+# Development Progress
 
-Status
-
-Completed
-
-Features
-
-✓ Live Stock Search
-
-✓ Company Information
-
-✓ Market Cap
-
-✓ Current Price
-
-✓ PE
-
-✓ PB
-
-✓ ROE
-
-✓ ROCE
-
-✓ Debt to Equity
-
-✓ Formatting Engine
+| Phase | Status |
+|--------|--------|
+| Foundation | ✅ Complete |
+| Research Layer | ✅ Complete |
+| Portfolio Analytics | ✅ Complete |
+| Recommendation Intelligence | ✅ Complete |
+| Decision Intelligence | 🚧 In Progress |
+| Alpha Engine | Planned |
+| Portfolio Management | Planned |
+| Production Release | Planned |
 
 ---
 
-## Phase 3 — Professional UI
+# Completed Milestones
 
-Status
+## Foundation
 
-Next
-
-Features
-
-□ Modern Company Card
-
-□ Metric Cards
-
-□ Better Typography
-
-□ Better Layout
-
-□ Better Colors
-
-□ Alpha Score Card
-
-□ Icons
-
-□ Better Theme
+- Desktop application
+- Database
+- Configuration
+- Modular architecture
 
 ---
 
-## Phase 4 — Fundamental Engine
+## Research Layer
 
-Goal
-
-Evaluate business quality.
-
-Features
-
-□ ROA
-
-□ ROIC
-
-□ PEG
-
-□ Interest Coverage
-
-□ Current Ratio
-
-□ Operating Margin
-
-□ Net Margin
-
-□ Cash Flow Analysis
-
-□ Piotroski Score
-
-□ Altman Z Score
-
-□ Financial Health Score
+- Research Radar
+- Universe Management
+- Fundamental Analysis
 
 ---
 
-## Phase 5 — Technical Engine
+## Portfolio Analytics
 
-Goal
-
-Evaluate market strength.
-
-Features
-
-□ RSI
-
-□ MACD
-
-□ Moving Average
-
-□ Volume
-
-□ Breakout Detection
-
-□ Trend Detection
-
-□ Relative Strength
-
-□ Drawdown Analysis
+- Portfolio Analytics Engine
+- Portfolio Health Engine
+- Diversification Analysis
+- Concentration Analysis
+- Position Size Analysis
 
 ---
 
-## Phase 6 — Quality Engine
+## Recommendation Intelligence
 
-Goal
+Completed Rules
 
-Evaluate company quality.
-
-Features
-
-□ Business Quality
-
-□ Economic Moat
-
-□ Management Quality
-
-□ Promoter Quality
-
-□ Capital Allocation
-
-□ Industry Leadership
-
-□ Sector Leadership
-
-□ Competitive Advantage
-
-□ Brand Strength
-
-□ Order Book
+- Portfolio Health
+- Diversification
+- Position Sizing
+- Portfolio Structure
+- Concentration
 
 ---
 
-## Phase 7 — Alpha Score Engine
+# Current Phase
 
-Goal
+## Decision Intelligence
 
-Generate one final score.
+Upcoming Sprints
 
-Components
+### Sprint 12.6
 
-□ Fundamental Score
+- Cash Deployment Recommendation Engine
 
-□ Technical Score
+### Sprint 12.7
 
-□ Quality Score
+- Portfolio Rebalancing Engine
 
-□ Valuation Score
+### Sprint 12.8
 
-□ Risk Score
+- Opportunity Ranking Engine
 
-↓
+### Sprint 12.9
 
-Overall Alpha Score
-
-0–100
+- Explainable Decision Engine
 
 ---
 
-## Phase 8 — Ranking Engine
+# Future Phases
 
-Goal
+## Alpha Engine
 
-Rank every company.
-
-Flow
-
-4000
-
-↓
-
-300
-
-↓
-
-100
-
-↓
-
-30
-
-↓
-
-12
-
-Generate
-
-Top 30 Watchlist
-
-Generate
-
-Top 12 Portfolio
+- Alpha Score
+- Conviction Score
+- Growth Score
+- Risk Score
+- Alpha 12 Builder
 
 ---
 
-## Phase 9 — Portfolio Engine
+## Portfolio Management
 
-Goal
-
-Maintain portfolio.
-
-Rules
-
-Maximum Stocks
-
-12
-
-Watchlist
-
-30
-
-Maximum Weight
-
-10%
-
-Maximum Sector Exposure
-
-25%
-
-Maximum Companies Per Sector
-
-2
-
-Automatic Rebalancing Suggestions
+- Portfolio Simulator
+- What-if Analysis
+- Goal Planning
+- SIP Optimisation
+- Tax-aware Rebalancing
 
 ---
 
-## Phase 10 — Research Radar
+## Production
 
-Features
-
-□ Quarterly Results
-
-□ Annual Reports
-
-□ Promoter Holding
-
-□ FII Holding
-
-□ DII Holding
-
-□ Corporate Actions
-
-□ Management Changes
-
-□ News Analysis
-
-□ Risk Alerts
-
-□ Opportunity Alerts
+- Performance Optimisation
+- Reporting
+- Export Engine
+- Installer
+- Documentation
+- Version 1.0
 
 ---
 
-## Phase 11 — Portfolio Manager
+# Design Principles
 
-Features
-
-□ Holdings
-
-□ Allocation
-
-□ XIRR
-
-□ CAGR
-
-□ SIP
-
-□ Rebalancing
-
-□ Tax Analysis
-
-□ Benchmark Comparison
-
-□ Portfolio Health
+- Modular Architecture
+- Explainable Recommendations
+- Regression-first Development
+- Small Sprint Delivery
+- Long-term Investor Focus
 
 ---
 
-## Phase 12 — AI Assistant
+# Road Ahead
 
-Features
+AlphaForge is transitioning from portfolio analytics into intelligent portfolio decision support.
 
-□ AI Stock Analysis
-
-□ Quarterly Result Summary
-
-□ Annual Report Summary
-
-□ Earnings Call Summary
-
-□ Portfolio Suggestions
-
-□ Buy/Sell Suggestions
-
-□ Portfolio Health Report
-
-□ Risk Detection
-
-□ Opportunity Detection
-
----
-
-# VERSION TARGETS
-
-v0.1
-
-Foundation
-
-v0.2
-
-Professional UI
-
-v0.3
-
-Fundamental Engine
-
-v0.4
-
-Technical Engine
-
-v0.5
-
-Alpha Score
-
-v0.6
-
-Ranking Engine
-
-v0.7
-
-Research Radar
-
-v0.8
-
-Portfolio Engine
-
-v0.9
-
-AI Assistant
-
-v1.0
-
-Complete AI Portfolio Construction Platform
+The next milestone is the Cash Deployment Recommendation Engine, which begins the Decision Intelligence phase.
