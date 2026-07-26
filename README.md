@@ -1,248 +1,204 @@
 # AlphaForge
 
-## AI Portfolio Construction Engine
+> **Intelligent Portfolio Research & Decision Support Platform**
 
 ---
 
-## Vision
+## Overview
 
-AlphaForge is an AI-powered investment research and portfolio construction platform designed to discover, rank, monitor and maintain India's highest-quality long-term investment portfolio.
+AlphaForge is a desktop application designed to help long-term investors research, analyse, monitor and optimise investment portfolios using quantitative analytics, explainable recommendation engines and intelligent portfolio construction.
 
-AlphaForge is **not** a stock screener.
-
-AlphaForge is **not** a portfolio tracker.
-
-AlphaForge is an intelligent decision-support platform for long-term investors.
+Unlike a traditional stock screener, AlphaForge combines research, portfolio analytics and decision intelligence into a single modular platform.
 
 ---
 
-# Mission
+# Current Status
 
-Transform the complete NSE universe into a concentrated portfolio of only the strongest businesses.
+**Development Phase**
 
-4000+ NSE Stocks
+Decision Intelligence (In Progress)
 
-↓
+**Latest Sprint**
 
-300 Fundamentally Strong Companies
+Sprint 12.5A – Recommendation Engine Constants Cleanup
 
-↓
+**Architecture**
 
-100 High Quality Companies
+Modular Service Architecture
 
-↓
+**Desktop Framework**
 
-30 Alpha Watchlist
+PySide6
 
-↓
+**Language**
 
-12 Alpha Portfolio
+Python
 
-↓
+**Database**
 
-Continuous Monitoring
-
-↓
-
-Automatic Re-ranking
-
-↓
-
-Portfolio Improvement Suggestions
+SQLite
 
 ---
 
-# Current Version
+# Core Features
 
-v0.1.0
+## Research Layer
 
-Status
-
-Development
-
----
-
-# Current Features
-
-## Foundation
-
-- Desktop Application
-- Modular Architecture
-- Git Version Control
-- Theme Engine
-- Version Engine
+- Research Radar
+- Stock Universe Management
+- Fundamental Analysis
+- Metadata Management
 
 ---
 
-## Stock Explorer
+## Portfolio Analytics
 
-- Live NSE Stock Search
-- Company Information
-- Current Price
-- Market Capitalization
-- PE Ratio
-- PB Ratio
-- ROE
-- ROCE
-- Debt to Equity
-- Professional Number Formatting
+- Portfolio Analytics Engine
+- Diversification Analysis
+- Concentration Analysis
+- Effective Holdings
+- Position Size Analysis
+- Portfolio Health Engine
 
 ---
 
-# Planned Modules
+## Recommendation Engine
 
-## Professional UI
-
-- Metric Cards
-- Company Cards
-- Alpha Score Card
-- Better Dashboard
-
----
-
-## Fundamental Engine
-
-- ROA
-- ROIC
-- PEG
-- Piotroski Score
-- Altman Z Score
+- Portfolio Health Rule
+- Diversification Rule
+- Position Sizing Rule
+- Portfolio Structure Rule
+- Concentration Rule
 
 ---
 
-## Technical Engine
+## Upcoming
 
-- RSI
-- MACD
-- Moving Averages
-- Relative Strength
-- Trend Analysis
-
----
-
-## Quality Engine
-
-- Business Quality
-- Promoter Quality
-- Economic Moat
-- Corporate Governance
-- Industry Leadership
+- Cash Deployment Engine
+- Rebalancing Engine
+- Opportunity Ranking
+- Explainable Decision Engine
+- Alpha Engine
 
 ---
 
-## Alpha Score Engine
+# Architecture
 
-Overall investment score based on
-
-- Fundamentals
-- Technical Strength
-- Business Quality
-- Valuation
-- Risk
-
----
-
-## Ranking Engine
-
-Automatically rank every NSE company
-
-4000
-
-↓
-
-300
-
-↓
-
-100
-
-↓
-
-30
-
-↓
-
-12
-
----
-
-## Portfolio Engine
-
-- Portfolio Construction
-- Portfolio Health
-- Portfolio Rebalancing
-- Replacement Suggestions
-- Risk Analysis
-- Diversification
-
----
-
-## Research Radar
-
-- Quarterly Results
-- Promoter Holding
-- FII / DII Changes
-- Corporate Actions
-- News Monitoring
-
----
-
-## AI Assistant
-
-Future AI capabilities
-
-- Company Summary
-- Quarterly Result Summary
-- Annual Report Summary
-- Portfolio Suggestions
-- Opportunity Detection
-- Risk Detection
-
----
-
-# Project Documentation
-
-The project is supported by the following documents:
-
-- VISION.md
-- ROADMAP.md
-- ARCHITECTURE.md
-- INVESTMENT_RULEBOOK.md
-- CHANGELOG.md
-- TODO.md
-- VERSION.md
+```
+Desktop UI
+     │
+     ▼
+Application Services
+     │
+     ▼
+Portfolio Analytics
+     │
+     ▼
+Portfolio Health
+     │
+     ▼
+Recommendation Engine
+     │
+     ▼
+Decision Intelligence
+     │
+     ▼
+Alpha Engine
+```
 
 ---
 
 # Technology Stack
 
-Python
+| Component | Technology |
+|----------|------------|
+| Language | Python |
+| UI | PySide6 |
+| Database | SQLite |
+| Version Control | Git |
+| Testing | Python Test Modules |
 
-PySide6
+---
 
-Yahoo Finance
+# Project Structure
 
-Git
+```text
+ALPHAFORGE/
 
-GitHub
+app/
+services/
+models/
+tests/
+data/
+config/
+
+launcher.py
+README.md
+ROADMAP.md
+CHANGELOG.md
+```
+
+---
+
+# Development Progress
+
+| Phase | Status |
+|------|--------|
+| Foundation | ✅ Complete |
+| Research Layer | ✅ Complete |
+| Portfolio Analytics | ✅ Complete |
+| Recommendation Intelligence | ✅ Complete |
+| Decision Intelligence | 🚧 In Progress |
+| Alpha Engine | Planned |
+| Portfolio Management | Planned |
+| Production | Planned |
+
+---
+
+# Design Principles
+
+- Modular Architecture
+- Explainable Recommendations
+- Regression Tested Development
+- Small Incremental Sprints
+- Long-Term Investment Focus
+
+---
+
+# Roadmap
+
+Current development is focused on the **Decision Intelligence** phase.
+
+Upcoming milestones include:
+
+- Cash Deployment Engine
+- Portfolio Rebalancing
+- Opportunity Ranking
+- Explainable Decision Engine
+- Alpha Portfolio Builder
+
+---
+
+# Screenshots
+
+Screenshots will be added as the desktop application evolves.
+
+---
+
+# License
+
+Private Development Project
 
 ---
 
 # Author
 
-Suraj Dev
+**Suraj Dev**
+
+Designer • CNC Programmer • Long-Term Investor
 
 ---
 
-# Motto
+# Vision
 
-**Invest Less.**
-
-**Understand More.**
-
-**Own The Best.**
-
----
-
-AlphaForge
-AI Portfolio Construction Engine
+Build one of the most comprehensive desktop platforms for long-term portfolio research, analytics and investment decision support.
