@@ -89,13 +89,13 @@ def test_recommendation_engine():
 
         print()
 
-    assert len(report.portfolio_recommendations) == 3
+    assert len(report.portfolio_recommendations) == 4
     assert report.portfolio_recommendations[0].action == "MONITOR"
 
     assert len(report.risk_recommendations) == 0
 
     print("=" * 70)
-    print("Sprint 12.2 Recommendation Engine PASS")
+    print("Sprint 12.5 Recommendation Engine PASS")
     print("=" * 70)
 
 
