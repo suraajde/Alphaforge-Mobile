@@ -1278,6 +1278,59 @@ class PortfolioApplicationService:
 
         }
 
+    # ======================================================
+    # PORTFOLIO INTELLIGENCE
+    # ======================================================
+
+    def get_portfolio_intelligence(
+        self,
+        price_map=None,
+    ):
+        loaded = self._require_state()
+
+        if loaded["status"] == "NOT_FOUND":
+            return {
+                "status": "NOT_FOUND",
+                "portfolio_exists": False,
+                "error": None,
+                "state": None,
+                "analytics": None,
+                "health": None,
+                "recommendations": None,
+                "decisions": None,
+            }
+
+        if loaded["status"] != "OK":
+            return {
+                "status": "ERROR",
+                "portfolio_exists": False,
+                "error": loaded.get("error"),
+                "state": None,
+                "analytics": None,
+                "health": None,
+                "recommendations": None,
+                "decisions": None,
+            }
+
+        state = loaded["state"]
+
+        try:
+            return self.orchestrator.get_portfolio_intelligence(
+                state=state,
+                price_map=price_map,
+            )
+        except Exception as exc:
+            return {
+                "status": "ERROR",
+                "portfolio_exists": True,
+                "error": str(exc),
+                "state": deepcopy(state),
+                "analytics": None,
+                "health": None,
+                "recommendations": None,
+                "decisions": None,
+            }
+
 
 def create_portfolio_application_service(
     state_path=None,

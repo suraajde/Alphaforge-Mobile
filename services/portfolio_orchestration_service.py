@@ -14,6 +14,19 @@ from services.smart_sip_service import (
 from services.portfolio_state_service import (
     PortfolioStateService,
 )
+from services.portfolio_analytics_service import (
+    PortfolioAnalyticsService,
+    PortfolioHolding,
+)
+from services.portfolio_health_service import (
+    PortfolioHealthService,
+)
+from services.recommendation_engine import (
+    RecommendationEngine,
+)
+from services.decision_engine import (
+    DecisionEngine,
+)
 
 
 class PortfolioOrchestrationService:
@@ -59,6 +72,10 @@ class PortfolioOrchestrationService:
         sector_soft_limit=25.0,
         overshoot_tolerance_pct=0.75,
         state_service=None,
+        analytics_service=None,
+        health_service=None,
+        recommendation_engine=None,
+        decision_engine=None,
     ):
 
         self.max_stock_weight = float(
@@ -77,6 +94,30 @@ class PortfolioOrchestrationService:
             state_service
             if state_service is not None
             else PortfolioStateService()
+        )
+
+        self.analytics_service = (
+            analytics_service
+            if analytics_service is not None
+            else PortfolioAnalyticsService()
+        )
+
+        self.health_service = (
+            health_service
+            if health_service is not None
+            else PortfolioHealthService()
+        )
+
+        self.recommendation_engine = (
+            recommendation_engine
+            if recommendation_engine is not None
+            else RecommendationEngine()
+        )
+
+        self.decision_engine = (
+            decision_engine
+            if decision_engine is not None
+            else DecisionEngine()
         )
 
     # ======================================================
@@ -1086,6 +1127,195 @@ class PortfolioOrchestrationService:
             "save_result":
                 save_result,
 
+        }
+
+    # ======================================================
+    # PORTFOLIO INTELLIGENCE ORCHESTRATION
+    #
+    # READ ONLY
+    #
+    # Synthesizes PortfolioAnalyticsService,
+    # PortfolioHealthService, RecommendationEngine, and
+    # DecisionEngine into a single intelligence output.
+    # ======================================================
+
+    def get_portfolio_intelligence(
+        self,
+        state,
+        price_map=None,
+    ):
+        if not isinstance(
+            state,
+            dict,
+        ):
+            raise TypeError(
+                "state must be a dictionary"
+            )
+
+        current_state = state
+
+        if price_map is not None:
+            refresh_result = (
+                self.refresh_portfolio(
+                    state=state,
+                    price_map=price_map,
+                    save=False,
+                )
+            )
+
+            if (
+                isinstance(
+                    refresh_result,
+                    dict,
+                )
+                and refresh_result.get("status") == "OK"
+            ):
+                current_state = refresh_result.get(
+                    "state",
+                    state,
+                )
+
+        holdings = []
+
+        positions = current_state.get(
+            "positions",
+            {},
+        )
+
+        if (
+            isinstance(
+                positions,
+                dict,
+            )
+            and positions
+        ):
+            for symbol, pos in positions.items():
+                if not isinstance(
+                    pos,
+                    dict,
+                ):
+                    continue
+
+                norm_symbol = (
+                    self.state_service._normalize_symbol(
+                        pos.get(
+                            "symbol",
+                            symbol,
+                        )
+                    )
+                )
+
+                weight = pos.get("actual_weight")
+
+                if weight is None:
+                    weight = pos.get(
+                        "target_weight",
+                        pos.get(
+                            "weight",
+                            0.0,
+                        ),
+                    )
+
+                weight = self._safe_float(
+                    weight,
+                    0.0,
+                )
+
+                if norm_symbol:
+                    holdings.append(
+                        PortfolioHolding(
+                            symbol=norm_symbol,
+                            weight=weight,
+                        )
+                    )
+
+        elif (
+            isinstance(
+                current_state.get("portfolio"),
+                list,
+            )
+            and current_state.get("portfolio")
+        ):
+            for item in current_state.get("portfolio", []):
+                if not isinstance(
+                    item,
+                    dict,
+                ):
+                    continue
+
+                norm_symbol = (
+                    self.state_service._normalize_symbol(
+                        item.get("symbol")
+                    )
+                )
+
+                weight = self._safe_float(
+                    item.get(
+                        "target_weight",
+                        item.get(
+                            "weight",
+                            0.0,
+                        ),
+                    ),
+                    0.0,
+                )
+
+                if norm_symbol:
+                    holdings.append(
+                        PortfolioHolding(
+                            symbol=norm_symbol,
+                            weight=weight,
+                        )
+                    )
+
+        analytics = (
+            self.analytics_service.analyze(
+                holdings
+            )
+        )
+
+        health = (
+            self.health_service.evaluate(
+                analytics
+            )
+        )
+
+        recommendations = (
+            self.recommendation_engine.generate(
+                analytics,
+                health,
+            )
+        )
+
+        decisions = (
+            self.decision_engine.generate(
+                recommendations
+            )
+        )
+
+        return {
+            "status":
+                "OK",
+
+            "mode":
+                "PORTFOLIO_INTELLIGENCE",
+
+            "state":
+                deepcopy(
+                    current_state
+                ),
+
+            "analytics":
+                analytics,
+
+            "health":
+                health,
+
+            "recommendations":
+                recommendations,
+
+            "decisions":
+                decisions,
         }
 
     # ======================================================
