@@ -27,6 +27,9 @@ from services.recommendation_engine import (
 from services.decision_engine import (
     DecisionEngine,
 )
+from services.portfolio_intelligence_score_service import (
+    PortfolioIntelligenceScoreService,
+)
 
 
 class PortfolioOrchestrationService:
@@ -76,6 +79,7 @@ class PortfolioOrchestrationService:
         health_service=None,
         recommendation_engine=None,
         decision_engine=None,
+        portfolio_score_service=None,
     ):
 
         self.max_stock_weight = float(
@@ -118,6 +122,12 @@ class PortfolioOrchestrationService:
             decision_engine
             if decision_engine is not None
             else DecisionEngine()
+        )
+
+        self.portfolio_score_service = (
+            portfolio_score_service
+            if portfolio_score_service is not None
+            else PortfolioIntelligenceScoreService()
         )
 
     # ======================================================
@@ -1293,6 +1303,24 @@ class PortfolioOrchestrationService:
             )
         )
 
+        # ==================================================
+        # PORTFOLIO INTELLIGENCE SCORE (EXTENSIBLE)
+        # Compute an additive intelligence score using the
+        # injected scorer. This is intentionally read-only
+        # and additive to preserve backward compatibility.
+        # ==================================================
+
+        try:
+            portfolio_score = self.portfolio_score_service.score(
+                analytics,
+                health,
+                recommendations=recommendations,
+                decisions=decisions,
+            )
+        except Exception as exc:
+            # Guard the orchestration flow from any scorer errors
+            portfolio_score = None
+
         return {
             "status":
                 "OK",
@@ -1316,6 +1344,9 @@ class PortfolioOrchestrationService:
 
             "decisions":
                 decisions,
+
+            "portfolio_score":
+                portfolio_score,
         }
 
     # ======================================================
