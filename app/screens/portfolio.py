@@ -27,15 +27,6 @@ from services.stock_service import (
     get_stock_data,
 )
 
-from services.portfolio_analytics_service import (
-    PortfolioAnalyticsService,
-    PortfolioHolding,
-)
-
-from services.portfolio_health_service import (
-    PortfolioHealthService,
-)
-
 
 class Portfolio(QWidget):
 
@@ -55,9 +46,6 @@ class Portfolio(QWidget):
             create_portfolio_application_service()
         )
 
-        self.analytics_service = PortfolioAnalyticsService()
-
-        self.health_service = PortfolioHealthService()
         self._build_ui()
 
         self.initial_investment_btn = QPushButton(
@@ -369,6 +357,71 @@ class Portfolio(QWidget):
         root.addWidget(
             self.metrics_frame
         )
+
+        # --------------------------------------------------
+        # PORTFOLIO INTELLIGENCE (read-only display)
+        # --------------------------------------------------
+
+        self.intelligence_frame = QFrame()
+        intelligence_layout = QVBoxLayout(self.intelligence_frame)
+        intelligence_layout.setContentsMargins(0, 0, 0, 0)
+        intelligence_layout.setSpacing(8)
+
+        intelligence_title = QLabel("Portfolio Intelligence")
+        intelligence_title.setObjectName("sectionTitle")
+        intelligence_layout.addWidget(intelligence_title)
+
+        # Score and grade cards
+        pi_metrics = QHBoxLayout()
+        (
+            self.portfolio_score_card,
+            self.portfolio_score_value,
+        ) = self._create_metric_card("PORTFOLIO SCORE")
+
+        (
+            self.portfolio_grade_card,
+            self.portfolio_grade_value,
+        ) = self._create_metric_card("GRADE")
+
+        pi_metrics.addWidget(self.portfolio_score_card)
+        pi_metrics.addWidget(self.portfolio_grade_card)
+
+        intelligence_layout.addLayout(pi_metrics)
+
+        # Strengths / Weaknesses / Recommendations
+        pi_lists = QHBoxLayout()
+
+        strengths_box = QVBoxLayout()
+        strengths_title = QLabel("Strengths")
+        strengths_title.setObjectName("metricTitle")
+        self.pi_strengths_label = QLabel("No strengths available.")
+        self.pi_strengths_label.setWordWrap(True)
+        strengths_box.addWidget(strengths_title)
+        strengths_box.addWidget(self.pi_strengths_label)
+
+        weaknesses_box = QVBoxLayout()
+        weaknesses_title = QLabel("Weaknesses")
+        weaknesses_title.setObjectName("metricTitle")
+        self.pi_weaknesses_label = QLabel("No weaknesses available.")
+        self.pi_weaknesses_label.setWordWrap(True)
+        weaknesses_box.addWidget(weaknesses_title)
+        weaknesses_box.addWidget(self.pi_weaknesses_label)
+
+        rec_box = QVBoxLayout()
+        rec_title = QLabel("Recommendations")
+        rec_title.setObjectName("metricTitle")
+        self.pi_recommendations_label = QLabel("No recommendations available.")
+        self.pi_recommendations_label.setWordWrap(True)
+        rec_box.addWidget(rec_title)
+        rec_box.addWidget(self.pi_recommendations_label)
+
+        pi_lists.addLayout(strengths_box)
+        pi_lists.addLayout(weaknesses_box)
+        pi_lists.addLayout(rec_box)
+
+        intelligence_layout.addLayout(pi_lists)
+
+        root.addWidget(self.intelligence_frame)
 
         # --------------------------------------------------
         # EMPTY STATE
@@ -2781,42 +2834,132 @@ class Portfolio(QWidget):
             # --------------------------------------------
 
         # --------------------------------------------
-        # Portfolio Analytics
+        # Portfolio Intelligence (from orchestration)
         # --------------------------------------------
 
-        analytics_positions = [
-            PortfolioHolding(
-                symbol=str(
-                    position.get(
-                        "symbol",
-                        "",
-                    )
-                ),
-                weight=float(
-                    position.get(
-                        "actual_weight",
-                        0.0,
-                    )
-                ),
-            )
-            for position in positions
-            if position.get("symbol")
-        ]
+        try:
+            intelligence = self.portfolio_service.get_portfolio_intelligence()
+        except Exception as exc:
+            intelligence = None
 
-        analytics = self.analytics_service.analyze(
-            analytics_positions
-        )
+        portfolio_score_obj = None
+        analytics = None
+        health = None
+        recommendations = None
+        decisions = None
 
-        health = self.health_service.evaluate(
-            analytics
-        )
+        if isinstance(intelligence, dict):
+            status = str(intelligence.get("status", "")).upper()
+            analytics = intelligence.get("analytics")
+            health = intelligence.get("health")
+            recommendations = intelligence.get("recommendations")
+            decisions = intelligence.get("decisions")
+            portfolio_score_obj = intelligence.get("portfolio_score")
 
-        print("\n===== PORTFOLIO HEALTH =====")
-        print(f"Overall Score        : {health.overall_score}")
-        print(f"Overall Grade        : {health.overall_grade}")
-        print(f"Diversification      : {health.diversification_score}")
-        print(f"Concentration        : {health.concentration_score}")
-        print("============================\n")
+            if status == "OK":
+                # Populate score and grade
+                if portfolio_score_obj is not None:
+                    # overall score
+                    score_value = None
+                    try:
+                        score_value = getattr(portfolio_score_obj, "overall_score", None)
+                    except Exception:
+                        score_value = None
+                    if score_value is None and isinstance(portfolio_score_obj, dict):
+                        score_value = portfolio_score_obj.get("overall_score")
+                    if score_value is None:
+                        self.portfolio_score_value.setText("-")
+                    else:
+                        try:
+                            self.portfolio_score_value.setText(str(int(round(float(score_value)))))
+                        except Exception:
+                            self.portfolio_score_value.setText("-")
+
+                    # grade
+                    grade = None
+                    try:
+                        grade = getattr(portfolio_score_obj, "investment_grade", None)
+                    except Exception:
+                        grade = None
+                    if grade is None and isinstance(portfolio_score_obj, dict):
+                        grade = portfolio_score_obj.get("investment_grade")
+                    self.portfolio_grade_value.setText(str(grade) if grade is not None else "-")
+
+                    # strengths
+                    strengths = None
+                    try:
+                        strengths = getattr(portfolio_score_obj, "strengths", None)
+                    except Exception:
+                        strengths = None
+                    if not strengths:
+                        strengths = intelligence.get("strengths") or []
+                    if isinstance(strengths, list) and strengths:
+                        self.pi_strengths_label.setText("\n".join([f"• {s}" for s in strengths]))
+                    else:
+                        self.pi_strengths_label.setText("No strengths available.")
+
+                    # weaknesses
+                    weaknesses = None
+                    try:
+                        weaknesses = getattr(portfolio_score_obj, "weaknesses", None)
+                    except Exception:
+                        weaknesses = None
+                    if not weaknesses:
+                        weaknesses = intelligence.get("weaknesses") or []
+                    if isinstance(weaknesses, list) and weaknesses:
+                        self.pi_weaknesses_label.setText("\n".join([f"• {w}" for w in weaknesses]))
+                    else:
+                        self.pi_weaknesses_label.setText("No weaknesses available.")
+
+                    # recommendations
+                    recs = recommendations or []
+                    rec_texts = []
+                    if isinstance(recs, list):
+                        for r in recs:
+                            if isinstance(r, str):
+                                rec_texts.append(r)
+                            elif isinstance(r, dict):
+                                rec_texts.append(r.get("text") or r.get("recommendation") or str(r))
+                            else:
+                                rec_texts.append(str(r))
+                    if rec_texts:
+                        self.pi_recommendations_label.setText("\n".join([f"• {t}" for t in rec_texts]))
+                    else:
+                        self.pi_recommendations_label.setText("No recommendations available.")
+
+                else:
+                    # Score object missing
+                    self.portfolio_score_value.setText("-")
+                    self.portfolio_grade_value.setText("-")
+                    self.pi_strengths_label.setText("No strengths available.")
+                    self.pi_weaknesses_label.setText("No weaknesses available.")
+                    self.pi_recommendations_label.setText("No recommendations available.")
+
+            elif status == "NOT_FOUND":
+                self.portfolio_score_value.setText("-")
+                self.portfolio_grade_value.setText("-")
+                self.pi_strengths_label.setText("No strengths available.")
+                self.pi_weaknesses_label.setText("No weaknesses available.")
+                self.pi_recommendations_label.setText("No recommendations available.")
+                self.status_label.setText("No persistent portfolio state found.")
+
+            else:
+                # ERROR
+                self.portfolio_score_value.setText("-")
+                self.portfolio_grade_value.setText("-")
+                self.pi_strengths_label.setText("No strengths available.")
+                self.pi_weaknesses_label.setText("No weaknesses available.")
+                self.pi_recommendations_label.setText("No recommendations available.")
+                err = intelligence.get("error") if isinstance(intelligence, dict) else str(intelligence)
+                self.status_label.setText(f"Portfolio intelligence unavailable: {err}")
+
+        else:
+            # Unexpected response
+            self.portfolio_score_value.setText("-")
+            self.portfolio_grade_value.setText("-")
+            self.pi_strengths_label.setText("No strengths available.")
+            self.pi_weaknesses_label.setText("No weaknesses available.")
+            self.pi_recommendations_label.setText("No recommendations available.")
 
         self._populate_table(
             positions
