@@ -1,4 +1,5 @@
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor, QBrush
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -106,6 +107,17 @@ class Portfolio(QWidget):
             QLabel#pageSubtitle {
                 font-size: 14px;
                 color: #64748b;
+            }
+
+            QLabel#statusLabel {
+                font-size: 13px;
+                font-weight: 600;
+                color: #1e3a5f;
+                background-color: #eef2f7;
+                border: 1px solid #d0dbe9;
+                border-radius: 6px;
+                padding: 6px 12px;
+                margin-top: 6px;
             }
 
             QLabel#sectionTitle {
@@ -267,8 +279,23 @@ class Portfolio(QWidget):
         )
 
         self.status_label.setObjectName(
-            "pageSubtitle"
+            "statusLabel"
         )
+
+        self.status_label.setStyleSheet("""
+QLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: #173b67;
+    background-color: #dbeafe;
+    border: 1px solid #93c5fd;
+    border-radius: 6px;
+    padding: 8px 12px;
+}
+""")
+
+        self.status_label.style().unpolish(self.status_label)
+        self.status_label.style().polish(self.status_label)
 
         root.addWidget(
             self.status_label
@@ -664,7 +691,7 @@ class Portfolio(QWidget):
         self.table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.table.setColumnCount(
-            12
+            14
         )
 
         self.table.setHorizontalHeaderLabels([
@@ -675,6 +702,8 @@ class Portfolio(QWidget):
             "Actual Purchase Value",
             "Price",
             "Market Value",
+            "P/L",
+            "P/L %",
             "Target %",
             "Actual %",
             "Drift %",
@@ -2020,6 +2049,20 @@ class Portfolio(QWidget):
             return default
 
     @staticmethod
+    def _format_timestamp(
+        raw_ts,
+    ):
+        if not raw_ts:
+            return ""
+        try:
+            from datetime import datetime
+            ts_str = str(raw_ts).strip()
+            dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+            return dt.strftime("%d %b %Y %H:%M")
+        except Exception:
+            return str(raw_ts)
+
+    @staticmethod
     def _money(
         value,
     ):
@@ -3111,9 +3154,9 @@ class Portfolio(QWidget):
         )
 
         if updated_at:
-
+            formatted_ts = self._format_timestamp(updated_at)
             self.status_label.setText(
-                f"Portfolio loaded | Last updated: {updated_at}"
+                f"Portfolio loaded | Last updated: {formatted_ts}"
             )
 
         else:
@@ -3211,6 +3254,18 @@ class Portfolio(QWidget):
                 "",
             )
 
+            # Calculate P/L from displayed values
+            try:
+                pl_value = float(market_value) - float(invested_cost)
+            except (TypeError, ValueError):
+                pl_value = 0.0
+
+            try:
+                inv = float(invested_cost)
+                pl_pct = (pl_value / inv) * 100.0 if inv != 0.0 else 0.0
+            except (TypeError, ValueError, ZeroDivisionError):
+                pl_pct = 0.0
+
             values = [
                 str(
                     rank
@@ -3233,6 +3288,12 @@ class Portfolio(QWidget):
                 self._money(
                     market_value
                 ),
+                self._money(
+                    pl_value
+                ),
+                self._number(
+                    pl_pct
+                ),
                 self._number(
                     target_weight
                 ),
@@ -3250,6 +3311,10 @@ class Portfolio(QWidget):
                 ),
             ]
 
+            # Color definitions for P/L columns
+            _green = QBrush(QColor("#4CAF50"))
+            _red = QBrush(QColor("#F44336"))
+
             for column_index, value in enumerate(
                 values
             ):
@@ -3260,13 +3325,20 @@ class Portfolio(QWidget):
 
                 if column_index not in (
                     1,
-                    10,
-                    11,
+                    12,
+                    13,
                 ):
 
                     item.setTextAlignment(
                         Qt.AlignCenter
                     )
+
+                # Apply green/red coloring to P/L (col 7) and P/L % (col 8)
+                if column_index in (7, 8):
+                    if pl_value > 0:
+                        item.setForeground(_green)
+                    elif pl_value < 0:
+                        item.setForeground(_red)
 
                 self.table.setItem(
                     row_index,
