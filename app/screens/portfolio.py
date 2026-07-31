@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QDoubleSpinBox,
     QSpinBox,
     QLineEdit,
+    QScrollArea,
 )
 
 from services.portfolio_application_service import (
@@ -27,6 +28,9 @@ from services.stock_service import (
     get_stock_data,
 )
 
+from app.widgets.portfolio_action_center import PortfolioActionCenter
+from services.portfolio_action_service import PortfolioActionService
+from app.widgets.recommendation_detail_panel import RecommendationDetailPanel
 
 
 class Portfolio(QWidget):
@@ -171,9 +175,9 @@ class Portfolio(QWidget):
             }
         """)
 
-        root = QVBoxLayout(
-            self
-        )
+        # Create a scrollable content area so the portfolio page can grow vertically
+        content_widget = QWidget()
+        root = QVBoxLayout(content_widget)
 
         root.setContentsMargins(
             24,
@@ -185,6 +189,20 @@ class Portfolio(QWidget):
         root.setSpacing(
             16
         )
+
+        # Outer layout holds the scroll area (attach this to self)
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+
+        scroll = QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        # Ensure horizontal scrolling is disabled and visual chrome is removed
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setWidget(content_widget)
+
+        outer.addWidget(scroll)
 
         # --------------------------------------------------
         # HEADER
@@ -487,6 +505,36 @@ class Portfolio(QWidget):
 
         intelligence_layout.addLayout(lists_layout)
 
+        # --------------------------------------------------
+        # PORTFOLIO ACTION CENTER (presentation-only)
+        # Inserted into the existing intelligence layout beneath the lists
+        # --------------------------------------------------
+        self.action_center = PortfolioActionCenter(self)
+        # Initialize with empty actions
+        self.action_center.load_actions({
+            "status": "OK",
+            "buy": [],
+            "reduce": [],
+            "hold": [],
+            "watch": [],
+        })
+        intelligence_layout.addWidget(self.action_center)
+
+        # Recommendation detail panel (visual-only, starts cleared)
+        self.recommendation_detail_panel = RecommendationDetailPanel(self)
+        self.recommendation_detail_panel.clear()
+        intelligence_layout.addWidget(self.recommendation_detail_panel)
+
+        # Connect action center item clicks to recommendation detail panel display
+        try:
+            self.action_center.buy_list.itemClicked.connect(self._show_recommendation_details)
+            self.action_center.reduce_list.itemClicked.connect(self._show_recommendation_details)
+            self.action_center.hold_list.itemClicked.connect(self._show_recommendation_details)
+            self.action_center.watch_list.itemClicked.connect(self._show_recommendation_details)
+        except Exception:
+            # Defensive: if any list is missing or connection fails, ignore
+            pass
+
         root.addWidget(self.intelligence_frame)
 
         # --------------------------------------------------
@@ -612,6 +660,9 @@ class Portfolio(QWidget):
 
         self.table = QTableWidget()
 
+        self.table.setMinimumHeight(420)
+        self.table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
         self.table.setColumnCount(
             12
         )
@@ -674,6 +725,27 @@ class Portfolio(QWidget):
         )
 
         self.holdings_frame.hide()
+
+    def _show_recommendation_details(self, item) -> None:
+        """Display the full recommendation in the detail panel when an item is clicked.
+
+        The method is defensive and ignores placeholder rows and malformed data.
+        """
+        try:
+            if item is None:
+                return
+
+            text = item.text() if hasattr(item, "text") else None
+            if text == "Nothing to display":
+                return
+
+            recommendation = item.data(Qt.UserRole) if hasattr(item, "data") else None
+
+            if isinstance(recommendation, dict):
+                self.recommendation_detail_panel.load_recommendation(recommendation)
+        except Exception:
+            # Swallow exceptions to keep UI responsive
+            pass
 
     # ======================================================
     # METRIC CARD
@@ -2892,6 +2964,8 @@ class Portfolio(QWidget):
             [],
         )
 
+
+
         if not isinstance(
             positions,
             list,
@@ -2926,13 +3000,27 @@ class Portfolio(QWidget):
 
         if not isinstance(intelligence, dict):
             # Unexpected response
-            self._populate_table(positions)
-            return
+            pass
 
         status = str(intelligence.get("status", "")).upper()
 
         if status == "OK":
             portfolio_score = intelligence.get("portfolio_score")
+
+            # Build and render action buckets from recommendations (defensive)
+            recommendations = intelligence.get("recommendations")
+            _empty_actions = {"status": "OK", "buy": [], "reduce": [], "hold": [], "watch": []}
+            try:
+                action_service = PortfolioActionService()
+                actions = action_service.build_actions(recommendations)
+            except Exception:
+                actions = _empty_actions
+
+            try:
+                self.action_center.load_actions(actions)
+            except Exception:
+                # UI must remain resilient; ignore action center failures
+                pass
 
             # Must be a PortfolioIntelligenceScore instance per contract
             from services.portfolio_intelligence_score_service import PortfolioIntelligenceScore
@@ -3012,6 +3100,8 @@ class Portfolio(QWidget):
             if err:
                 self.status_label.setText(f"Portfolio intelligence unavailable: {err}")
 
+
+
         self._populate_table(
             positions
         )
@@ -3041,6 +3131,8 @@ class Portfolio(QWidget):
         positions,
     ):
 
+
+
         self.table.setRowCount(
             len(
                 positions
@@ -3050,6 +3142,8 @@ class Portfolio(QWidget):
         for row_index, row in enumerate(
             positions
         ):
+
+
 
             rank = row.get(
                 "alpha12_rank",
@@ -3179,6 +3273,8 @@ class Portfolio(QWidget):
                     column_index,
                     item,
                 )
+
+
 
     # ======================================================
     # ERROR STATE

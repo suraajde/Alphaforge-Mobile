@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QListWidget,
     QListWidgetItem,
+    QSizePolicy,
 )
 
 
@@ -39,6 +41,9 @@ class PortfolioActionCenter(QWidget):
         buy_box = QGroupBox("BUY")
         buy_layout = QVBoxLayout(buy_box)
         self.buy_list = QListWidget()
+        self.buy_list.setMaximumHeight(80)
+        self.buy_list.setMinimumHeight(60)
+        self.buy_list.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         buy_layout.addWidget(self.buy_list)
         root.addWidget(buy_box)
 
@@ -46,6 +51,9 @@ class PortfolioActionCenter(QWidget):
         reduce_box = QGroupBox("REDUCE")
         reduce_layout = QVBoxLayout(reduce_box)
         self.reduce_list = QListWidget()
+        self.reduce_list.setMaximumHeight(80)
+        self.reduce_list.setMinimumHeight(60)
+        self.reduce_list.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         reduce_layout.addWidget(self.reduce_list)
         root.addWidget(reduce_box)
 
@@ -53,6 +61,9 @@ class PortfolioActionCenter(QWidget):
         hold_box = QGroupBox("HOLD")
         hold_layout = QVBoxLayout(hold_box)
         self.hold_list = QListWidget()
+        self.hold_list.setMaximumHeight(80)
+        self.hold_list.setMinimumHeight(60)
+        self.hold_list.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         hold_layout.addWidget(self.hold_list)
         root.addWidget(hold_box)
 
@@ -60,6 +71,9 @@ class PortfolioActionCenter(QWidget):
         watch_box = QGroupBox("WATCH")
         watch_layout = QVBoxLayout(watch_box)
         self.watch_list = QListWidget()
+        self.watch_list.setMaximumHeight(80)
+        self.watch_list.setMinimumHeight(60)
+        self.watch_list.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         watch_layout.addWidget(self.watch_list)
         root.addWidget(watch_box)
 
@@ -118,4 +132,6 @@ class PortfolioActionCenter(QWidget):
             confidence = str(it.get("confidence", ""))
 
             text = f"[{priority}] {target} | Score: {score} | Confidence: {confidence}"
-            list_widget.addItem(QListWidgetItem(text))
+            item = QListWidgetItem(text)
+            item.setData(Qt.UserRole, it)
+            list_widget.addItem(item)
