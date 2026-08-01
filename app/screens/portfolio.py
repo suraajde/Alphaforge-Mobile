@@ -2853,10 +2853,33 @@ QLabel {
         )
 
         self.status_label.setText(
-            "Loading portfolio state..."
+            "Refreshing live market prices..."
         )
 
         try:
+
+            refresh_res = (
+                self.portfolio_service
+                .refresh_portfolio()
+            )
+
+            if (
+                isinstance(
+                    refresh_res,
+                    dict,
+                )
+                and refresh_res.get(
+                    "status"
+                )
+                == "ERROR"
+            ):
+
+                raise RuntimeError(
+                    refresh_res.get(
+                        "error",
+                        "Failed to refresh live market prices",
+                    )
+                )
 
             summary = (
                 self.portfolio_service
@@ -3339,6 +3362,17 @@ QLabel {
                         item.setForeground(_green)
                     elif pl_value < 0:
                         item.setForeground(_red)
+
+                # Apply green/red coloring to Drift % (col 11)
+                elif column_index == 11:
+                    try:
+                        drift_val = float(drift_pct)
+                        if drift_val > 0:
+                            item.setForeground(_green)
+                        elif drift_val < 0:
+                            item.setForeground(_red)
+                    except (TypeError, ValueError):
+                        pass
 
                 self.table.setItem(
                     row_index,

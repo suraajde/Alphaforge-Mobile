@@ -5,6 +5,10 @@ from copy import deepcopy
 from services.portfolio_orchestration_service import (
     PortfolioOrchestrationService,
 )
+from services.portfolio_market_refresh_service import (
+    PortfolioMarketRefreshService,
+)
+
 
 
 class PortfolioApplicationService:
@@ -810,7 +814,7 @@ class PortfolioApplicationService:
 
     def refresh_portfolio(
         self,
-        price_map,
+        price_map=None,
         snapshot_label=None,
         save=True,
     ):
@@ -839,6 +843,13 @@ class PortfolioApplicationService:
                     ),
 
             }
+
+        if not price_map:
+            refresh_service = PortfolioMarketRefreshService()
+            refresh_res = refresh_service.fetch_live_prices(
+                loaded["state"]
+            )
+            price_map = refresh_res.get("price_map", {})
 
         try:
 
