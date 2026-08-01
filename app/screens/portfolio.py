@@ -52,6 +52,14 @@ class Portfolio(QWidget):
             create_portfolio_application_service()
         )
 
+        from services.portfolio_benchmark_service import (
+            PortfolioBenchmarkService,
+        )
+
+        self.benchmark_service = (
+            PortfolioBenchmarkService()
+        )
+
         self._build_ui()
 
         self.initial_investment_btn = QPushButton(
@@ -403,6 +411,51 @@ QLabel {
         root.addWidget(
             self.metrics_frame
         )
+
+        # --------------------------------------------------
+        # PORTFOLIO VS NIFTY 50 SCORECARD
+        # --------------------------------------------------
+        self.benchmark_frame = QFrame()
+        self.benchmark_frame.setObjectName("metricCard")
+        benchmark_layout = QVBoxLayout(self.benchmark_frame)
+        benchmark_layout.setContentsMargins(16, 14, 16, 14)
+        benchmark_layout.setSpacing(10)
+
+        benchmark_title = QLabel("Portfolio vs Nifty 50")
+        benchmark_title.setObjectName("sectionTitle")
+        benchmark_layout.addWidget(benchmark_title)
+
+        bm_metrics = QHBoxLayout()
+        bm_metrics.setSpacing(12)
+
+        (
+            self.bm_portfolio_return_card,
+            self.bm_portfolio_return_value,
+        ) = self._create_metric_card("PORTFOLIO (1Y)")
+
+        (
+            self.bm_nifty_return_card,
+            self.bm_nifty_return_value,
+        ) = self._create_metric_card("NIFTY 50 (1Y)")
+
+        (
+            self.bm_alpha_return_card,
+            self.bm_alpha_return_value,
+        ) = self._create_metric_card("ALPHA")
+
+        (
+            self.bm_status_card,
+            self.bm_status_value,
+        ) = self._create_metric_card("STATUS")
+
+        bm_metrics.addWidget(self.bm_portfolio_return_card)
+        bm_metrics.addWidget(self.bm_nifty_return_card)
+        bm_metrics.addWidget(self.bm_alpha_return_card)
+        bm_metrics.addWidget(self.bm_status_card)
+
+        benchmark_layout.addLayout(bm_metrics)
+
+        root.addWidget(self.benchmark_frame)
 
         # --------------------------------------------------
         # PORTFOLIO INTELLIGENCE (read-only display)
@@ -2936,6 +2989,64 @@ QLabel {
             )
 
     # ======================================================
+    # BENCHMARK RENDER
+    # ======================================================
+
+    def _render_benchmark_summary(self, bm_summary: dict) -> None:
+        if not isinstance(bm_summary, dict):
+            bm_summary = {}
+
+        status = str(bm_summary.get("status", "UNKNOWN")).upper()
+        port_ret = self._safe_float(bm_summary.get("portfolio_return_1y"), 0.0)
+        nifty_ret = self._safe_float(bm_summary.get("benchmark_return_1y"), 0.0)
+        alpha_ret = self._safe_float(bm_summary.get("alpha_return_1y"), 0.0)
+
+        GREEN = "#16a34a"
+        RED = "#dc2626"
+        NEUTRAL = "#64748b"
+
+        # Portfolio (1Y)
+        if status == "UNKNOWN" and port_ret == 0.0:
+            self.bm_portfolio_return_value.setText("N/A")
+            self.bm_portfolio_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
+        else:
+            prefix = "+" if port_ret > 0 else ""
+            self.bm_portfolio_return_value.setText(f"{prefix}{port_ret:.1f}%")
+            color = GREEN if port_ret > 0 else (RED if port_ret < 0 else NEUTRAL)
+            self.bm_portfolio_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
+
+        # Nifty 50 (1Y)
+        if status == "UNKNOWN" and nifty_ret == 0.0:
+            self.bm_nifty_return_value.setText("N/A")
+            self.bm_nifty_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
+        else:
+            prefix = "+" if nifty_ret > 0 else ""
+            self.bm_nifty_return_value.setText(f"{prefix}{nifty_ret:.1f}%")
+            color = GREEN if nifty_ret > 0 else (RED if nifty_ret < 0 else NEUTRAL)
+            self.bm_nifty_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
+
+        # Alpha
+        if status == "UNKNOWN" and alpha_ret == 0.0:
+            self.bm_alpha_return_value.setText("N/A")
+            self.bm_alpha_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
+        else:
+            prefix = "+" if alpha_ret > 0 else ""
+            self.bm_alpha_return_value.setText(f"{prefix}{alpha_ret:.1f}%")
+            color = GREEN if alpha_ret > 0 else (RED if alpha_ret < 0 else NEUTRAL)
+            self.bm_alpha_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
+
+        # Status Mapping
+        if status == "BEATING_BENCHMARK":
+            self.bm_status_value.setText("✓ Outperforming Nifty 50")
+            self.bm_status_value.setStyleSheet(f"color: {GREEN}; font-weight: 700; font-size: 15px;")
+        elif status == "LAGGING_BENCHMARK":
+            self.bm_status_value.setText("⚠ Underperforming Nifty 50")
+            self.bm_status_value.setStyleSheet(f"color: {RED}; font-weight: 700; font-size: 15px;")
+        else:
+            self.bm_status_value.setText("Benchmark Data Unavailable")
+            self.bm_status_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 15px;")
+
+    # ======================================================
     # RENDER
     # ======================================================
 
@@ -3004,6 +3115,22 @@ QLabel {
                 )
             )
         )
+
+        # --------------------------------------------
+        # Benchmark Intelligence Scorecard
+        # --------------------------------------------
+        try:
+            bm_summary = self.benchmark_service.get_benchmark_summary(summary if portfolio_exists else None)
+            self._render_benchmark_summary(bm_summary)
+        except Exception:
+            self._render_benchmark_summary({
+                "portfolio_return_1y": 0.0,
+                "benchmark_return_1y": 0.0,
+                "alpha_return_1y": 0.0,
+                "status": "UNKNOWN",
+                "portfolio_symbol_count": 0,
+                "benchmark_symbol": "^NSEI",
+            })
 
         if not portfolio_exists:
 
