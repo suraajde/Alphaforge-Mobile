@@ -283,7 +283,7 @@ class Portfolio(QWidget):
         # --------------------------------------------------
 
         self.status_label = QLabel(
-            ""
+            "Portfolio loaded."
         )
 
         self.status_label.setObjectName(
@@ -291,19 +291,15 @@ class Portfolio(QWidget):
         )
 
         self.status_label.setStyleSheet("""
-QLabel {
-    font-size: 13px;
-    font-weight: 700;
-    color: #173b67;
-    background-color: #dbeafe;
-    border: 1px solid #93c5fd;
-    border-radius: 6px;
-    padding: 8px 12px;
-}
-""")
-
-        self.status_label.style().unpolish(self.status_label)
-        self.status_label.style().polish(self.status_label)
+            background-color: #dbeafe;
+            color: #173b67;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            min-height: 20px;
+        """)
 
         root.addWidget(
             self.status_label
