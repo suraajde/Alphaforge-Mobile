@@ -170,8 +170,32 @@ class PortfolioActionCenter(QWidget):
         scroll.setWidget(container)
         root_layout.addWidget(scroll)
 
-        # Initial Empty State Presentation
-        self.load_plan(None)
+        # Initial Sample Presentation
+        self.load_mock_data()
+
+    def load_mock_data(self) -> None:
+        """Load sample RebalancePlan data matching Sprint 12.9.1 mock requirements."""
+        from services.rebalance_decision_service import RebalanceDecision
+        from services.rebalance_orchestrator_service import RebalancePlan
+
+        sample_plan = RebalancePlan(
+            approved_actions=[],
+            deferred_actions=[
+                RebalanceDecision(
+                    action="REVIEW",
+                    symbol="HDFCBANK",
+                    candidate_symbol="ICICIBANK",
+                    priority="MEDIUM",
+                    confidence=74.0,
+                    rationale=["Cooling period active (15/30 days held)"],
+                )
+            ],
+            turnover_pct=0.0,
+            replacement_count=0,
+            add_count=0,
+            rationale=["Monthly review completed. No approved replacements required; 1 position flagged for manual review."],
+        )
+        self.load_plan(sample_plan)
 
     def load_plan(self, plan: Optional[RebalancePlan] = None, review_date: Optional[str] = None) -> None:
         """Populate the Action Center UI widgets using ActionCenterService view model."""

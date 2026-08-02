@@ -18,6 +18,7 @@ class Sidebar(QWidget):
         self.stock_btn = QPushButton("🔍 Stock Explorer")
         self.research_btn = QPushButton("🎯 Research Radar")
         self.portfolio_btn = QPushButton("💼 Portfolio")
+        self.action_center_btn = QPushButton("⚡ Portfolio Action Center")
         self.watchtower_btn = QPushButton("👁 Watchtower")
         self.settings_btn = QPushButton("⚙ Settings")
 
@@ -26,6 +27,7 @@ class Sidebar(QWidget):
             self.stock_btn,
             self.research_btn,
             self.portfolio_btn,
+            self.action_center_btn,
             self.watchtower_btn,
             self.settings_btn,
         ]
