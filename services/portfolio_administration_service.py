@@ -91,7 +91,7 @@ class PortfolioAdministrationService:
             with open(backup_file, "r", encoding="utf-8") as f:
                 payload = json.load(f)
             if not isinstance(payload, dict):
-                return {"status": "ERROR", "error": "Invalid backup JSON payload"}
+                return {"status": "ERROR", "error": "Invalid backup JSON root structure"}
         except Exception as exc:
             return {"status": "ERROR", "error": f"Failed to parse backup JSON: {exc}"}
 
@@ -99,7 +99,13 @@ class PortfolioAdministrationService:
 
         # Create automatic safety backup of current state before restore
         safety_res = self.create_backup(path=target_file, backup_dir=backup_dir)
-        safety_backup = safety_res.get("backup_path") if safety_res.get("status") == "OK" else None
+        if safety_res.get("status") != "OK":
+            return {
+                "status": "ERROR",
+                "error": f"Safety backup creation failed with status: {safety_res.get('status')}",
+            }
+
+        safety_backup = safety_res.get("backup_path")
 
         # Replace target state file with selected backup
         target_file.parent.mkdir(parents=True, exist_ok=True)
@@ -121,31 +127,31 @@ class PortfolioAdministrationService:
         path: Optional[str | Path] = None,
         backup_dir: Optional[str | Path] = None,
     ) -> dict:
-        """Reset portfolio holdings while preserving state version and creation date, creating an automatic backup first."""
+        """Reset portfolio holdings while preserving creation date, creating an automatic backup first."""
         target_file = Path(path) if path is not None else self.state_service.DEFAULT_STATE_PATH
 
         # Automatic backup before reset
         backup_res = self.create_backup(path=target_file, backup_dir=backup_dir)
-        backup_path = backup_res.get("backup_path") if backup_res.get("status") == "OK" else None
+        if backup_res.get("status") != "OK":
+            return {
+                "status": "ERROR",
+                "error": f"Backup creation failed before reset with status: {backup_res.get('status')}",
+            }
 
-        # Load existing state to preserve state_version and created_at if available
+        backup_path = backup_res.get("backup_path")
+
+        # Load existing state to preserve created_at
         load_res = self.state_service.load_state(path=target_file)
         current_state = load_res.get("state") if load_res.get("status") == "OK" else {}
 
         now_iso = datetime.now(timezone.utc).isoformat()
-        state_version = (
-            current_state.get("state_version", self.state_service.STATE_VERSION)
-            if current_state
-            else self.state_service.STATE_VERSION
-        )
         created_at = (
             current_state.get("created_at", now_iso)
-            if current_state
+            if isinstance(current_state, dict) and current_state.get("created_at")
             else now_iso
         )
 
         reset_state = {
-            "state_version": state_version,
             "created_at": created_at,
             "updated_at": now_iso,
             "cash_balance": 0.0,

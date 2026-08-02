@@ -126,6 +126,26 @@ def test_restore_backup_missing_file(temp_state_file, temp_dir):
     assert result["status"] == "NOT_FOUND"
 
 
+def test_restore_backup_validation_failure(temp_state_file, temp_dir):
+    service = PortfolioAdministrationService()
+
+    # Create invalid JSON backup
+    invalid_json_backup = temp_dir / "corrupted_backup.json"
+    invalid_json_backup.write_text("{ invalid json payload", encoding="utf-8")
+
+    res1 = service.restore_backup(backup_path=invalid_json_backup, path=temp_state_file)
+    assert res1["status"] == "ERROR"
+    assert "error" in res1
+
+    # Create non-dict root backup
+    non_dict_backup = temp_dir / "array_backup.json"
+    non_dict_backup.write_text("[1, 2, 3]", encoding="utf-8")
+
+    res2 = service.restore_backup(backup_path=non_dict_backup, path=temp_state_file)
+    assert res2["status"] == "ERROR"
+    assert "error" in res2
+
+
 def test_reset_portfolio_holdings(temp_state_file):
     service = PortfolioAdministrationService()
     result = service.reset_portfolio_holdings(path=temp_state_file)
@@ -168,3 +188,13 @@ def test_reset_creates_backup(temp_state_file, temp_dir):
     backup_state = json.loads(backup_file.read_text(encoding="utf-8"))
     assert backup_state["cash_balance"] == 50000.0
     assert len(backup_state["positions"]) == 2
+
+
+def test_reset_fails_if_backup_fails(temp_dir):
+    service = PortfolioAdministrationService()
+    non_existent = temp_dir / "non_existent_portfolio.json"
+
+    result = service.reset_portfolio_holdings(path=non_existent)
+    assert result["status"] == "ERROR"
+    assert "error" in result
+    assert not non_existent.exists()
