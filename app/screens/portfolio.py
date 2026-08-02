@@ -301,9 +301,7 @@ class Portfolio(QWidget):
             min-height: 20px;
         """)
 
-        root.addWidget(
-            self.status_label
-        )
+        root.addWidget(self.status_label)
 
         # --------------------------------------------------
         # METRICS
@@ -601,12 +599,18 @@ class Portfolio(QWidget):
         self.recommendation_detail_panel.clear()
         intelligence_layout.addWidget(self.recommendation_detail_panel)
 
-        # Connect action center item clicks to recommendation detail panel display
+        # Connect action center item clicks & selection changes to recommendation detail panel display
         try:
-            self.action_center.buy_list.itemClicked.connect(self._show_recommendation_details)
-            self.action_center.reduce_list.itemClicked.connect(self._show_recommendation_details)
-            self.action_center.hold_list.itemClicked.connect(self._show_recommendation_details)
-            self.action_center.watch_list.itemClicked.connect(self._show_recommendation_details)
+            for lw in (
+                self.action_center.buy_list,
+                self.action_center.reduce_list,
+                self.action_center.hold_list,
+                self.action_center.watch_list,
+            ):
+                lw.itemClicked.connect(self._show_recommendation_details)
+                lw.currentItemChanged.connect(
+                    lambda current, previous: self._show_recommendation_details(current)
+                )
         except Exception:
             # Defensive: if any list is missing or connection fails, ignore
             pass
@@ -805,7 +809,7 @@ class Portfolio(QWidget):
         self.holdings_frame.hide()
 
     def _show_recommendation_details(self, item) -> None:
-        """Display the full recommendation in the detail panel when an item is clicked.
+        """Display the full recommendation in the detail panel when an item is clicked or selected.
 
         The method is defensive and ignores placeholder rows and malformed data.
         """
@@ -819,10 +823,28 @@ class Portfolio(QWidget):
 
             recommendation = item.data(Qt.UserRole) if hasattr(item, "data") else None
 
-            if isinstance(recommendation, dict):
+            if recommendation is not None:
                 self.recommendation_detail_panel.load_recommendation(recommendation)
         except Exception:
             # Swallow exceptions to keep UI responsive
+            pass
+
+    def _select_first_recommendation(self) -> None:
+        """Automatically select the first available recommendation item after data load."""
+        try:
+            for lw in (
+                self.action_center.buy_list,
+                self.action_center.reduce_list,
+                self.action_center.hold_list,
+                self.action_center.watch_list,
+            ):
+                if lw.count() > 0:
+                    first_item = lw.item(0)
+                    if first_item and first_item.text() != "Nothing to display":
+                        lw.setCurrentItem(first_item)
+                        self._show_recommendation_details(first_item)
+                        break
+        except Exception:
             pass
 
     # ======================================================
@@ -3207,6 +3229,7 @@ class Portfolio(QWidget):
 
             try:
                 self.action_center.load_actions(actions)
+                self._select_first_recommendation()
             except Exception:
                 # UI must remain resilient; ignore action center failures
                 pass

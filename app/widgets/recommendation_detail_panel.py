@@ -73,22 +73,35 @@ class RecommendationDetailPanel(QWidget):
         self.suggested_action_value.setText("-")
         self.reasons_value.setText("-")
 
-    def load_recommendation(self, recommendation: Dict[str, object]) -> None:
-        """Load a recommendation dict into the panel.
+    def load_recommendation(self, recommendation: Dict[str, object] | Any) -> None:
+        """Load a recommendation dict or object into the panel.
 
-        The method expects a mapping with keys: title, priority, confidence,
-        score, suggested_action, reasons. Missing keys are rendered as "-".
+        The method accepts a dictionary or an object (e.g. Recommendation dataclass)
+        containing attributes/keys: title, target, priority, confidence, score,
+        suggested_action, reasons. Missing fields are rendered as "-".
         Reasons must be a list of strings and are rendered as bullet points.
         """
-        if not isinstance(recommendation, dict):
+        if recommendation is None:
             self.clear()
             return
 
-        title = recommendation.get("title") or recommendation.get("target") or "-"
-        priority = recommendation.get("priority") or "-"
-        confidence = recommendation.get("confidence")
-        score = recommendation.get("score")
-        suggested = recommendation.get("suggested_action") or "-"
+        if isinstance(recommendation, dict):
+            title = recommendation.get("title") or recommendation.get("target") or "-"
+            priority = recommendation.get("priority") or "-"
+            confidence = recommendation.get("confidence")
+            score = recommendation.get("score")
+            suggested = recommendation.get("suggested_action") or "-"
+            reasons = recommendation.get("reasons")
+        elif hasattr(recommendation, "__dict__") or hasattr(recommendation, "title") or hasattr(recommendation, "target"):
+            title = getattr(recommendation, "title", None) or getattr(recommendation, "target", None) or "-"
+            priority = getattr(recommendation, "priority", None) or "-"
+            confidence = getattr(recommendation, "confidence", None)
+            score = getattr(recommendation, "score", None)
+            suggested = getattr(recommendation, "suggested_action", None) or "-"
+            reasons = getattr(recommendation, "reasons", None)
+        else:
+            self.clear()
+            return
 
         self.title_value.setText(str(title))
         self.priority_value.setText(str(priority))
@@ -96,7 +109,6 @@ class RecommendationDetailPanel(QWidget):
         self.score_value.setText(str(score) if score is not None else "-")
         self.suggested_action_value.setText(str(suggested))
 
-        reasons = recommendation.get("reasons")
         if isinstance(reasons, list) and reasons:
             bullets = "\n".join([f"• {str(r)}" for r in reasons])
             self.reasons_value.setText(bullets)
