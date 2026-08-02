@@ -11,6 +11,7 @@ from app.screens.stock_explorer import StockExplorer
 from app.screens.research_radar import ResearchRadar
 from app.screens.portfolio import Portfolio
 from app.screens.portfolio_action_center import PortfolioActionCenter
+from app.screens.settings import Settings
 
 
 class MainWindow(QMainWindow):
@@ -42,12 +43,14 @@ class MainWindow(QMainWindow):
                 self._current_alpha12
         )
         self.action_center = PortfolioActionCenter()
+        self.settings = Settings()
 
         self.pages.addWidget(self.dashboard)
         self.pages.addWidget(self.stock_explorer)
         self.pages.addWidget(self.research_radar)
         self.pages.addWidget(self.portfolio)
         self.pages.addWidget(self.action_center)
+        self.pages.addWidget(self.settings)
 
         # ---------------- Layout ----------------
 
@@ -74,6 +77,10 @@ class MainWindow(QMainWindow):
 
         self.sidebar.action_center_btn.clicked.connect(
             lambda: self.pages.setCurrentWidget(self.action_center)
+        )
+
+        self.sidebar.settings_btn.clicked.connect(
+            lambda: self.pages.setCurrentWidget(self.settings)
         )
 
     def _current_alpha12(
