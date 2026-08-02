@@ -197,9 +197,14 @@ class PortfolioActionCenter(QWidget):
         )
         self.load_plan(sample_plan)
 
-    def load_plan(self, plan: Optional[RebalancePlan] = None, review_date: Optional[str] = None) -> None:
+    def load_plan(
+        self,
+        plan: Optional[RebalancePlan] = None,
+        observations: Optional[list] = None,
+        review_date: Optional[str] = None,
+    ) -> None:
         """Populate the Action Center UI widgets using ActionCenterService view model."""
-        vm: ActionCenterViewModel = self.service.build_view_model(plan, review_date)
+        vm: ActionCenterViewModel = self.service.build_view_model(plan, observations=observations, review_date=review_date)
 
         # 1. Render Summary
         self.lbl_review_date_val.setText(vm.summary.review_date)

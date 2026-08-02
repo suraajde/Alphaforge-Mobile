@@ -29,8 +29,8 @@ def qapp():
 def test_summary_generation():
     service = ActionCenterService()
 
-    # Case A: None Plan (Empty State)
-    vm_empty = service.build_view_model(None, review_date="2026-08-01")
+    # Case A: Explicit empty state
+    vm_empty = service.build_view_model(None, observations=[], review_date="2026-08-01")
     assert isinstance(vm_empty.summary, ReviewSummaryViewModel)
     assert vm_empty.summary.review_date == "2026-08-01"
     assert vm_empty.summary.portfolio_status == "NO ACTION REQUIRED"
@@ -38,7 +38,7 @@ def test_summary_generation():
     assert vm_empty.summary.deferred_action_count == 0
     assert vm_empty.summary.estimated_turnover == 0.0
 
-    # Case B: Approved Plan
+    # Case B: Approved Plan + Governance Pipeline Sample Observation
     plan = RebalancePlan(
         approved_actions=[
             RebalanceDecision(action="REPLACE", symbol="INFY", candidate_symbol="TCS", priority="HIGH", confidence=92.0)
@@ -56,7 +56,7 @@ def test_summary_generation():
     assert vm_active.summary.review_date == "2026-08-02"
     assert vm_active.summary.portfolio_status == "REBALANCE APPROVED"
     assert vm_active.summary.approved_action_count == 1
-    assert vm_active.summary.deferred_action_count == 1
+    assert vm_active.summary.deferred_action_count == 2  # 1 governance alert + 1 plan deferred item
     assert vm_active.summary.estimated_turnover == 8.33
 
 
@@ -69,7 +69,7 @@ def test_approved_actions_mapping():
         ],
     )
 
-    vm = service.build_view_model(plan)
+    vm = service.build_view_model(plan, observations=[])
     assert len(vm.approved_actions) == 2
 
     add_vm = vm.approved_actions[0]
@@ -98,7 +98,7 @@ def test_deferred_actions_mapping():
         ],
     )
 
-    vm = service.build_view_model(plan)
+    vm = service.build_view_model(plan, observations=[])
     assert len(vm.deferred_actions) == 1
 
     def_vm = vm.deferred_actions[0]
@@ -119,13 +119,13 @@ def test_rationale_mapping():
     ]
     plan = RebalancePlan(rationale=rationale_items)
 
-    vm = service.build_view_model(plan)
+    vm = service.build_view_model(plan, observations=[])
     assert vm.rationale == rationale_items
 
 
 def test_governance_snapshot_generation():
     service = ActionCenterService()
-    vm = service.build_view_model(None)
+    vm = service.build_view_model(None, observations=[])
 
     snap = vm.governance_snapshot
     assert isinstance(snap, GovernanceSnapshotViewModel)
@@ -153,8 +153,7 @@ def test_ui_screen_loads_without_error(qapp):
         rationale=["Approved REPLACE for INFY -> TCS"],
     )
 
-    # Verify load_plan works seamlessly on PySide6 UI instance
     screen.load_plan(plan, review_date="2026-08-02")
     assert screen.lbl_status_val.text() == "REBALANCE APPROVED"
     assert screen.approved_table.rowCount() == 1
-    assert screen.deferred_table.rowCount() == 1
+    assert screen.deferred_table.rowCount() == 2  # 1 governance alert + 1 plan deferred action
