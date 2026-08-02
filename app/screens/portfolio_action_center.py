@@ -9,6 +9,7 @@ from typing import Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QFormLayout,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -141,6 +142,7 @@ class PortfolioActionCenter(QWidget):
         rationale_layout.addWidget(rationale_title)
 
         self.rationale_list = QListWidget()
+        self.rationale_list.setMaximumHeight(120)
         self.rationale_list.setStyleSheet(
             "QListWidget { background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #cbd5e1; padding: 8px; font-size: 13px; }"
         )
@@ -153,22 +155,30 @@ class PortfolioActionCenter(QWidget):
         gov_box = QFrame()
         gov_box.setObjectName("metricCard")
         gov_layout = QVBoxLayout(gov_box)
-        gov_layout.setContentsMargins(16, 14, 16, 14)
+        gov_layout.setContentsMargins(16, 12, 16, 12)
+        gov_layout.setSpacing(8)
 
         gov_title = QLabel("Governance Snapshot")
         gov_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #38bdf8;")
         gov_layout.addWidget(gov_title)
 
-        gov_grid = QHBoxLayout()
-        gov_grid.setSpacing(12)
+        gov_form = QFormLayout()
+        gov_form.setSpacing(8)
+        gov_form.setLabelAlignment(Qt.AlignLeft)
 
-        self.lbl_gov_freq = self._create_snapshot_badge(gov_grid, "Monthly Review")
-        self.lbl_gov_mode = self._create_snapshot_badge(gov_grid, "Conditional Rebalance")
-        self.lbl_gov_max = self._create_snapshot_badge(gov_grid, "Max Replacements: 3")
-        self.lbl_gov_budget = self._create_snapshot_badge(gov_grid, "Turnover Budget: 20%")
-        self.lbl_gov_emergency = self._create_snapshot_badge(gov_grid, "Emergency Override: Enabled")
+        self.lbl_gov_freq = self._create_form_value("Monthly Review")
+        self.lbl_gov_mode = self._create_form_value("Conditional Rebalance")
+        self.lbl_gov_max = self._create_form_value("Max Replacements: 3")
+        self.lbl_gov_budget = self._create_form_value("Turnover Budget: 20%")
+        self.lbl_gov_emergency = self._create_form_value("Emergency Override: Enabled")
 
-        gov_layout.addLayout(gov_grid)
+        gov_form.addRow(self._create_form_label("Review Frequency"), self.lbl_gov_freq)
+        gov_form.addRow(self._create_form_label("Rebalance Mode"), self.lbl_gov_mode)
+        gov_form.addRow(self._create_form_label("Max Replacements"), self.lbl_gov_max)
+        gov_form.addRow(self._create_form_label("Turnover Budget"), self.lbl_gov_budget)
+        gov_form.addRow(self._create_form_label("Emergency Override"), self.lbl_gov_emergency)
+
+        gov_layout.addLayout(gov_form)
         self.container_layout.addWidget(gov_box)
 
         scroll.setWidget(container)
@@ -274,13 +284,14 @@ class PortfolioActionCenter(QWidget):
         grid.addWidget(frame, row, col)
         return val_lbl
 
-    def _create_snapshot_badge(self, layout: QHBoxLayout, text: str) -> QLabel:
+    def _create_form_label(self, text: str) -> QLabel:
         lbl = QLabel(text)
-        lbl.setAlignment(Qt.AlignCenter)
-        lbl.setStyleSheet(
-            "QLabel { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 6px; color: #38bdf8; font-weight: 600; font-size: 12px; padding: 8px 12px; }"
-        )
-        layout.addWidget(lbl)
+        lbl.setStyleSheet("color: #64748b; font-size: 13px; font-weight: 500;")
+        return lbl
+
+    def _create_form_value(self, text: str = "-") -> QLabel:
+        lbl = QLabel(text)
+        lbl.setStyleSheet("color: #38bdf8; font-size: 13px; font-weight: 700;")
         return lbl
 
     def _style_table(self, table: QTableWidget) -> None:
@@ -288,6 +299,7 @@ class PortfolioActionCenter(QWidget):
         table.setEditTriggers(QTableWidget.NoEditTriggers)
         table.setSelectionBehavior(QTableWidget.SelectRows)
         table.setMinimumHeight(140)
+        table.setMaximumHeight(180)
         table.setStyleSheet(
             "QTableWidget { background-color: #0f172a; border: 1px solid #334155; gridline-color: #1e293b; color: #f8fafc; font-size: 12px; }"
             "QHeaderView::section { background-color: #1e293b; color: #94a3b8; font-weight: 700; font-size: 12px; border: none; padding: 6px; }"
