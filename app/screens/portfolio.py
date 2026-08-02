@@ -60,6 +60,14 @@ class Portfolio(QWidget):
             PortfolioBenchmarkService()
         )
 
+        from services.portfolio_performance_service import (
+            PortfolioPerformanceService,
+        )
+
+        self.performance_service = (
+            PortfolioPerformanceService()
+        )
+
         self._build_ui()
 
         self.initial_investment_btn = QPushButton(
@@ -3010,59 +3018,85 @@ class Portfolio(QWidget):
     # BENCHMARK RENDER
     # ======================================================
 
-    def _render_benchmark_summary(self, bm_summary: dict) -> None:
+    def _render_performance_snapshot(self, snapshot) -> None:
+        """Render PortfolioPerformanceSnapshot capital metrics into the metrics grid."""
+        # Growth Multiple (replaces SNAPSHOTS card value)
+        if snapshot is not None and hasattr(snapshot, "growth_multiple"):
+            self.snapshots_value.setText(f"{snapshot.growth_multiple:.2f}x")
+
+    def _render_benchmark_summary(self, bm_summary: dict, summary: Optional[dict] = None) -> None:
+        """Render BenchmarkService scorecard and PortfolioPerformanceService capital metrics."""
         if not isinstance(bm_summary, dict):
             bm_summary = {}
-
-        status = str(bm_summary.get("status", "UNKNOWN")).upper()
-        port_ret = self._safe_float(bm_summary.get("portfolio_return_1y"), 0.0)
-        nifty_ret = self._safe_float(bm_summary.get("benchmark_return_1y"), 0.0)
-        alpha_ret = self._safe_float(bm_summary.get("alpha_return_1y"), 0.0)
 
         GREEN = "#16a34a"
         RED = "#dc2626"
         NEUTRAL = "#64748b"
 
-        # Portfolio (1Y)
-        if status == "UNKNOWN" and port_ret == 0.0:
+        # ----------------------------------------------------
+        # 1. Benchmark Scorecard (Source: BenchmarkService)
+        # ----------------------------------------------------
+        status_raw = str(bm_summary.get("status", "UNKNOWN")).upper()
+        port_ret_1y = self._safe_float(bm_summary.get("portfolio_return_1y"), 0.0)
+        nifty_ret_1y = self._safe_float(bm_summary.get("benchmark_return_1y"), 0.0)
+        alpha_1y = self._safe_float(bm_summary.get("alpha_return_1y"), 0.0)
+
+        # Portfolio Return (1Y)
+        if status_raw == "UNKNOWN" and port_ret_1y == 0.0:
             self.bm_portfolio_return_value.setText("N/A")
             self.bm_portfolio_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            prefix = "+" if port_ret > 0 else ""
-            self.bm_portfolio_return_value.setText(f"{prefix}{port_ret:.1f}%")
-            color = GREEN if port_ret > 0 else (RED if port_ret < 0 else NEUTRAL)
+            self.bm_portfolio_return_value.setText(f"{port_ret_1y:+.2f}%")
+            color = GREEN if port_ret_1y > 0 else (RED if port_ret_1y < 0 else NEUTRAL)
             self.bm_portfolio_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
-        # Nifty 50 (1Y)
-        if status == "UNKNOWN" and nifty_ret == 0.0:
+        # Benchmark Return (1Y)
+        if status_raw == "UNKNOWN" and nifty_ret_1y == 0.0:
             self.bm_nifty_return_value.setText("N/A")
             self.bm_nifty_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            prefix = "+" if nifty_ret > 0 else ""
-            self.bm_nifty_return_value.setText(f"{prefix}{nifty_ret:.1f}%")
-            color = GREEN if nifty_ret > 0 else (RED if nifty_ret < 0 else NEUTRAL)
+            self.bm_nifty_return_value.setText(f"{nifty_ret_1y:+.2f}%")
+            color = GREEN if nifty_ret_1y > 0 else (RED if nifty_ret_1y < 0 else NEUTRAL)
             self.bm_nifty_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
-        # Alpha
-        if status == "UNKNOWN" and alpha_ret == 0.0:
+        # Alpha (1Y)
+        if status_raw == "UNKNOWN" and alpha_1y == 0.0:
             self.bm_alpha_return_value.setText("N/A")
             self.bm_alpha_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            prefix = "+" if alpha_ret > 0 else ""
-            self.bm_alpha_return_value.setText(f"{prefix}{alpha_ret:.1f}%")
-            color = GREEN if alpha_ret > 0 else (RED if alpha_ret < 0 else NEUTRAL)
+            self.bm_alpha_return_value.setText(f"{alpha_1y:+.2f}%")
+            color = GREEN if alpha_1y > 0 else (RED if alpha_1y < 0 else NEUTRAL)
             self.bm_alpha_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
-        # Status Mapping
-        if status == "BEATING_BENCHMARK":
-            self.bm_status_value.setText("✓ Outperforming Nifty 50")
-            self.bm_status_value.setStyleSheet(f"color: {GREEN}; font-weight: 700; font-size: 15px;")
-        elif status == "LAGGING_BENCHMARK":
-            self.bm_status_value.setText("⚠ Underperforming Nifty 50")
-            self.bm_status_value.setStyleSheet(f"color: {RED}; font-weight: 700; font-size: 15px;")
+        # Status Mapping from Alpha (1Y)
+        if alpha_1y > 0:
+            bm_status_text = "OUTPERFORMING"
+            bm_status_color = GREEN
+        elif alpha_1y < 0:
+            bm_status_text = "UNDERPERFORMING"
+            bm_status_color = RED
         else:
-            self.bm_status_value.setText("Benchmark Data Unavailable")
-            self.bm_status_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 15px;")
+            bm_status_text = "INLINE"
+            bm_status_color = NEUTRAL
+
+        self.bm_status_value.setText(bm_status_text)
+        self.bm_status_value.setStyleSheet(f"color: {bm_status_color}; font-weight: 700; font-size: 15px;")
+
+        # ----------------------------------------------------
+        # 2. Capital Metrics (Source: PortfolioPerformanceService)
+        # ----------------------------------------------------
+        invested = 0.0
+        current = 0.0
+        if isinstance(summary, dict):
+            invested = self._safe_float(summary.get("total_cost", summary.get("invested_market_value", 0.0)), 0.0)
+            current = self._safe_float(summary.get("portfolio_value", 0.0), 0.0)
+
+        snapshot = self.performance_service.calculate_performance(
+            initial_value=invested,
+            current_value=current,
+        )
+
+        self._render_performance_snapshot(snapshot)
 
     # ======================================================
     # RENDER
@@ -3125,21 +3159,12 @@ class Portfolio(QWidget):
             )
         )
 
-        self.snapshots_value.setText(
-            str(
-                summary.get(
-                    "snapshot_count",
-                    0,
-                )
-            )
-        )
-
         # --------------------------------------------
-        # Benchmark Intelligence Scorecard
+        # Benchmark Intelligence Scorecard & Performance
         # --------------------------------------------
         try:
             bm_summary = self.benchmark_service.get_benchmark_summary(summary if portfolio_exists else None)
-            self._render_benchmark_summary(bm_summary)
+            self._render_benchmark_summary(bm_summary, summary)
         except Exception:
             self._render_benchmark_summary({
                 "portfolio_return_1y": 0.0,
@@ -3148,7 +3173,7 @@ class Portfolio(QWidget):
                 "status": "UNKNOWN",
                 "portfolio_symbol_count": 0,
                 "benchmark_symbol": "^NSEI",
-            })
+            }, summary)
 
         if not portfolio_exists:
 
