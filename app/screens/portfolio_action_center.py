@@ -56,8 +56,12 @@ class PortfolioActionCenter(QWidget):
 
         # Header Title
         header_title = QLabel("Portfolio Action Center")
-        header_title.setStyleSheet("font-size: 24px; font-weight: 700; color: #f8fafc;")
+        header_title.setStyleSheet("font-size: 24px; font-weight: 700; color: #1e3a8a;")
         self.container_layout.addWidget(header_title)
+
+        header_subtitle = QLabel("Track, review and approve portfolio governance decisions")
+        header_subtitle.setStyleSheet("font-size: 12px; font-weight: 500; color: #64748b;")
+        self.container_layout.addWidget(header_subtitle)
 
         # --------------------------------------------------
         # 1. MONTHLY REVIEW SUMMARY
@@ -69,7 +73,7 @@ class PortfolioActionCenter(QWidget):
         summary_layout.setSpacing(10)
 
         summary_title = QLabel("Monthly Review Summary")
-        summary_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #f8fafc;")
+        summary_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #1e3a8a;")
         summary_layout.addWidget(summary_title)
 
         summary_grid = QGridLayout()
@@ -133,7 +137,7 @@ class PortfolioActionCenter(QWidget):
         rationale_layout.setContentsMargins(16, 14, 16, 14)
 
         rationale_title = QLabel("Rebalance Rationale")
-        rationale_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #f8fafc;")
+        rationale_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #1e3a8a;")
         rationale_layout.addWidget(rationale_title)
 
         self.rationale_list = QListWidget()
