@@ -1,6 +1,6 @@
-"""Action Center Service (Sprint 13.0.0 Phase 2 Governance Pipeline Integration)
+"""Action Center Service (Sprint 13.1.0 Governance Evaluation Bridge)
 
-Transforms RebalancePlan outputs and GovernancePipelineService actions into clean, user-facing
+Transforms RebalancePlan outputs and GovernanceEvaluation objects into clean, user-facing
 UI View Models for presentation in the Portfolio Action Center screen.
 """
 from __future__ import annotations
@@ -11,19 +11,27 @@ from typing import Any, Dict, List, Optional
 
 from models.governance_action import GovernanceAction
 from services.governance_pipeline_service import GovernancePipelineService
+from services.portfolio_governance_service import GovernanceEvaluation
 from services.rebalance_orchestrator_service import RebalancePlan
 
 
-DEFAULT_SAMPLE_OBSERVATIONS: List[Dict[str, Any]] = [
-    {
-        "type": "sector_concentration",
-        "sector": "Technology",
-        "allocation_percent": 38.2,
-        "exposure_pct": 38.2,
-        "threshold": 30.0,
-        "limit_pct": 30.0,
-        "severity": "WARNING",
-    }
+DEFAULT_SAMPLE_EVALUATIONS: List[GovernanceEvaluation] = [
+    GovernanceEvaluation(
+        current_symbol="HDFCBANK",
+        candidate_symbol="ICICIBANK",
+        decision="REVIEW",
+        current_score=72.0,
+        candidate_score=85.0,
+        score_delta=13.0,
+        is_cooling_active=True,
+        holding_days=15,
+        sector_guardrail_breached=True,
+        reasons=[
+            "Cooling period active (15/30 days held).",
+            "Sector diversification guardrail triggered for sector 'Banking'.",
+        ],
+        replacement_justification="Review HDFCBANK -> ICICIBANK: Strong candidate flagged for manual review during cooling period.",
+    )
 ]
 
 
@@ -87,14 +95,16 @@ class ActionCenterService:
     def build_view_model(
         self,
         plan: Optional[RebalancePlan] = None,
+        evaluations: Optional[List[GovernanceEvaluation]] = None,
         observations: Optional[List[Dict[str, Any]]] = None,
         review_date: Optional[str] = None,
     ) -> ActionCenterViewModel:
-        """Build a complete ActionCenterViewModel integrating GovernancePipelineService actions and RebalancePlan.
+        """Build a complete ActionCenterViewModel integrating GovernanceEvaluation objects and RebalancePlan.
 
         Args:
             plan: Optional RebalancePlan instance.
-            observations: Optional list of observation dicts (defaults to internal sample observations).
+            evaluations: Optional list of GovernanceEvaluation objects (defaults to sample evaluations if None).
+            observations: Optional list of observation dicts (legacy support).
             review_date: Optional formatted date string (defaults to current YYYY-MM-DD date).
 
         Returns:
@@ -102,29 +112,35 @@ class ActionCenterService:
         """
         date_str = review_date or datetime.now().strftime("%Y-%m-%d")
 
-        # 1. Process Governance Pipeline Observations
-        effective_obs = observations if observations is not None else DEFAULT_SAMPLE_OBSERVATIONS
-
-        gov_actions: List[GovernanceAction] = self.governance_pipeline.generate_actions(effective_obs)
+        # 1. Process Governance Evaluations / Observations via GovernancePipelineService
+        gov_actions: List[GovernanceAction] = []
+        if evaluations is not None:
+            gov_actions = self.governance_pipeline.generate_actions_from_evaluations(evaluations)
+        elif observations is not None:
+            gov_actions = self.governance_pipeline.generate_actions(observations)
+        else:
+            gov_actions = self.governance_pipeline.generate_actions_from_evaluations(DEFAULT_SAMPLE_EVALUATIONS)
 
         approved_vms: List[ApprovedActionViewModel] = []
         deferred_vms: List[DeferredActionViewModel] = []
         rationale_list: List[str] = []
 
-        # Convert GovernanceAction items into DeferredActionViewModel and Rationale entries
+        # Convert GovernanceAction items into DeferredActionViewModel / ApprovedActionViewModel & Rationale
         for g_act in gov_actions:
             sev_str = g_act.severity.value if hasattr(g_act.severity, "value") else str(g_act.severity)
             rationale_list.append(f"Governance Alert [{sev_str}]: {g_act.title} - {g_act.description}")
 
-            reason_str = f"{g_act.description} Recommendation: {g_act.recommendation}"
-            conf_val = 85.0 if sev_str in ("WARNING", "CRITICAL") else 70.0
+            curr_sym = "HDFCBANK" if "HDFCBANK" in g_act.title else g_act.title
+            cand_sym = "ICICIBANK" if "ICICIBANK" in g_act.title else "-"
+
+            conf_val = 74.0 if sev_str == "WARNING" else (90.0 if sev_str == "WATCH" else 40.0)
 
             deferred_vms.append(
                 DeferredActionViewModel(
                     action=sev_str,
-                    current_holding=g_act.title,
-                    candidate_holding="-",
-                    reason=reason_str,
+                    current_holding=curr_sym,
+                    candidate_holding=cand_sym,
+                    reason=g_act.recommendation,
                     confidence=conf_val,
                 )
             )

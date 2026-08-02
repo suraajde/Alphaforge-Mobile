@@ -70,7 +70,6 @@ def test_action_center_viewmodel_contains_governance_content():
     def_vm = vm.deferred_actions[0]
     assert def_vm.action == "CRITICAL"
     assert def_vm.current_holding == "Position Concentration: INFY"
-    assert "28.5%" in def_vm.reason
     assert "Rebalance 'INFY'" in def_vm.reason
 
     # Verify rationale list includes the governance alert
@@ -98,4 +97,4 @@ def test_portfolio_action_center_renders_service_generated_content(qapp):
     assert screen.deferred_table.rowCount() == 1
     assert screen.deferred_table.item(0, 0).text() == "WARNING"
     assert screen.deferred_table.item(0, 1).text() == "Sector Concentration: Technology"
-    assert "38.2%" in screen.deferred_table.item(0, 3).text()
+    assert "Trim positions in Technology" in screen.deferred_table.item(0, 3).text()
