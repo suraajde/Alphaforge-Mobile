@@ -4,6 +4,7 @@ import tempfile
 import pytest
 
 from services.portfolio_administration_service import PortfolioAdministrationService
+from services.portfolio_state_service import PortfolioStateService
 
 
 @pytest.fixture
@@ -32,6 +33,7 @@ def temp_state_file(temp_dir):
             "RELIANCE": {"symbol": "RELIANCE", "quantity": 10},
             "TCS": {"symbol": "TCS", "quantity": 5},
         },
+        "position_order": ["RELIANCE", "TCS"],
         "transactions": [{"symbol": "RELIANCE", "type": "BUY"}],
         "snapshots": [{"snapshot_id": "snap-1"}],
     }
@@ -75,13 +77,94 @@ def test_create_backup(temp_state_file, temp_dir):
     assert "portfolio_backup_" in backup_path.name
 
 
-def test_restore_not_implemented():
+def test_restore_backup_success(temp_state_file, temp_dir):
     service = PortfolioAdministrationService()
-    with pytest.raises(NotImplementedError, match="Backup restore will be implemented in Sprint 13.2.1C"):
-        service.restore_backup()
+    backup_dir = temp_dir / "data" / "backups"
+
+    # Step 1: Create initial backup (A)
+    backup_res = service.create_backup(path=temp_state_file, backup_dir=backup_dir)
+    assert backup_res["status"] == "OK"
+    backup_path = backup_res["backup_path"]
+
+    # Step 2: Mutate current state file (B)
+    mutated_state = {
+        "state_version": "1.0",
+        "created_at": "2026-08-01T00:00:00Z",
+        "updated_at": "2026-08-02T15:00:00Z",
+        "cash_balance": 99999.0,
+        "positions": {"INFY": {"symbol": "INFY", "quantity": 100}},
+        "position_order": ["INFY"],
+        "transaction_count": 1,
+        "transactions": [],
+        "snapshots": [],
+    }
+    temp_state_file.write_text(json.dumps(mutated_state), encoding="utf-8")
+
+    # Step 3: Restore state from initial backup (A)
+    restore_res = service.restore_backup(
+        backup_path=backup_path, path=temp_state_file, backup_dir=backup_dir
+    )
+
+    assert restore_res["status"] == "OK"
+    assert restore_res["restored_from"] == str(backup_path)
+    assert restore_res["safety_backup"] is not None
+    assert Path(restore_res["safety_backup"]).exists()
+
+    # Step 4: Verify restored file contents match initial state A
+    state_service = PortfolioStateService()
+    restored_state = state_service.load_state(path=temp_state_file)["state"]
+    assert restored_state["cash_balance"] == 50000.0
+    assert len(restored_state["positions"]) == 2
+    assert "RELIANCE" in restored_state["positions"]
 
 
-def test_reset_not_implemented():
+def test_restore_backup_missing_file(temp_state_file, temp_dir):
     service = PortfolioAdministrationService()
-    with pytest.raises(NotImplementedError, match="Portfolio reset will be implemented in Sprint 13.2.1C"):
-        service.reset_portfolio_holdings()
+    missing_backup = temp_dir / "missing_backup.json"
+    result = service.restore_backup(backup_path=missing_backup, path=temp_state_file)
+
+    assert result["status"] == "NOT_FOUND"
+
+
+def test_reset_portfolio_holdings(temp_state_file):
+    service = PortfolioAdministrationService()
+    result = service.reset_portfolio_holdings(path=temp_state_file)
+
+    assert result["status"] == "OK"
+
+    # Verify state reset correctness
+    state_service = PortfolioStateService()
+    load_res = state_service.load_state(path=temp_state_file)
+    assert load_res["status"] == "OK"
+
+    reset_state = load_res["state"]
+    assert reset_state["state_version"] == "1.0"
+    assert reset_state["created_at"] == "2026-08-01T00:00:00Z"
+    assert reset_state["cash_balance"] == 0.0
+    assert reset_state["positions"] == {}
+    assert reset_state["position_order"] == []
+    assert reset_state["transaction_count"] == 0
+    assert reset_state["transactions"] == []
+    assert reset_state["snapshots"] == []
+    assert reset_state["invested_market_value"] == 0.0
+    assert reset_state["total_portfolio_value"] == 0.0
+
+
+def test_reset_creates_backup(temp_state_file, temp_dir):
+    service = PortfolioAdministrationService()
+    backup_dir = temp_dir / "data" / "backups"
+    result = service.reset_portfolio_holdings(
+        path=temp_state_file, backup_dir=backup_dir
+    )
+
+    assert result["status"] == "OK"
+    assert result["backup_path"] is not None
+
+    backup_file = Path(result["backup_path"])
+    assert backup_file.exists()
+    assert backup_file.is_file()
+
+    # Verify backup contains original state prior to reset
+    backup_state = json.loads(backup_file.read_text(encoding="utf-8"))
+    assert backup_state["cash_balance"] == 50000.0
+    assert len(backup_state["positions"]) == 2
