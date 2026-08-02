@@ -371,7 +371,7 @@ class Portfolio(QWidget):
             self.snapshots_card,
             self.snapshots_value,
         ) = self._create_metric_card(
-            "SNAPSHOTS"
+            "GROWTH MULTIPLE"
         )
 
         metrics_layout.addWidget(
@@ -433,12 +433,12 @@ class Portfolio(QWidget):
         (
             self.bm_portfolio_return_card,
             self.bm_portfolio_return_value,
-        ) = self._create_metric_card("PORTFOLIO (1Y)")
+        ) = self._create_metric_card("ABSOLUTE RETURN")
 
         (
             self.bm_nifty_return_card,
             self.bm_nifty_return_value,
-        ) = self._create_metric_card("NIFTY 50 (1Y)")
+        ) = self._create_metric_card("BENCHMARK RETURN")
 
         (
             self.bm_alpha_return_card,
