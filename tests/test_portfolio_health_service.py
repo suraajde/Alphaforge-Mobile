@@ -343,3 +343,31 @@ def test_trend_uses_history_service_safely():
     assert result.trend.current_score == 100
     assert result.trend.score_change == 20
     assert result.trend.trend_direction == "IMPROVING"
+
+
+def test_historical_analytics_integration_works():
+    """Verify evaluate populates result.historical_analytics from history_service."""
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalAnalytics
+
+    class MockHistoryService:
+        def get_latest(self):
+            return None
+
+        def get_historical_analytics(self):
+            return PortfolioHealthHistoricalAnalytics(
+                history_count=5,
+                best_score=92,
+                worst_score=71,
+                average_score=83.4,
+                current_score=84,
+                overall_trend="IMPROVING",
+            )
+
+    history_svc = MockHistoryService()
+    service = PortfolioHealthService(history_service=history_svc)
+    result = service.evaluate()
+
+    assert result.historical_analytics is not None
+    assert result.historical_analytics.history_count == 5
+    assert result.historical_analytics.best_score == 92
+    assert result.historical_analytics.overall_trend == "IMPROVING"

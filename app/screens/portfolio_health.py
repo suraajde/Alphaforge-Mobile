@@ -148,6 +148,21 @@ class PortfolioHealth(QWidget):
             if hasattr(self, "lbl_trend_direction"):
                 self.lbl_trend_direction.setText(f"Trend: {trend.trend_direction}")
 
+        hist_analytics = getattr(result, "historical_analytics", None)
+        if hist_analytics is not None:
+            if hasattr(self, "lbl_hist_entries"):
+                self.lbl_hist_entries.setText(f"History Entries: {hist_analytics.history_count}")
+            if hasattr(self, "lbl_hist_best"):
+                self.lbl_hist_best.setText(f"Best Score: {hist_analytics.best_score}")
+            if hasattr(self, "lbl_hist_worst"):
+                self.lbl_hist_worst.setText(f"Worst Score: {hist_analytics.worst_score}")
+            if hasattr(self, "lbl_hist_avg"):
+                self.lbl_hist_avg.setText(f"Average Score: {hist_analytics.average_score}")
+            if hasattr(self, "lbl_hist_curr"):
+                self.lbl_hist_curr.setText(f"Current Score: {hist_analytics.current_score}")
+            if hasattr(self, "lbl_hist_trend"):
+                self.lbl_hist_trend.setText(f"Overall Trend: {hist_analytics.overall_trend}")
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -352,6 +367,39 @@ class PortfolioHealth(QWidget):
         history_layout.addWidget(self.lbl_history_latest_grade)
 
         root_layout.addWidget(history_card)
+
+        # Portfolio Health Historical Analytics Section
+        hist_card = QFrame()
+        hist_card.setObjectName("metricCard")
+        hist_layout = QVBoxLayout(hist_card)
+        hist_layout.setContentsMargins(16, 14, 16, 14)
+        hist_layout.setSpacing(8)
+
+        lbl_hist_header = QLabel("Portfolio Health Historical Analytics")
+        lbl_hist_header.setObjectName("sectionHeader")
+        hist_layout.addWidget(lbl_hist_header)
+
+        self.lbl_hist_entries = QLabel("History Entries: 0")
+        self.lbl_hist_entries.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_hist_best = QLabel("Best Score: 0")
+        self.lbl_hist_best.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_hist_worst = QLabel("Worst Score: 0")
+        self.lbl_hist_worst.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_hist_avg = QLabel("Average Score: 0.0")
+        self.lbl_hist_avg.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_hist_curr = QLabel("Current Score: 0")
+        self.lbl_hist_curr.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_hist_trend = QLabel("Overall Trend: STABLE")
+        self.lbl_hist_trend.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        hist_layout.addWidget(self.lbl_hist_entries)
+        hist_layout.addWidget(self.lbl_hist_best)
+        hist_layout.addWidget(self.lbl_hist_worst)
+        hist_layout.addWidget(self.lbl_hist_avg)
+        hist_layout.addWidget(self.lbl_hist_curr)
+        hist_layout.addWidget(self.lbl_hist_trend)
+
+        root_layout.addWidget(hist_card)
 
         root_layout.addStretch()
 

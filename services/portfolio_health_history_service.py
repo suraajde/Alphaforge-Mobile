@@ -18,6 +18,16 @@ class PortfolioHealthHistoryEntry:
     cash_allocation_pct: float
 
 
+@dataclass
+class PortfolioHealthHistoricalAnalytics:
+    history_count: int
+    best_score: int
+    worst_score: int
+    average_score: float
+    current_score: int
+    overall_trend: str
+
+
 class PortfolioHealthHistoryService:
     """Service layer for persisting and retrieving portfolio health history entries."""
 
@@ -109,3 +119,49 @@ class PortfolioHealthHistoryService:
         """Returns the second most recent history entry, or None if unavailable."""
         history = self.get_history()
         return history[-2] if len(history) >= 2 else None
+
+    def get_historical_analytics(self) -> PortfolioHealthHistoricalAnalytics:
+        """Calculates multi-period historical analytics from stored health history."""
+        try:
+            history = self.get_history()
+            if not history:
+                return PortfolioHealthHistoricalAnalytics(
+                    history_count=0,
+                    best_score=0,
+                    worst_score=0,
+                    average_score=0.0,
+                    current_score=0,
+                    overall_trend="STABLE",
+                )
+
+            scores = [e.score for e in history]
+            history_count = len(scores)
+            best_score = max(scores)
+            worst_score = min(scores)
+            average_score = round(sum(scores) / len(scores), 1)
+            current_score = scores[-1]
+
+            if current_score > average_score + 3:
+                overall_trend = "IMPROVING"
+            elif current_score < average_score - 3:
+                overall_trend = "DETERIORATING"
+            else:
+                overall_trend = "STABLE"
+
+            return PortfolioHealthHistoricalAnalytics(
+                history_count=history_count,
+                best_score=best_score,
+                worst_score=worst_score,
+                average_score=average_score,
+                current_score=current_score,
+                overall_trend=overall_trend,
+            )
+        except Exception:
+            return PortfolioHealthHistoricalAnalytics(
+                history_count=0,
+                best_score=0,
+                worst_score=0,
+                average_score=0.0,
+                current_score=0,
+                overall_trend="STABLE",
+            )

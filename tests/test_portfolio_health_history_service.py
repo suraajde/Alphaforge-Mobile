@@ -4,6 +4,7 @@ import pytest
 from pathlib import Path
 
 from services.portfolio_health_history_service import (
+    PortfolioHealthHistoricalAnalytics,
     PortfolioHealthHistoryEntry,
     PortfolioHealthHistoryService,
 )
@@ -114,3 +115,92 @@ def test_corrupt_file_safety(temp_storage):
     assert history == []
     assert service.get_latest() is None
     assert service.get_previous() is None
+
+
+def test_historical_analytics_object_exists(temp_storage):
+    """TEST 1: Verify historical analytics object exists."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    analytics = service.get_historical_analytics()
+    assert analytics is not None
+    assert isinstance(analytics, PortfolioHealthHistoricalAnalytics)
+
+
+def test_best_score_calculated_correctly(temp_storage):
+    """TEST 2: Verify best score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 95, 70, 85]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.best_score == 95
+
+
+def test_worst_score_calculated_correctly(temp_storage):
+    """TEST 3: Verify worst score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 95, 65, 85]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.worst_score == 65
+
+
+def test_average_score_calculated_correctly(temp_storage):
+    """TEST 4: Verify average score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.history_count == 4
+    assert analytics.average_score == 84.0
+
+
+def test_improving_trend_detected(temp_storage):
+    """TEST 5: Verify improving trend detected when current > average + 3."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [70, 75, 75, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.current_score == 90
+    assert analytics.overall_trend == "IMPROVING"
+
+
+def test_deteriorating_trend_detected(temp_storage):
+    """TEST 6: Verify deteriorating trend detected when current < average - 3."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [90, 85, 85, 65]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.current_score == 65
+    assert analytics.overall_trend == "DETERIORATING"
+
+
+def test_stable_trend_detected(temp_storage):
+    """TEST 7: Verify stable trend detected when current is within average +/- 3."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 82, 84, 83]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    analytics = service.get_historical_analytics()
+    assert analytics.overall_trend == "STABLE"
+
+
+def test_empty_history_analytics_safety(temp_storage):
+    """TEST 8: Verify empty history safety returns default historical analytics."""
+    missing_path = temp_storage + ".empty"
+    service = PortfolioHealthHistoryService(storage_path=missing_path)
+    analytics = service.get_historical_analytics()
+    assert analytics.history_count == 0
+    assert analytics.best_score == 0
+    assert analytics.worst_score == 0
+    assert analytics.average_score == 0.0
+    assert analytics.current_score == 0
+    assert analytics.overall_trend == "STABLE"
+
+
+def test_corrupt_history_analytics_safety(temp_storage):
+    """TEST 9: Verify corrupt history safety returns default historical analytics."""
+    with open(temp_storage, "w", encoding="utf-8") as f:
+        f.write("{ CORRUPT JSON }")
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    analytics = service.get_historical_analytics()
+    assert analytics.history_count == 0
+    assert analytics.overall_trend == "STABLE"
+

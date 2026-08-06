@@ -66,6 +66,7 @@ class PortfolioHealthResult:
     cash_allocation_pct: float
     analytics: Optional[PortfolioHealthAnalytics] = None
     trend: Optional[PortfolioHealthTrend] = None
+    historical_analytics: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -396,6 +397,11 @@ class PortfolioHealthService:
                 previous = None
 
         res.trend = self.evaluate_trend(res, previous=previous)
+        if self._history_service is not None and hasattr(self._history_service, "get_historical_analytics"):
+            try:
+                res.historical_analytics = self._history_service.get_historical_analytics()
+            except Exception:
+                res.historical_analytics = None
         return res
 
     def _get_app_service(self) -> Optional[Any]:

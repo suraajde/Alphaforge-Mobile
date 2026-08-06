@@ -336,6 +336,53 @@ def test_empty_history_ui_safety(qapp):
     assert "Latest Grade: N/A" in screen.lbl_history_latest_grade.text()
 
 
+def test_historical_analytics_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_hist_entries")
+    assert hasattr(screen, "lbl_hist_best")
+    assert hasattr(screen, "lbl_hist_worst")
+    assert hasattr(screen, "lbl_hist_avg")
+    assert hasattr(screen, "lbl_hist_curr")
+    assert hasattr(screen, "lbl_hist_trend")
+
+
+def test_historical_analytics_values_display(qapp):
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalAnalytics
+    from services.portfolio_health_service import PortfolioHealthResult
+
+    class MockHistService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=84,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                historical_analytics=PortfolioHealthHistoricalAnalytics(
+                    history_count=12,
+                    best_score=92,
+                    worst_score=71,
+                    average_score=83.4,
+                    current_score=84,
+                    overall_trend="IMPROVING",
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockHistService())
+    assert "History Entries: 12" in screen.lbl_hist_entries.text()
+    assert "Best Score: 92" in screen.lbl_hist_best.text()
+    assert "Worst Score: 71" in screen.lbl_hist_worst.text()
+    assert "Average Score: 83.4" in screen.lbl_hist_avg.text()
+    assert "Current Score: 84" in screen.lbl_hist_curr.text()
+    assert "Overall Trend: IMPROVING" in screen.lbl_hist_trend.text()
+
+
+
 
 
 
