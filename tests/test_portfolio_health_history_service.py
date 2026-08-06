@@ -6,6 +6,7 @@ from pathlib import Path
 from services.portfolio_health_history_service import (
     PortfolioHealthDashboardSummary,
     PortfolioHealthHistoricalAnalytics,
+    PortfolioHealthHistoricalInsights,
     PortfolioHealthHistoricalMetrics,
     PortfolioHealthHistoryEntry,
     PortfolioHealthHistoryService,
@@ -402,6 +403,155 @@ def test_metrics_corrupt_history_safety(temp_storage):
     metrics = service.get_historical_metrics()
     assert metrics.score_range == 0
     assert metrics.stability_rating == "VERY_STABLE"
+
+
+def test_historical_insights_object_exists(temp_storage):
+    """TEST 1: Historical insights object exists."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    insights = service.get_historical_insights()
+    assert insights is not None
+    assert isinstance(insights, PortfolioHealthHistoricalInsights)
+
+
+def test_insights_improvement_percentage_calculated_correctly(temp_storage):
+    """TEST 2: Improvement percentage calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.improvement_percentage == 66.7
+
+
+def test_insights_deterioration_percentage_calculated_correctly(temp_storage):
+    """TEST 3: Deterioration percentage calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.deterioration_percentage == 33.3
+
+
+def test_insights_neutral_percentage_calculated_correctly(temp_storage):
+    """TEST 4: Neutral percentage calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 80, 84, 84, 82]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.neutral_percentage == 50.0
+
+
+def test_insights_consistency_score_calculated_correctly(temp_storage):
+    """TEST 5: Consistency score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.consistency_score == 33.4
+
+
+def test_insights_excellent_classification(temp_storage):
+    """TEST 6: EXCELLENT classification (consistency >= 75)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [70, 75, 80, 85, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.consistency_score >= 75.0
+    assert insights.quality_rating == "EXCELLENT"
+
+
+def test_insights_good_classification(temp_storage):
+    """TEST 7: GOOD classification (consistency 40 - 74.9)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [70, 75, 80, 85, 80]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert 40.0 <= insights.consistency_score <= 74.9
+    assert insights.quality_rating == "GOOD"
+
+
+def test_insights_fair_classification(temp_storage):
+    """TEST 8: FAIR classification (consistency 10 - 39.9)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert 10.0 <= insights.consistency_score <= 39.9
+    assert insights.quality_rating == "FAIR"
+
+
+def test_insights_mixed_classification(temp_storage):
+    """TEST 9: MIXED classification (consistency -9.9 to 9.9)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 85, 80]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert -9.9 <= insights.consistency_score <= 9.9
+    assert insights.quality_rating == "MIXED"
+
+
+def test_insights_weak_classification(temp_storage):
+    """TEST 10: WEAK classification (consistency < -9.9)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [90, 85, 80, 75]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.consistency_score < -9.9
+    assert insights.quality_rating == "WEAK"
+
+
+def test_insights_direction_improving(temp_storage):
+    """TEST 11: Direction IMPROVING classification (consistency > 10)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.consistency_score > 10.0
+    assert insights.direction_rating == "IMPROVING"
+
+
+def test_insights_direction_stable(temp_storage):
+    """TEST 12: Direction STABLE classification (-10 <= consistency <= 10)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 85, 80]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert -10.0 <= insights.consistency_score <= 10.0
+    assert insights.direction_rating == "STABLE"
+
+
+def test_insights_direction_deteriorating(temp_storage):
+    """TEST 13: Direction DETERIORATING classification (consistency < -10)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [90, 85, 80, 75]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    insights = service.get_historical_insights()
+    assert insights.consistency_score < -10.0
+    assert insights.direction_rating == "DETERIORATING"
+
+
+def test_insights_empty_history_safety(temp_storage):
+    """TEST 14: Empty history safety returns default insights."""
+    missing_path = temp_storage + ".empty"
+    service = PortfolioHealthHistoryService(storage_path=missing_path)
+    insights = service.get_historical_insights()
+    assert insights.improvement_percentage == 0.0
+    assert insights.deterioration_percentage == 0.0
+    assert insights.neutral_percentage == 0.0
+    assert insights.consistency_score == 0.0
+    assert insights.quality_rating == "MIXED"
+    assert insights.direction_rating == "STABLE"
+
+
+def test_insights_corrupt_history_safety(temp_storage):
+    """TEST 15: Corrupt history safety returns default insights."""
+    with open(temp_storage, "w", encoding="utf-8") as f:
+        f.write("{ CORRUPT FILE DATA }")
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    insights = service.get_historical_insights()
+    assert insights.improvement_percentage == 0.0
+    assert insights.quality_rating == "MIXED"
+    assert insights.direction_rating == "STABLE"
+
 
 
 

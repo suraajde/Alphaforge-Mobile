@@ -51,6 +51,16 @@ class PortfolioHealthHistoricalMetrics:
     stability_rating: str
 
 
+@dataclass
+class PortfolioHealthHistoricalInsights:
+    improvement_percentage: float
+    deterioration_percentage: float
+    neutral_percentage: float
+    consistency_score: float
+    quality_rating: str
+    direction_rating: str
+
+
 class PortfolioHealthHistoryService:
     """Service layer for persisting and retrieving portfolio health history entries."""
 
@@ -300,4 +310,68 @@ class PortfolioHealthHistoryService:
                 improving_periods=0,
                 deteriorating_periods=0,
                 stability_rating="VERY_STABLE",
+            )
+
+    def get_historical_insights(self) -> PortfolioHealthHistoricalInsights:
+        """Calculates high-level insight statistics derived from historical behavior."""
+        try:
+            history = self.get_history()
+            if not history or len(history) < 2:
+                return PortfolioHealthHistoricalInsights(
+                    improvement_percentage=0.0,
+                    deterioration_percentage=0.0,
+                    neutral_percentage=0.0,
+                    consistency_score=0.0,
+                    quality_rating="MIXED",
+                    direction_rating="STABLE",
+                )
+
+            scores = [e.score for e in history]
+            total_transitions = len(scores) - 1
+            diffs = [scores[i] - scores[i - 1] for i in range(1, len(scores))]
+
+            improving_count = sum(1 for d in diffs if d > 0)
+            deteriorating_count = sum(1 for d in diffs if d < 0)
+            neutral_count = sum(1 for d in diffs if d == 0)
+
+            improvement_percentage = round((improving_count / total_transitions) * 100.0, 1)
+            deterioration_percentage = round((deteriorating_count / total_transitions) * 100.0, 1)
+            neutral_percentage = round((neutral_count / total_transitions) * 100.0, 1)
+
+            consistency_score = round(improvement_percentage - deterioration_percentage, 1)
+
+            if consistency_score >= 75.0:
+                quality_rating = "EXCELLENT"
+            elif consistency_score >= 40.0:
+                quality_rating = "GOOD"
+            elif consistency_score >= 10.0:
+                quality_rating = "FAIR"
+            elif consistency_score >= -9.9:
+                quality_rating = "MIXED"
+            else:
+                quality_rating = "WEAK"
+
+            if consistency_score > 10.0:
+                direction_rating = "IMPROVING"
+            elif consistency_score < -10.0:
+                direction_rating = "DETERIORATING"
+            else:
+                direction_rating = "STABLE"
+
+            return PortfolioHealthHistoricalInsights(
+                improvement_percentage=improvement_percentage,
+                deterioration_percentage=deterioration_percentage,
+                neutral_percentage=neutral_percentage,
+                consistency_score=consistency_score,
+                quality_rating=quality_rating,
+                direction_rating=direction_rating,
+            )
+        except Exception:
+            return PortfolioHealthHistoricalInsights(
+                improvement_percentage=0.0,
+                deterioration_percentage=0.0,
+                neutral_percentage=0.0,
+                consistency_score=0.0,
+                quality_rating="MIXED",
+                direction_rating="STABLE",
             )

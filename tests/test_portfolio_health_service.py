@@ -430,3 +430,31 @@ def test_historical_metrics_integration_works():
     assert result.historical_metrics.score_range == 21
     assert result.historical_metrics.volatility_score == 4.7
     assert result.historical_metrics.stability_rating == "STABLE"
+
+
+def test_historical_insights_integration_works():
+    """Verify evaluate populates result.historical_insights from history_service."""
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalInsights
+
+    class MockHistoryService:
+        def get_latest(self):
+            return None
+
+        def get_historical_insights(self):
+            return PortfolioHealthHistoricalInsights(
+                improvement_percentage=66.7,
+                deterioration_percentage=33.3,
+                neutral_percentage=0.0,
+                consistency_score=33.4,
+                quality_rating="FAIR",
+                direction_rating="IMPROVING",
+            )
+
+    history_svc = MockHistoryService()
+    service = PortfolioHealthService(history_service=history_svc)
+    result = service.evaluate()
+
+    assert result.historical_insights is not None
+    assert result.historical_insights.improvement_percentage == 66.7
+    assert result.historical_insights.consistency_score == 33.4
+    assert result.historical_insights.direction_rating == "IMPROVING"

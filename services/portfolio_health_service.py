@@ -69,6 +69,7 @@ class PortfolioHealthResult:
     historical_analytics: Optional[Any] = None
     dashboard_summary: Optional[Any] = None
     historical_metrics: Optional[Any] = None
+    historical_insights: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -414,6 +415,11 @@ class PortfolioHealthService:
                 res.historical_metrics = self._history_service.get_historical_metrics()
             except Exception:
                 res.historical_metrics = None
+        if self._history_service is not None and hasattr(self._history_service, "get_historical_insights"):
+            try:
+                res.historical_insights = self._history_service.get_historical_insights()
+            except Exception:
+                res.historical_insights = None
         return res
 
     def _get_app_service(self) -> Optional[Any]:

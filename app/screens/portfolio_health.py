@@ -204,6 +204,21 @@ class PortfolioHealth(QWidget):
             if hasattr(self, "lbl_metrics_stability"):
                 self.lbl_metrics_stability.setText(f"Stability Rating: {metrics.stability_rating}")
 
+        insights = getattr(result, "historical_insights", None)
+        if insights is not None:
+            if hasattr(self, "lbl_insights_improvement"):
+                self.lbl_insights_improvement.setText(f"Improvement Percentage: {insights.improvement_percentage}%")
+            if hasattr(self, "lbl_insights_deterioration"):
+                self.lbl_insights_deterioration.setText(f"Deterioration Percentage: {insights.deterioration_percentage}%")
+            if hasattr(self, "lbl_insights_neutral"):
+                self.lbl_insights_neutral.setText(f"Neutral Percentage: {insights.neutral_percentage}%")
+            if hasattr(self, "lbl_insights_consistency"):
+                self.lbl_insights_consistency.setText(f"Consistency Score: {insights.consistency_score}")
+            if hasattr(self, "lbl_insights_quality"):
+                self.lbl_insights_quality.setText(f"Quality Rating: {insights.quality_rating}")
+            if hasattr(self, "lbl_insights_direction"):
+                self.lbl_insights_direction.setText(f"Direction Rating: {insights.direction_rating}")
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -527,6 +542,39 @@ class PortfolioHealth(QWidget):
         metrics_layout.addWidget(self.lbl_metrics_stability)
 
         root_layout.addWidget(metrics_card)
+
+        # Portfolio Health Historical Insights Section
+        insights_card = QFrame()
+        insights_card.setObjectName("metricCard")
+        insights_layout = QVBoxLayout(insights_card)
+        insights_layout.setContentsMargins(16, 14, 16, 14)
+        insights_layout.setSpacing(8)
+
+        lbl_insights_header = QLabel("Portfolio Health Historical Insights")
+        lbl_insights_header.setObjectName("sectionHeader")
+        insights_layout.addWidget(lbl_insights_header)
+
+        self.lbl_insights_improvement = QLabel("Improvement Percentage: 0.0%")
+        self.lbl_insights_improvement.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_insights_deterioration = QLabel("Deterioration Percentage: 0.0%")
+        self.lbl_insights_deterioration.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_insights_neutral = QLabel("Neutral Percentage: 0.0%")
+        self.lbl_insights_neutral.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_insights_consistency = QLabel("Consistency Score: 0.0")
+        self.lbl_insights_consistency.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_insights_quality = QLabel("Quality Rating: MIXED")
+        self.lbl_insights_quality.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_insights_direction = QLabel("Direction Rating: STABLE")
+        self.lbl_insights_direction.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        insights_layout.addWidget(self.lbl_insights_improvement)
+        insights_layout.addWidget(self.lbl_insights_deterioration)
+        insights_layout.addWidget(self.lbl_insights_neutral)
+        insights_layout.addWidget(self.lbl_insights_consistency)
+        insights_layout.addWidget(self.lbl_insights_quality)
+        insights_layout.addWidget(self.lbl_insights_direction)
+
+        root_layout.addWidget(insights_card)
 
         root_layout.addStretch()
 

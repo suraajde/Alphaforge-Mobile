@@ -486,6 +486,53 @@ def test_historical_metrics_values_display(qapp):
     assert "Stability Rating: STABLE" in screen.lbl_metrics_stability.text()
 
 
+def test_historical_insights_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_insights_improvement")
+    assert hasattr(screen, "lbl_insights_deterioration")
+    assert hasattr(screen, "lbl_insights_neutral")
+    assert hasattr(screen, "lbl_insights_consistency")
+    assert hasattr(screen, "lbl_insights_quality")
+    assert hasattr(screen, "lbl_insights_direction")
+
+
+def test_historical_insights_values_display(qapp):
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalInsights
+    from services.portfolio_health_service import PortfolioHealthResult
+
+    class MockInsightsService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=84,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                historical_insights=PortfolioHealthHistoricalInsights(
+                    improvement_percentage=66.7,
+                    deterioration_percentage=33.3,
+                    neutral_percentage=0.0,
+                    consistency_score=33.4,
+                    quality_rating="FAIR",
+                    direction_rating="IMPROVING",
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockInsightsService())
+    assert "Improvement Percentage: 66.7%" in screen.lbl_insights_improvement.text()
+    assert "Deterioration Percentage: 33.3%" in screen.lbl_insights_deterioration.text()
+    assert "Neutral Percentage: 0.0%" in screen.lbl_insights_neutral.text()
+    assert "Consistency Score: 33.4" in screen.lbl_insights_consistency.text()
+    assert "Quality Rating: FAIR" in screen.lbl_insights_quality.text()
+    assert "Direction Rating: IMPROVING" in screen.lbl_insights_direction.text()
+
+
+
 
 
 
