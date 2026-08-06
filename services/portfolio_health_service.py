@@ -35,6 +35,17 @@ class PortfolioHealthSnapshot:
     largest_position_weight_pct: float
 
 
+@dataclass
+class PortfolioHealthResult:
+    score: int
+    grade: str
+    diversification_rating: str
+    concentration_rating: str
+    position_count: int
+    largest_position_weight_pct: float
+    cash_allocation_pct: float
+
+
 class PortfolioHealthService:
     """Service layer for computing portfolio health metrics and snapshots safely."""
 
@@ -184,96 +195,98 @@ class PortfolioHealthService:
 
     def evaluate(
         self,
-        analytics: PortfolioAnalytics,
-    ) -> PortfolioHealth:
-        """Converts PortfolioAnalytics into a portfolio health assessment."""
-        diversification_score = 20
-        concentration_score = 20
-        position_sizing_score = 20
-        weight_balance_score = 20
-        portfolio_structure_score = 20
+        snapshot: Optional[PortfolioHealthSnapshot] = None,
+    ) -> PortfolioHealthResult:
+        """Calculates portfolio health score framework and returns PortfolioHealthResult.
 
-        if analytics.diversification_grade == "B":
-            diversification_score = 18
-        elif analytics.diversification_grade == "C":
-            diversification_score = 15
-        elif analytics.diversification_grade == "D":
-            diversification_score = 10
-
-        if analytics.concentration_risk == "Moderate":
-            concentration_score = 18
-        elif analytics.concentration_risk == "High":
-            concentration_score = 15
-        elif analytics.concentration_risk == "Very High":
-            concentration_score = 10
-
-        if analytics.largest_weight > 20:
-            position_sizing_score -= 2
-
-        if analytics.largest_weight > 25:
-            position_sizing_score -= 3
-
-        if analytics.largest_weight > 30:
-            position_sizing_score -= 5
-
-        if analytics.weight_range > 15:
-            weight_balance_score -= 2
-
-        if analytics.weight_range > 20:
-            weight_balance_score -= 3
-
-        if analytics.weight_range > 30:
-            weight_balance_score -= 5
-
-        if analytics.holding_count < 10:
-            portfolio_structure_score = 17
-
-        if analytics.holding_count < 8:
-            portfolio_structure_score = 15
-
-        if analytics.holding_count < 6:
-            portfolio_structure_score = 12
-
-        overall_score = (
-            diversification_score
-            + concentration_score
-            + position_sizing_score
-            + weight_balance_score
-            + portfolio_structure_score
-        )
-
-        if overall_score >= 90:
-            overall_grade = "A"
-            recommendation = (
-                "Healthy portfolio. "
-                "No immediate rebalance required."
+        Scoring Factors (Max = 100):
+        - Position Count (40 pts)
+        - Concentration (40 pts)
+        - Cash Allocation (20 pts)
+        """
+        try:
+            if snapshot is None or not isinstance(snapshot, PortfolioHealthSnapshot):
+                snapshot = self.build_snapshot()
+        except Exception:
+            snapshot = PortfolioHealthSnapshot(
+                position_count=0,
+                portfolio_value=0.0,
+                invested_value=0.0,
+                cash_allocation_pct=0.0,
+                largest_position="N/A",
+                largest_position_weight_pct=0.0,
             )
-        elif overall_score >= 80:
-            overall_grade = "B"
-            recommendation = (
-                "Good portfolio. "
-                "Minor optimisation recommended."
-            )
-        elif overall_score >= 70:
-            overall_grade = "C"
-            recommendation = (
-                "Portfolio should be reviewed."
-            )
+
+        pos_count = self._safe_int(getattr(snapshot, "position_count", 0), 0)
+        largest_weight = self._safe_float(getattr(snapshot, "largest_position_weight_pct", 0.0), 0.0)
+        cash_pct = self._safe_float(getattr(snapshot, "cash_allocation_pct", 0.0), 0.0)
+
+        # 1. Position Count Score (40 pts)
+        if pos_count >= 10:
+            pos_score = 40
+        elif pos_count >= 7:
+            pos_score = 30
+        elif pos_count >= 4:
+            pos_score = 20
         else:
-            overall_grade = "D"
-            recommendation = (
-                "Portfolio requires rebalancing."
-            )
+            pos_score = 10
 
-        return PortfolioHealth(
-            overall_score=overall_score,
-            overall_grade=overall_grade,
-            diversification_score=diversification_score,
-            concentration_score=concentration_score,
-            position_sizing_score=position_sizing_score,
-            weight_balance_score=weight_balance_score,
-            portfolio_structure_score=portfolio_structure_score,
-            recommendation=recommendation,
+        # 2. Concentration Score (40 pts)
+        if largest_weight <= 10.0:
+            conc_score = 40
+        elif largest_weight <= 15.0:
+            conc_score = 30
+        elif largest_weight <= 20.0:
+            conc_score = 20
+        else:
+            conc_score = 10
+
+        # 3. Cash Allocation Score (20 pts)
+        if cash_pct <= 10.0:
+            cash_score = 20
+        elif cash_pct <= 20.0:
+            cash_score = 15
+        elif cash_pct <= 30.0:
+            cash_score = 10
+        else:
+            cash_score = 5
+
+        total_score = pos_score + conc_score + cash_score
+
+        # Grade Mapping
+        if total_score >= 90:
+            grade = "A"
+        elif total_score >= 80:
+            grade = "B"
+        elif total_score >= 70:
+            grade = "C"
+        else:
+            grade = "D"
+
+        # Diversification Rating
+        if pos_count >= 10:
+            diversification_rating = "GOOD"
+        elif pos_count >= 6:
+            diversification_rating = "MODERATE"
+        else:
+            diversification_rating = "POOR"
+
+        # Concentration Rating
+        if largest_weight <= 10.0:
+            concentration_rating = "LOW"
+        elif largest_weight <= 20.0:
+            concentration_rating = "MODERATE"
+        else:
+            concentration_rating = "HIGH"
+
+        return PortfolioHealthResult(
+            score=total_score,
+            grade=grade,
+            diversification_rating=diversification_rating,
+            concentration_rating=concentration_rating,
+            position_count=pos_count,
+            largest_position_weight_pct=largest_weight,
+            cash_allocation_pct=cash_pct,
         )
 
     def _get_app_service(self) -> Optional[Any]:
