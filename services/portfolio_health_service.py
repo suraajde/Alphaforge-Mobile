@@ -36,6 +36,16 @@ class PortfolioHealthSnapshot:
 
 
 @dataclass
+class PortfolioHealthAnalytics:
+    diversification_score: int
+    concentration_score: int
+    cash_score: int
+
+    strengths: list[str]
+    weaknesses: list[str]
+
+
+@dataclass
 class PortfolioHealthResult:
     score: int
     grade: str
@@ -44,6 +54,7 @@ class PortfolioHealthResult:
     position_count: int
     largest_position_weight_pct: float
     cash_allocation_pct: float
+    analytics: Optional[PortfolioHealthAnalytics] = None
 
 
 class PortfolioHealthService:
@@ -279,6 +290,32 @@ class PortfolioHealthService:
         else:
             concentration_rating = "HIGH"
 
+        # Generate Strengths
+        strengths = []
+        if pos_count >= 10:
+            strengths.append("Good diversification")
+        if largest_weight <= 10.0:
+            strengths.append("Low concentration risk")
+        if cash_pct <= 10.0:
+            strengths.append("Healthy cash allocation")
+
+        # Generate Weaknesses
+        weaknesses = []
+        if pos_count < 6:
+            weaknesses.append("Portfolio may be under-diversified")
+        if largest_weight > 20.0:
+            weaknesses.append("High concentration risk")
+        if cash_pct > 20.0:
+            weaknesses.append("Elevated cash allocation")
+
+        analytics = PortfolioHealthAnalytics(
+            diversification_score=pos_score,
+            concentration_score=conc_score,
+            cash_score=cash_score,
+            strengths=strengths,
+            weaknesses=weaknesses,
+        )
+
         return PortfolioHealthResult(
             score=total_score,
             grade=grade,
@@ -287,6 +324,7 @@ class PortfolioHealthService:
             position_count=pos_count,
             largest_position_weight_pct=largest_weight,
             cash_allocation_pct=cash_pct,
+            analytics=analytics,
         )
 
     def _get_app_service(self) -> Optional[Any]:

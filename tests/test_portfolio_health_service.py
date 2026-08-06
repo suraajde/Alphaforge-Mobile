@@ -1,5 +1,6 @@
 import pytest
 from services.portfolio_health_service import (
+    PortfolioHealthAnalytics,
     PortfolioHealthResult,
     PortfolioHealthService,
     PortfolioHealthSnapshot,
@@ -195,3 +196,65 @@ def test_evaluate_empty_portfolio_safety():
     assert result.position_count == 0
     assert result.diversification_rating == "POOR"
     assert result.concentration_rating == "LOW"
+
+
+def test_analytics_object_exists():
+    """TEST 1: Verify analytics object exists on result."""
+    service = PortfolioHealthService()
+    result = service.evaluate()
+    assert result.analytics is not None
+    assert isinstance(result.analytics, PortfolioHealthAnalytics)
+
+
+def test_breakdown_sums_correctly():
+    """TEST 2: Verify breakdown scores sum to total score."""
+    service = PortfolioHealthService()
+    snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    result = service.evaluate(snapshot)
+    analytics = result.analytics
+    assert analytics is not None
+    assert (
+        analytics.diversification_score
+        + analytics.concentration_score
+        + analytics.cash_score
+        == result.score
+    )
+
+
+def test_healthy_portfolio_produces_strengths():
+    """TEST 3: Verify healthy portfolio produces strengths."""
+    service = PortfolioHealthService()
+    snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    result = service.evaluate(snapshot)
+    assert result.analytics is not None
+    assert len(result.analytics.strengths) > 0
+    assert "Good diversification" in result.analytics.strengths
+    assert "Low concentration risk" in result.analytics.strengths
+    assert "Healthy cash allocation" in result.analytics.strengths
+
+
+def test_weak_portfolio_produces_weaknesses():
+    """TEST 4: Verify weak portfolio produces weaknesses."""
+    service = PortfolioHealthService()
+    snapshot = PortfolioHealthSnapshot(2, 100000.0, 70000.0, 30.0, "SYM", 35.0)
+    result = service.evaluate(snapshot)
+    assert result.analytics is not None
+    assert len(result.analytics.weaknesses) > 0
+    assert "Portfolio may be under-diversified" in result.analytics.weaknesses
+    assert "High concentration risk" in result.analytics.weaknesses
+    assert "Elevated cash allocation" in result.analytics.weaknesses
+
+
+def test_empty_portfolio_safety_analytics():
+    """TEST 5: Verify evaluate() handles empty portfolio safely and returns valid analytics."""
+    class EmptyAppService:
+        def get_status(self):
+            return {"status": "OK", "state": {}}
+
+    service = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+    result = service.evaluate()
+    assert result.analytics is not None
+    assert isinstance(result.analytics, PortfolioHealthAnalytics)
+    assert result.analytics.diversification_score == 10
+    assert result.analytics.concentration_score == 40
+    assert result.analytics.cash_score == 20

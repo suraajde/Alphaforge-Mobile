@@ -64,7 +64,7 @@ class PortfolioHealth(QWidget):
             self.cards["Largest Position"].setText(str(snapshot.largest_position))
 
     def load_result(self, result: Optional[PortfolioHealthResult] = None) -> None:
-        """Bind live PortfolioHealthResult metrics to score, diversification, and concentration cards."""
+        """Bind live PortfolioHealthResult metrics to score, diversification, concentration, and analytics sections."""
         if result is None:
             return
 
@@ -77,6 +77,45 @@ class PortfolioHealth(QWidget):
 
         if "Concentration" in self.cards:
             self.cards["Concentration"].setText(str(result.concentration_rating))
+
+        analytics = getattr(result, "analytics", None)
+        if analytics is not None:
+            if hasattr(self, "lbl_breakdown_div"):
+                self.lbl_breakdown_div.setText(f"Diversification: {analytics.diversification_score} / 40")
+            if hasattr(self, "lbl_breakdown_conc"):
+                self.lbl_breakdown_conc.setText(f"Concentration: {analytics.concentration_score} / 40")
+            if hasattr(self, "lbl_breakdown_cash"):
+                self.lbl_breakdown_cash.setText(f"Cash Allocation: {analytics.cash_score} / 20")
+
+            if hasattr(self, "strengths_container"):
+                self._clear_layout(self.strengths_container)
+                if analytics.strengths:
+                    for item in analytics.strengths:
+                        lbl = QLabel(f"• {item}")
+                        lbl.setStyleSheet("font-size: 14px; color: #16a34a; font-weight: 500;")
+                        self.strengths_container.addWidget(lbl)
+                else:
+                    lbl = QLabel("None identified")
+                    lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                    self.strengths_container.addWidget(lbl)
+
+            if hasattr(self, "weaknesses_container"):
+                self._clear_layout(self.weaknesses_container)
+                if analytics.weaknesses:
+                    for item in analytics.weaknesses:
+                        lbl = QLabel(f"• {item}")
+                        lbl.setStyleSheet("font-size: 14px; color: #dc2626; font-weight: 500;")
+                        self.weaknesses_container.addWidget(lbl)
+                else:
+                    lbl = QLabel("None identified")
+                    lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                    self.weaknesses_container.addWidget(lbl)
+
+    def _clear_layout(self, layout: QVBoxLayout) -> None:
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
 
     def _build_ui(self):
         self.setStyleSheet("""
@@ -111,6 +150,12 @@ class PortfolioHealth(QWidget):
 
             QLabel#cardValue {
                 font-size: 22px;
+                font-weight: 700;
+                color: #173b67;
+            }
+
+            QLabel#sectionHeader {
+                font-size: 16px;
                 font-weight: 700;
                 color: #173b67;
             }
@@ -163,6 +208,63 @@ class PortfolioHealth(QWidget):
             self.cards[title] = val_lbl
 
         root_layout.addLayout(cards_grid)
+
+        # Analytics Sections: Health Score Breakdown
+        breakdown_card = QFrame()
+        breakdown_card.setObjectName("metricCard")
+        breakdown_layout = QVBoxLayout(breakdown_card)
+        breakdown_layout.setContentsMargins(16, 14, 16, 14)
+        breakdown_layout.setSpacing(8)
+
+        lbl_breakdown_header = QLabel("Health Score Breakdown")
+        lbl_breakdown_header.setObjectName("sectionHeader")
+        breakdown_layout.addWidget(lbl_breakdown_header)
+
+        self.lbl_breakdown_div = QLabel("Diversification: - / 40")
+        self.lbl_breakdown_div.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_breakdown_conc = QLabel("Concentration: - / 40")
+        self.lbl_breakdown_conc.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_breakdown_cash = QLabel("Cash Allocation: - / 20")
+        self.lbl_breakdown_cash.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        breakdown_layout.addWidget(self.lbl_breakdown_div)
+        breakdown_layout.addWidget(self.lbl_breakdown_conc)
+        breakdown_layout.addWidget(self.lbl_breakdown_cash)
+
+        root_layout.addWidget(breakdown_card)
+
+        # Strengths Section
+        strengths_card = QFrame()
+        strengths_card.setObjectName("metricCard")
+        strengths_layout = QVBoxLayout(strengths_card)
+        strengths_layout.setContentsMargins(16, 14, 16, 14)
+        strengths_layout.setSpacing(8)
+
+        lbl_strengths_header = QLabel("Strengths")
+        lbl_strengths_header.setObjectName("sectionHeader")
+        strengths_layout.addWidget(lbl_strengths_header)
+
+        self.strengths_container = QVBoxLayout()
+        strengths_layout.addLayout(self.strengths_container)
+
+        root_layout.addWidget(strengths_card)
+
+        # Weaknesses Section
+        weaknesses_card = QFrame()
+        weaknesses_card.setObjectName("metricCard")
+        weaknesses_layout = QVBoxLayout(weaknesses_card)
+        weaknesses_layout.setContentsMargins(16, 14, 16, 14)
+        weaknesses_layout.setSpacing(8)
+
+        lbl_weaknesses_header = QLabel("Weaknesses")
+        lbl_weaknesses_header.setObjectName("sectionHeader")
+        weaknesses_layout.addWidget(lbl_weaknesses_header)
+
+        self.weaknesses_container = QVBoxLayout()
+        weaknesses_layout.addLayout(self.weaknesses_container)
+
+        root_layout.addWidget(weaknesses_card)
+
         root_layout.addStretch()
 
         scroll.setWidget(content_widget)

@@ -138,3 +138,114 @@ def test_empty_portfolio_ui_safety(qapp):
     assert screen.cards["Concentration"].text() == "LOW"
 
 
+def test_analytics_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_breakdown_div")
+    assert hasattr(screen, "lbl_breakdown_conc")
+    assert hasattr(screen, "lbl_breakdown_cash")
+    assert hasattr(screen, "strengths_container")
+    assert hasattr(screen, "weaknesses_container")
+
+
+def test_breakdown_section_displays(qapp):
+    from services.portfolio_health_service import (
+        PortfolioHealthAnalytics,
+        PortfolioHealthResult,
+    )
+
+    class MockService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=85,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                analytics=PortfolioHealthAnalytics(
+                    diversification_score=40,
+                    concentration_score=30,
+                    cash_score=15,
+                    strengths=["Good diversification"],
+                    weaknesses=["Elevated concentration"],
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockService())
+    assert "Diversification: 40 / 40" in screen.lbl_breakdown_div.text()
+    assert "Concentration: 30 / 40" in screen.lbl_breakdown_conc.text()
+    assert "Cash Allocation: 15 / 20" in screen.lbl_breakdown_cash.text()
+
+
+def test_strengths_section_displays(qapp):
+    from services.portfolio_health_service import (
+        PortfolioHealthAnalytics,
+        PortfolioHealthResult,
+    )
+
+    class MockService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=100,
+                grade="A",
+                diversification_rating="GOOD",
+                concentration_rating="LOW",
+                position_count=12,
+                largest_position_weight_pct=8.0,
+                cash_allocation_pct=5.0,
+                analytics=PortfolioHealthAnalytics(
+                    diversification_score=40,
+                    concentration_score=40,
+                    cash_score=20,
+                    strengths=["Good diversification", "Low concentration risk"],
+                    weaknesses=[],
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockService())
+    assert screen.strengths_container.count() == 2
+
+
+def test_weaknesses_section_displays(qapp):
+    from services.portfolio_health_service import (
+        PortfolioHealthAnalytics,
+        PortfolioHealthResult,
+    )
+
+    class MockService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=60,
+                grade="D",
+                diversification_rating="POOR",
+                concentration_rating="HIGH",
+                position_count=3,
+                largest_position_weight_pct=35.0,
+                cash_allocation_pct=25.0,
+                analytics=PortfolioHealthAnalytics(
+                    diversification_score=10,
+                    concentration_score=10,
+                    cash_score=5,
+                    strengths=[],
+                    weaknesses=[
+                        "Portfolio may be under-diversified",
+                        "High concentration risk",
+                    ],
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockService())
+    assert screen.weaknesses_container.count() == 2
+
+
+
