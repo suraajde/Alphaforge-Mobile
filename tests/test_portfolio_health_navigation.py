@@ -292,5 +292,50 @@ def test_trend_section_displays_values(qapp):
     assert "Trend: IMPROVING" in screen.lbl_trend_direction.text()
 
 
+def test_history_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_history_entries")
+    assert hasattr(screen, "lbl_history_latest_score")
+    assert hasattr(screen, "lbl_history_latest_grade")
+
+
+def test_history_values_display(qapp):
+    from services.portfolio_health_history_service import PortfolioHealthHistoryEntry
+
+    class MockHistoryService:
+        def get_history(self):
+            return [
+                PortfolioHealthHistoryEntry(
+                    timestamp="2026-08-06T12:00:00Z",
+                    score=84,
+                    grade="B",
+                    diversification_rating="GOOD",
+                    concentration_rating="MODERATE",
+                    position_count=12,
+                    largest_position_weight_pct=15.0,
+                    cash_allocation_pct=5.0,
+                )
+            ]
+
+    history_svc = MockHistoryService()
+    screen = PortfolioHealth(history_service=history_svc)
+    assert "History Entries: 1" in screen.lbl_history_entries.text()
+    assert "Latest Score: 84" in screen.lbl_history_latest_score.text()
+    assert "Latest Grade: B" in screen.lbl_history_latest_grade.text()
+
+
+def test_empty_history_ui_safety(qapp):
+    class EmptyHistoryService:
+        def get_history(self):
+            return []
+
+    history_svc = EmptyHistoryService()
+    screen = PortfolioHealth(history_service=history_svc)
+    assert "History Entries: 0" in screen.lbl_history_entries.text()
+    assert "Latest Score: N/A" in screen.lbl_history_latest_score.text()
+    assert "Latest Grade: N/A" in screen.lbl_history_latest_grade.text()
+
+
+
 
 

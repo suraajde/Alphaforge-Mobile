@@ -71,14 +71,20 @@ class PortfolioHealthResult:
 class PortfolioHealthService:
     """Service layer for computing portfolio health metrics and snapshots safely."""
 
-    def __init__(self, portfolio_app_service: Optional[Any] = None) -> None:
+    def __init__(
+        self,
+        portfolio_app_service: Optional[Any] = None,
+        history_service: Optional[Any] = None,
+    ) -> None:
         """Initialize PortfolioHealthService.
 
         Args:
             portfolio_app_service: Optional instance or provider of PortfolioApplicationService
                 or similar portfolio data service.
+            history_service: Optional instance of PortfolioHealthHistoryService.
         """
         self._portfolio_app_service = portfolio_app_service
+        self._history_service = history_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -372,6 +378,23 @@ class PortfolioHealthService:
             cash_allocation_pct=cash_pct,
             analytics=analytics,
         )
+
+        if previous is None and self._history_service is not None:
+            try:
+                latest = self._history_service.get_latest()
+                if latest is not None:
+                    previous = PortfolioHealthResult(
+                        score=latest.score,
+                        grade=latest.grade,
+                        diversification_rating=latest.diversification_rating,
+                        concentration_rating=latest.concentration_rating,
+                        position_count=latest.position_count,
+                        largest_position_weight_pct=latest.largest_position_weight_pct,
+                        cash_allocation_pct=latest.cash_allocation_pct,
+                    )
+            except Exception:
+                previous = None
+
         res.trend = self.evaluate_trend(res, previous=previous)
         return res
 

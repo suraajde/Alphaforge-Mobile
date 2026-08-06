@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QScrollArea,
 )
 
+from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_service import (
     PortfolioHealthResult,
     PortfolioHealthService,
@@ -22,15 +23,17 @@ class PortfolioHealth(QWidget):
     def __init__(
         self,
         service: Optional[PortfolioHealthService] = None,
+        history_service: Optional[PortfolioHealthHistoryService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
-        self.service = service if service is not None else PortfolioHealthService()
+        self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
+        self.service = service if service is not None else PortfolioHealthService(history_service=self.history_service)
         self._build_ui()
         self.refresh_data()
 
     def refresh_data(self) -> None:
-        """Fetch and bind live portfolio health snapshot and evaluation data."""
+        """Fetch and bind live portfolio health snapshot, evaluation, and history data."""
         if self.service is not None:
             snapshot = None
             if hasattr(self.service, "build_snapshot"):
@@ -46,6 +49,28 @@ class PortfolioHealth(QWidget):
                     self.load_result(result)
                 except Exception:
                     pass
+
+        self.load_history()
+
+    def load_history(self) -> None:
+        """Bind live portfolio health history metrics to UI."""
+        if getattr(self, "history_service", None) is None:
+            return
+        try:
+            history = self.history_service.get_history()
+            count = len(history) if history else 0
+            latest = history[-1] if history else None
+
+            if hasattr(self, "lbl_history_entries"):
+                self.lbl_history_entries.setText(f"History Entries: {count}")
+            if hasattr(self, "lbl_history_latest_score"):
+                score_str = str(latest.score) if latest else "N/A"
+                self.lbl_history_latest_score.setText(f"Latest Score: {score_str}")
+            if hasattr(self, "lbl_history_latest_grade"):
+                grade_str = str(latest.grade) if latest else "N/A"
+                self.lbl_history_latest_grade.setText(f"Latest Grade: {grade_str}")
+        except Exception:
+            pass
 
     def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
         """Bind live snapshot metrics to the metric cards."""
@@ -303,6 +328,30 @@ class PortfolioHealth(QWidget):
         trend_layout.addWidget(self.lbl_trend_direction)
 
         root_layout.addWidget(trend_card)
+
+        # Portfolio Health History Section
+        history_card = QFrame()
+        history_card.setObjectName("metricCard")
+        history_layout = QVBoxLayout(history_card)
+        history_layout.setContentsMargins(16, 14, 16, 14)
+        history_layout.setSpacing(8)
+
+        lbl_history_header = QLabel("Portfolio Health History")
+        lbl_history_header.setObjectName("sectionHeader")
+        history_layout.addWidget(lbl_history_header)
+
+        self.lbl_history_entries = QLabel("History Entries: 0")
+        self.lbl_history_entries.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_history_latest_score = QLabel("Latest Score: N/A")
+        self.lbl_history_latest_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_history_latest_grade = QLabel("Latest Grade: N/A")
+        self.lbl_history_latest_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        history_layout.addWidget(self.lbl_history_entries)
+        history_layout.addWidget(self.lbl_history_latest_score)
+        history_layout.addWidget(self.lbl_history_latest_grade)
+
+        root_layout.addWidget(history_card)
 
         root_layout.addStretch()
 

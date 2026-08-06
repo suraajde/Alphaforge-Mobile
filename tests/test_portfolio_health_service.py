@@ -316,3 +316,30 @@ def test_no_previous_result_trend_safety():
     assert isinstance(result.trend, PortfolioHealthTrend)
     assert result.trend.score_change == 0
     assert result.trend.trend_direction == "STABLE"
+
+
+def test_trend_uses_history_service_safely():
+    """Verify trend evaluation uses history_service get_latest() safely when previous is None."""
+    class MockHistoryService:
+        def get_latest(self):
+            return PortfolioHealthResult(
+                score=80,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=10,
+                largest_position_weight_pct=12.0,
+                cash_allocation_pct=5.0,
+            )
+
+    history_svc = MockHistoryService()
+    service = PortfolioHealthService(history_service=history_svc)
+
+    curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    result = service.evaluate(curr_snap, previous=None)
+
+    assert result.trend is not None
+    assert result.trend.previous_score == 80
+    assert result.trend.current_score == 100
+    assert result.trend.score_change == 20
+    assert result.trend.trend_direction == "IMPROVING"
