@@ -163,6 +163,34 @@ class PortfolioHealth(QWidget):
             if hasattr(self, "lbl_hist_trend"):
                 self.lbl_hist_trend.setText(f"Overall Trend: {hist_analytics.overall_trend}")
 
+        summary = getattr(result, "dashboard_summary", None)
+        if summary is not None:
+            if hasattr(self, "lbl_dash_curr_score"):
+                self.lbl_dash_curr_score.setText(f"Current Score: {summary.current_score}")
+            if hasattr(self, "lbl_dash_curr_grade"):
+                self.lbl_dash_curr_grade.setText(f"Current Grade: {summary.current_grade}")
+            if hasattr(self, "lbl_dash_best_score"):
+                self.lbl_dash_best_score.setText(f"Best Historical Score: {summary.best_score}")
+            if hasattr(self, "lbl_dash_best_grade"):
+                self.lbl_dash_best_grade.setText(f"Best Historical Grade: {summary.best_grade}")
+            if hasattr(self, "lbl_dash_worst_score"):
+                self.lbl_dash_worst_score.setText(f"Worst Historical Score: {summary.worst_score}")
+            if hasattr(self, "lbl_dash_worst_grade"):
+                self.lbl_dash_worst_grade.setText(f"Worst Historical Grade: {summary.worst_grade}")
+            if hasattr(self, "lbl_dash_avg_score"):
+                self.lbl_dash_avg_score.setText(f"Average Historical Score: {summary.average_score}")
+            if hasattr(self, "lbl_dash_total_snapshots"):
+                self.lbl_dash_total_snapshots.setText(f"Total Snapshots: {summary.total_snapshots}")
+
+            if hasattr(self, "lbl_highlight_highest"):
+                self.lbl_highlight_highest.setText(f"Highest Score Achieved: {summary.best_score}")
+            if hasattr(self, "lbl_highlight_lowest"):
+                self.lbl_highlight_lowest.setText(f"Lowest Score Achieved: {summary.worst_score}")
+            if hasattr(self, "lbl_highlight_vs_avg"):
+                diff = round(summary.current_score - summary.average_score, 1)
+                diff_str = f"+{diff}" if diff > 0 else str(diff)
+                self.lbl_highlight_vs_avg.setText(f"Current Score vs Average: {diff_str}")
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -400,6 +428,62 @@ class PortfolioHealth(QWidget):
         hist_layout.addWidget(self.lbl_hist_trend)
 
         root_layout.addWidget(hist_card)
+
+        # Portfolio Health Dashboard Summary Section
+        dash_card = QFrame()
+        dash_card.setObjectName("metricCard")
+        dash_layout = QVBoxLayout(dash_card)
+        dash_layout.setContentsMargins(16, 14, 16, 14)
+        dash_layout.setSpacing(8)
+
+        lbl_dash_header = QLabel("Portfolio Health Dashboard Summary")
+        lbl_dash_header.setObjectName("sectionHeader")
+        dash_layout.addWidget(lbl_dash_header)
+
+        self.lbl_dash_curr_score = QLabel("Current Score: 0")
+        self.lbl_dash_curr_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_curr_grade = QLabel("Current Grade: -")
+        self.lbl_dash_curr_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_best_score = QLabel("Best Historical Score: 0")
+        self.lbl_dash_best_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_best_grade = QLabel("Best Historical Grade: -")
+        self.lbl_dash_best_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_worst_score = QLabel("Worst Historical Score: 0")
+        self.lbl_dash_worst_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_worst_grade = QLabel("Worst Historical Grade: -")
+        self.lbl_dash_worst_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_avg_score = QLabel("Average Historical Score: 0.0")
+        self.lbl_dash_avg_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dash_total_snapshots = QLabel("Total Snapshots: 0")
+        self.lbl_dash_total_snapshots.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        dash_layout.addWidget(self.lbl_dash_curr_score)
+        dash_layout.addWidget(self.lbl_dash_curr_grade)
+        dash_layout.addWidget(self.lbl_dash_best_score)
+        dash_layout.addWidget(self.lbl_dash_best_grade)
+        dash_layout.addWidget(self.lbl_dash_worst_score)
+        dash_layout.addWidget(self.lbl_dash_worst_grade)
+        dash_layout.addWidget(self.lbl_dash_avg_score)
+        dash_layout.addWidget(self.lbl_dash_total_snapshots)
+
+        # Historical Highlights Subsection
+        lbl_highlights_header = QLabel("Historical Highlights")
+        lbl_highlights_header.setObjectName("sectionHeader")
+        lbl_highlights_header.setStyleSheet("font-size: 15px; font-weight: 700; color: #173b67; margin-top: 6px;")
+        dash_layout.addWidget(lbl_highlights_header)
+
+        self.lbl_highlight_highest = QLabel("Highest Score Achieved: 0")
+        self.lbl_highlight_highest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_highlight_lowest = QLabel("Lowest Score Achieved: 0")
+        self.lbl_highlight_lowest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_highlight_vs_avg = QLabel("Current Score vs Average: 0.0")
+        self.lbl_highlight_vs_avg.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        dash_layout.addWidget(self.lbl_highlight_highest)
+        dash_layout.addWidget(self.lbl_highlight_lowest)
+        dash_layout.addWidget(self.lbl_highlight_vs_avg)
+
+        root_layout.addWidget(dash_card)
 
         root_layout.addStretch()
 

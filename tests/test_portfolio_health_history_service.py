@@ -4,6 +4,7 @@ import pytest
 from pathlib import Path
 
 from services.portfolio_health_history_service import (
+    PortfolioHealthDashboardSummary,
     PortfolioHealthHistoricalAnalytics,
     PortfolioHealthHistoryEntry,
     PortfolioHealthHistoryService,
@@ -203,4 +204,94 @@ def test_corrupt_history_analytics_safety(temp_storage):
     analytics = service.get_historical_analytics()
     assert analytics.history_count == 0
     assert analytics.overall_trend == "STABLE"
+
+
+def test_dashboard_summary_object_exists(temp_storage):
+    """TEST 1: Dashboard summary object exists."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    summary = service.get_dashboard_summary()
+    assert summary is not None
+    assert isinstance(summary, PortfolioHealthDashboardSummary)
+
+
+def test_dashboard_current_score_calculated_correctly(temp_storage):
+    """TEST 2: Current score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.current_score == 71
+    assert summary.current_grade == "C"
+
+
+def test_dashboard_best_score_calculated_correctly(temp_storage):
+    """TEST 3: Best score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.best_score == 92
+
+
+def test_dashboard_worst_score_calculated_correctly(temp_storage):
+    """TEST 4: Worst score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.worst_score == 71
+
+
+def test_dashboard_average_score_calculated_correctly(temp_storage):
+    """TEST 5: Average score calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.total_snapshots == 4
+    assert summary.average_score == 81.8
+
+
+def test_dashboard_best_grade_calculated_correctly(temp_storage):
+    """TEST 6: Best grade calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.best_grade == "A"
+
+
+def test_dashboard_worst_grade_calculated_correctly(temp_storage):
+    """TEST 7: Worst grade calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s, g in [(80, "B"), (84, "B"), (92, "A"), (71, "C")]:
+        service.save_snapshot(PortfolioHealthResult(s, g, "GOOD", "LOW", 10, 10.0, 5.0))
+    summary = service.get_dashboard_summary()
+    assert summary.worst_grade == "C"
+
+
+def test_dashboard_empty_history_safety(temp_storage):
+    """TEST 8: Empty history safety returns default summary."""
+    missing_path = temp_storage + ".empty"
+    service = PortfolioHealthHistoryService(storage_path=missing_path)
+    summary = service.get_dashboard_summary()
+    assert summary.total_snapshots == 0
+    assert summary.current_score == 0
+    assert summary.current_grade == "-"
+    assert summary.best_score == 0
+    assert summary.best_grade == "-"
+    assert summary.worst_score == 0
+    assert summary.worst_grade == "-"
+    assert summary.average_score == 0.0
+
+
+def test_dashboard_corrupt_history_safety(temp_storage):
+    """TEST 9: Corrupt history safety returns default summary."""
+    with open(temp_storage, "w", encoding="utf-8") as f:
+        f.write("{ CORRUPT DATA }")
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    summary = service.get_dashboard_summary()
+    assert summary.total_snapshots == 0
+    assert summary.current_grade == "-"
+
 

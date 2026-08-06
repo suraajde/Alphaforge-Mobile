@@ -28,6 +28,18 @@ class PortfolioHealthHistoricalAnalytics:
     overall_trend: str
 
 
+@dataclass
+class PortfolioHealthDashboardSummary:
+    total_snapshots: int
+    current_score: int
+    current_grade: str
+    best_score: int
+    best_grade: str
+    worst_score: int
+    worst_grade: str
+    average_score: float
+
+
 class PortfolioHealthHistoryService:
     """Service layer for persisting and retrieving portfolio health history entries."""
 
@@ -164,4 +176,57 @@ class PortfolioHealthHistoryService:
                 average_score=0.0,
                 current_score=0,
                 overall_trend="STABLE",
+            )
+
+    def get_dashboard_summary(self) -> PortfolioHealthDashboardSummary:
+        """Calculates consolidated dashboard summary from stored health history."""
+        try:
+            history = self.get_history()
+            if not history:
+                return PortfolioHealthDashboardSummary(
+                    total_snapshots=0,
+                    current_score=0,
+                    current_grade="-",
+                    best_score=0,
+                    best_grade="-",
+                    worst_score=0,
+                    worst_grade="-",
+                    average_score=0.0,
+                )
+
+            total_snapshots = len(history)
+            current_entry = history[-1]
+            current_score = current_entry.score
+            current_grade = current_entry.grade
+
+            best_entry = max(history, key=lambda e: e.score)
+            best_score = best_entry.score
+            best_grade = best_entry.grade
+
+            worst_entry = min(history, key=lambda e: e.score)
+            worst_score = worst_entry.score
+            worst_grade = worst_entry.grade
+
+            average_score = round(sum(e.score for e in history) / total_snapshots, 1)
+
+            return PortfolioHealthDashboardSummary(
+                total_snapshots=total_snapshots,
+                current_score=current_score,
+                current_grade=current_grade,
+                best_score=best_score,
+                best_grade=best_grade,
+                worst_score=worst_score,
+                worst_grade=worst_grade,
+                average_score=average_score,
+            )
+        except Exception:
+            return PortfolioHealthDashboardSummary(
+                total_snapshots=0,
+                current_score=0,
+                current_grade="-",
+                best_score=0,
+                best_grade="-",
+                worst_score=0,
+                worst_grade="-",
+                average_score=0.0,
             )

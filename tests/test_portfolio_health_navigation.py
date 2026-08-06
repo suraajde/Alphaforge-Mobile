@@ -382,6 +382,66 @@ def test_historical_analytics_values_display(qapp):
     assert "Overall Trend: IMPROVING" in screen.lbl_hist_trend.text()
 
 
+def test_dashboard_summary_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_dash_curr_score")
+    assert hasattr(screen, "lbl_dash_curr_grade")
+    assert hasattr(screen, "lbl_dash_best_score")
+    assert hasattr(screen, "lbl_dash_best_grade")
+    assert hasattr(screen, "lbl_dash_worst_score")
+    assert hasattr(screen, "lbl_dash_worst_grade")
+    assert hasattr(screen, "lbl_dash_avg_score")
+    assert hasattr(screen, "lbl_dash_total_snapshots")
+    assert hasattr(screen, "lbl_highlight_highest")
+    assert hasattr(screen, "lbl_highlight_lowest")
+    assert hasattr(screen, "lbl_highlight_vs_avg")
+
+
+def test_dashboard_summary_values_display(qapp):
+    from services.portfolio_health_history_service import PortfolioHealthDashboardSummary
+    from services.portfolio_health_service import PortfolioHealthResult
+
+    class MockDashService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=84,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                dashboard_summary=PortfolioHealthDashboardSummary(
+                    total_snapshots=12,
+                    current_score=84,
+                    current_grade="B",
+                    best_score=92,
+                    best_grade="A",
+                    worst_score=71,
+                    worst_grade="C",
+                    average_score=83.4,
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockDashService())
+    assert "Current Score: 84" in screen.lbl_dash_curr_score.text()
+    assert "Current Grade: B" in screen.lbl_dash_curr_grade.text()
+    assert "Best Historical Score: 92" in screen.lbl_dash_best_score.text()
+    assert "Best Historical Grade: A" in screen.lbl_dash_best_grade.text()
+    assert "Worst Historical Score: 71" in screen.lbl_dash_worst_score.text()
+    assert "Worst Historical Grade: C" in screen.lbl_dash_worst_grade.text()
+    assert "Average Historical Score: 83.4" in screen.lbl_dash_avg_score.text()
+    assert "Total Snapshots: 12" in screen.lbl_dash_total_snapshots.text()
+
+    assert "Highest Score Achieved: 92" in screen.lbl_highlight_highest.text()
+    assert "Lowest Score Achieved: 71" in screen.lbl_highlight_lowest.text()
+    assert "Current Score vs Average: +0.6" in screen.lbl_highlight_vs_avg.text()
+
+
+
 
 
 

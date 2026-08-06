@@ -371,3 +371,33 @@ def test_historical_analytics_integration_works():
     assert result.historical_analytics.history_count == 5
     assert result.historical_analytics.best_score == 92
     assert result.historical_analytics.overall_trend == "IMPROVING"
+
+
+def test_dashboard_summary_integration_works():
+    """Verify evaluate populates result.dashboard_summary from history_service."""
+    from services.portfolio_health_history_service import PortfolioHealthDashboardSummary
+
+    class MockHistoryService:
+        def get_latest(self):
+            return None
+
+        def get_dashboard_summary(self):
+            return PortfolioHealthDashboardSummary(
+                total_snapshots=4,
+                current_score=71,
+                current_grade="C",
+                best_score=92,
+                best_grade="A",
+                worst_score=71,
+                worst_grade="C",
+                average_score=81.8,
+            )
+
+    history_svc = MockHistoryService()
+    service = PortfolioHealthService(history_service=history_svc)
+    result = service.evaluate()
+
+    assert result.dashboard_summary is not None
+    assert result.dashboard_summary.total_snapshots == 4
+    assert result.dashboard_summary.best_score == 92
+    assert result.dashboard_summary.worst_score == 71
