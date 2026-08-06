@@ -191,6 +191,19 @@ class PortfolioHealth(QWidget):
                 diff_str = f"+{diff}" if diff > 0 else str(diff)
                 self.lbl_highlight_vs_avg.setText(f"Current Score vs Average: {diff_str}")
 
+        metrics = getattr(result, "historical_metrics", None)
+        if metrics is not None:
+            if hasattr(self, "lbl_metrics_range"):
+                self.lbl_metrics_range.setText(f"Score Range: {metrics.score_range}")
+            if hasattr(self, "lbl_metrics_volatility"):
+                self.lbl_metrics_volatility.setText(f"Volatility Score: {metrics.volatility_score}")
+            if hasattr(self, "lbl_metrics_improving"):
+                self.lbl_metrics_improving.setText(f"Improving Periods: {metrics.improving_periods}")
+            if hasattr(self, "lbl_metrics_deteriorating"):
+                self.lbl_metrics_deteriorating.setText(f"Deteriorating Periods: {metrics.deteriorating_periods}")
+            if hasattr(self, "lbl_metrics_stability"):
+                self.lbl_metrics_stability.setText(f"Stability Rating: {metrics.stability_rating}")
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -484,6 +497,36 @@ class PortfolioHealth(QWidget):
         dash_layout.addWidget(self.lbl_highlight_vs_avg)
 
         root_layout.addWidget(dash_card)
+
+        # Portfolio Health Historical Metrics Section
+        metrics_card = QFrame()
+        metrics_card.setObjectName("metricCard")
+        metrics_layout = QVBoxLayout(metrics_card)
+        metrics_layout.setContentsMargins(16, 14, 16, 14)
+        metrics_layout.setSpacing(8)
+
+        lbl_metrics_header = QLabel("Portfolio Health Historical Metrics")
+        lbl_metrics_header.setObjectName("sectionHeader")
+        metrics_layout.addWidget(lbl_metrics_header)
+
+        self.lbl_metrics_range = QLabel("Score Range: 0")
+        self.lbl_metrics_range.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_metrics_volatility = QLabel("Volatility Score: 0.0")
+        self.lbl_metrics_volatility.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_metrics_improving = QLabel("Improving Periods: 0")
+        self.lbl_metrics_improving.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_metrics_deteriorating = QLabel("Deteriorating Periods: 0")
+        self.lbl_metrics_deteriorating.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_metrics_stability = QLabel("Stability Rating: VERY_STABLE")
+        self.lbl_metrics_stability.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        metrics_layout.addWidget(self.lbl_metrics_range)
+        metrics_layout.addWidget(self.lbl_metrics_volatility)
+        metrics_layout.addWidget(self.lbl_metrics_improving)
+        metrics_layout.addWidget(self.lbl_metrics_deteriorating)
+        metrics_layout.addWidget(self.lbl_metrics_stability)
+
+        root_layout.addWidget(metrics_card)
 
         root_layout.addStretch()
 

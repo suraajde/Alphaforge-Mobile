@@ -401,3 +401,32 @@ def test_dashboard_summary_integration_works():
     assert result.dashboard_summary.total_snapshots == 4
     assert result.dashboard_summary.best_score == 92
     assert result.dashboard_summary.worst_score == 71
+
+
+def test_historical_metrics_integration_works():
+    """Verify evaluate populates result.historical_metrics from history_service."""
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalMetrics
+
+    class MockHistoryService:
+        def get_latest(self):
+            return None
+
+        def get_historical_metrics(self):
+            return PortfolioHealthHistoricalMetrics(
+                score_range=21,
+                best_score=92,
+                worst_score=71,
+                volatility_score=4.7,
+                improving_periods=2,
+                deteriorating_periods=1,
+                stability_rating="STABLE",
+            )
+
+    history_svc = MockHistoryService()
+    service = PortfolioHealthService(history_service=history_svc)
+    result = service.evaluate()
+
+    assert result.historical_metrics is not None
+    assert result.historical_metrics.score_range == 21
+    assert result.historical_metrics.volatility_score == 4.7
+    assert result.historical_metrics.stability_rating == "STABLE"

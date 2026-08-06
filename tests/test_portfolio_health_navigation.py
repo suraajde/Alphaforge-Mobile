@@ -441,6 +441,52 @@ def test_dashboard_summary_values_display(qapp):
     assert "Current Score vs Average: +0.6" in screen.lbl_highlight_vs_avg.text()
 
 
+def test_historical_metrics_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_metrics_range")
+    assert hasattr(screen, "lbl_metrics_volatility")
+    assert hasattr(screen, "lbl_metrics_improving")
+    assert hasattr(screen, "lbl_metrics_deteriorating")
+    assert hasattr(screen, "lbl_metrics_stability")
+
+
+def test_historical_metrics_values_display(qapp):
+    from services.portfolio_health_history_service import PortfolioHealthHistoricalMetrics
+    from services.portfolio_health_service import PortfolioHealthResult
+
+    class MockMetricsService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=84,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                historical_metrics=PortfolioHealthHistoricalMetrics(
+                    score_range=21,
+                    best_score=92,
+                    worst_score=71,
+                    volatility_score=4.7,
+                    improving_periods=2,
+                    deteriorating_periods=1,
+                    stability_rating="STABLE",
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockMetricsService())
+    assert "Score Range: 21" in screen.lbl_metrics_range.text()
+    assert "Volatility Score: 4.7" in screen.lbl_metrics_volatility.text()
+    assert "Improving Periods: 2" in screen.lbl_metrics_improving.text()
+    assert "Deteriorating Periods: 1" in screen.lbl_metrics_deteriorating.text()
+    assert "Stability Rating: STABLE" in screen.lbl_metrics_stability.text()
+
+
+
 
 
 

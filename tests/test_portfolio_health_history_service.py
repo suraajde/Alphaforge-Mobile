@@ -6,6 +6,7 @@ from pathlib import Path
 from services.portfolio_health_history_service import (
     PortfolioHealthDashboardSummary,
     PortfolioHealthHistoricalAnalytics,
+    PortfolioHealthHistoricalMetrics,
     PortfolioHealthHistoryEntry,
     PortfolioHealthHistoryService,
 )
@@ -293,5 +294,114 @@ def test_dashboard_corrupt_history_safety(temp_storage):
     summary = service.get_dashboard_summary()
     assert summary.total_snapshots == 0
     assert summary.current_grade == "-"
+
+
+def test_historical_metrics_object_exists(temp_storage):
+    """TEST 1: Historical metrics object exists."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    metrics = service.get_historical_metrics()
+    assert metrics is not None
+    assert isinstance(metrics, PortfolioHealthHistoricalMetrics)
+
+
+def test_metrics_score_range_calculated_correctly(temp_storage):
+    """TEST 2: Score range calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 92, 71]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.best_score == 92
+    assert metrics.worst_score == 71
+    assert metrics.score_range == 21
+
+
+def test_metrics_volatility_calculated_correctly(temp_storage):
+    """TEST 3: Volatility calculated correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.volatility_score == 4.7
+
+
+def test_metrics_improving_periods_counted_correctly(temp_storage):
+    """TEST 4: Improving periods counted correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.improving_periods == 2
+
+
+def test_metrics_deteriorating_periods_counted_correctly(temp_storage):
+    """TEST 5: Deteriorating periods counted correctly."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 90]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.deteriorating_periods == 1
+
+
+def test_metrics_very_stable_classification(temp_storage):
+    """TEST 6: VERY_STABLE classification (volatility 0 - 2.0)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 81, 80, 82]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.volatility_score <= 2.0
+    assert metrics.stability_rating == "VERY_STABLE"
+
+
+def test_metrics_stable_classification(temp_storage):
+    """TEST 7: STABLE classification (volatility 2.1 - 5.0)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [80, 84, 82, 86]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert 2.1 <= metrics.volatility_score <= 5.0
+    assert metrics.stability_rating == "STABLE"
+
+
+def test_metrics_moderate_classification(temp_storage):
+    """TEST 8: MODERATE classification (volatility 5.1 - 8.0)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [70, 77, 70, 77]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert 5.1 <= metrics.volatility_score <= 8.0
+    assert metrics.stability_rating == "MODERATE"
+
+
+def test_metrics_volatile_classification(temp_storage):
+    """TEST 9: VOLATILE classification (volatility 8.1+)."""
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    for s in [50, 70, 50, 75]:
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    metrics = service.get_historical_metrics()
+    assert metrics.volatility_score >= 8.1
+    assert metrics.stability_rating == "VOLATILE"
+
+
+def test_metrics_empty_history_safety(temp_storage):
+    """TEST 10: Empty history safety returns default metrics."""
+    missing_path = temp_storage + ".empty"
+    service = PortfolioHealthHistoryService(storage_path=missing_path)
+    metrics = service.get_historical_metrics()
+    assert metrics.score_range == 0
+    assert metrics.volatility_score == 0.0
+    assert metrics.improving_periods == 0
+    assert metrics.deteriorating_periods == 0
+    assert metrics.stability_rating == "VERY_STABLE"
+
+
+def test_metrics_corrupt_history_safety(temp_storage):
+    """TEST 11: Corrupt history safety returns default metrics."""
+    with open(temp_storage, "w", encoding="utf-8") as f:
+        f.write("{ CORRUPT FILE DATA }")
+    service = PortfolioHealthHistoryService(storage_path=temp_storage)
+    metrics = service.get_historical_metrics()
+    assert metrics.score_range == 0
+    assert metrics.stability_rating == "VERY_STABLE"
+
 
 

@@ -40,6 +40,17 @@ class PortfolioHealthDashboardSummary:
     average_score: float
 
 
+@dataclass
+class PortfolioHealthHistoricalMetrics:
+    score_range: int
+    best_score: int
+    worst_score: int
+    volatility_score: float
+    improving_periods: int
+    deteriorating_periods: int
+    stability_rating: str
+
+
 class PortfolioHealthHistoryService:
     """Service layer for persisting and retrieving portfolio health history entries."""
 
@@ -229,4 +240,64 @@ class PortfolioHealthHistoryService:
                 worst_score=0,
                 worst_grade="-",
                 average_score=0.0,
+            )
+
+    def get_historical_metrics(self) -> PortfolioHealthHistoricalMetrics:
+        """Calculates advanced quantitative historical metrics from stored health history."""
+        try:
+            history = self.get_history()
+            if not history:
+                return PortfolioHealthHistoricalMetrics(
+                    score_range=0,
+                    best_score=0,
+                    worst_score=0,
+                    volatility_score=0.0,
+                    improving_periods=0,
+                    deteriorating_periods=0,
+                    stability_rating="VERY_STABLE",
+                )
+
+            scores = [e.score for e in history]
+            best_score = max(scores)
+            worst_score = min(scores)
+            score_range = best_score - worst_score
+
+            if len(scores) < 2:
+                volatility_score = 0.0
+                improving_periods = 0
+                deteriorating_periods = 0
+            else:
+                diffs = [scores[i] - scores[i - 1] for i in range(1, len(scores))]
+                abs_diffs = [abs(d) for d in diffs]
+                volatility_score = round(sum(abs_diffs) / len(abs_diffs), 1)
+                improving_periods = sum(1 for d in diffs if d > 0)
+                deteriorating_periods = sum(1 for d in diffs if d < 0)
+
+            if volatility_score <= 2.0:
+                stability_rating = "VERY_STABLE"
+            elif volatility_score <= 5.0:
+                stability_rating = "STABLE"
+            elif volatility_score <= 8.0:
+                stability_rating = "MODERATE"
+            else:
+                stability_rating = "VOLATILE"
+
+            return PortfolioHealthHistoricalMetrics(
+                score_range=score_range,
+                best_score=best_score,
+                worst_score=worst_score,
+                volatility_score=volatility_score,
+                improving_periods=improving_periods,
+                deteriorating_periods=deteriorating_periods,
+                stability_rating=stability_rating,
+            )
+        except Exception:
+            return PortfolioHealthHistoricalMetrics(
+                score_range=0,
+                best_score=0,
+                worst_score=0,
+                volatility_score=0.0,
+                improving_periods=0,
+                deteriorating_periods=0,
+                stability_rating="VERY_STABLE",
             )
