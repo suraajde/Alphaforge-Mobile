@@ -47,7 +47,7 @@ def test_navigation_wiring(qapp):
 
 
 def test_no_exceptions_during_screen_creation(qapp):
-    # Verify no exceptions during screen creation and placeholder cards presence
+    # Verify no exceptions during screen creation and card structure presence
     try:
         screen = PortfolioHealth()
         assert screen is not None
@@ -55,8 +55,29 @@ def test_no_exceptions_during_screen_creation(qapp):
         assert screen.cards["Overall Health Score"].text() == "85 / 100"
         assert screen.cards["Diversification"].text() == "GOOD"
         assert screen.cards["Concentration"].text() == "MODERATE"
-        assert screen.cards["Position Count"].text() == "12"
-        assert screen.cards["Cash Allocation"].text() == "5%"
-        assert screen.cards["Largest Position"].text() == "KPITTECH"
+        assert "Position Count" in screen.cards
+        assert "Cash Allocation" in screen.cards
+        assert "Largest Position" in screen.cards
     except Exception as e:
         pytest.fail(f"PortfolioHealth screen creation raised an exception: {e}")
+
+
+def test_live_data_binding(qapp):
+    from services.portfolio_health_service import PortfolioHealthSnapshot
+
+    class DummyHealthService:
+        def build_snapshot(self):
+            return PortfolioHealthSnapshot(
+                position_count=15,
+                portfolio_value=200000.0,
+                invested_value=180000.0,
+                cash_allocation_pct=10.0,
+                largest_position="TCS",
+                largest_position_weight_pct=12.5,
+            )
+
+    screen = PortfolioHealth(service=DummyHealthService())
+    assert screen.cards["Position Count"].text() == "15"
+    assert screen.cards["Cash Allocation"].text() == "10%"
+    assert screen.cards["Largest Position"].text() == "TCS"
+

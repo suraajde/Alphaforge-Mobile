@@ -1,3 +1,5 @@
+from typing import Optional
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
@@ -8,12 +10,45 @@ from PySide6.QtWidgets import (
     QScrollArea,
 )
 
+from services.portfolio_health_service import (
+    PortfolioHealthService,
+    PortfolioHealthSnapshot,
+)
+
 
 class PortfolioHealth(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        service: Optional[PortfolioHealthService] = None,
+        parent: Optional[QWidget] = None,
+    ) -> None:
         super().__init__(parent)
+        self.service = service if service is not None else PortfolioHealthService()
         self._build_ui()
+        self.refresh_data()
+
+    def refresh_data(self) -> None:
+        """Fetch and bind live portfolio health snapshot data."""
+        if self.service is not None:
+            snapshot = self.service.build_snapshot()
+            self.load_snapshot(snapshot)
+
+    def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
+        """Bind live snapshot metrics to the three approved metric cards."""
+        if snapshot is None:
+            return
+
+        if "Position Count" in self.cards:
+            self.cards["Position Count"].setText(str(snapshot.position_count))
+
+        if "Cash Allocation" in self.cards:
+            val = snapshot.cash_allocation_pct
+            val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
+            self.cards["Cash Allocation"].setText(val_str)
+
+        if "Largest Position" in self.cards:
+            self.cards["Largest Position"].setText(str(snapshot.largest_position))
 
     def _build_ui(self):
         self.setStyleSheet("""
