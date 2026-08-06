@@ -4,6 +4,7 @@ from services.portfolio_health_service import (
     PortfolioHealthResult,
     PortfolioHealthService,
     PortfolioHealthSnapshot,
+    PortfolioHealthTrend,
 )
 
 
@@ -258,3 +259,60 @@ def test_empty_portfolio_safety_analytics():
     assert result.analytics.diversification_score == 10
     assert result.analytics.concentration_score == 40
     assert result.analytics.cash_score == 20
+
+
+def test_trend_object_exists():
+    """TEST 1: Verify trend object exists on result."""
+    service = PortfolioHealthService()
+    result = service.evaluate()
+    assert result.trend is not None
+    assert isinstance(result.trend, PortfolioHealthTrend)
+
+
+def test_improving_trend():
+    """TEST 2: Verify improving trend direction when score increases by >= 3."""
+    service = PortfolioHealthService()
+    curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    prev_snap = PortfolioHealthSnapshot(7, 100000.0, 95000.0, 5.0, "SYM", 12.0)
+    prev_res = service.evaluate(prev_snap)
+    curr_res = service.evaluate(curr_snap, previous=prev_res)
+
+    assert curr_res.trend is not None
+    assert curr_res.trend.score_change > 0
+    assert curr_res.trend.trend_direction == "IMPROVING"
+
+
+def test_deteriorating_trend():
+    """TEST 3: Verify deteriorating trend direction when score decreases by >= 3."""
+    service = PortfolioHealthService()
+    curr_snap = PortfolioHealthSnapshot(3, 100000.0, 70000.0, 30.0, "SYM", 25.0)
+    prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    prev_res = service.evaluate(prev_snap)
+    curr_res = service.evaluate(curr_snap, previous=prev_res)
+
+    assert curr_res.trend is not None
+    assert curr_res.trend.score_change < 0
+    assert curr_res.trend.trend_direction == "DETERIORATING"
+
+
+def test_stable_trend():
+    """TEST 4: Verify stable trend direction when score change is within (-3, 3)."""
+    service = PortfolioHealthService()
+    curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+    prev_res = service.evaluate(prev_snap)
+    curr_res = service.evaluate(curr_snap, previous=prev_res)
+
+    assert curr_res.trend is not None
+    assert curr_res.trend.score_change == 0
+    assert curr_res.trend.trend_direction == "STABLE"
+
+
+def test_no_previous_result_trend_safety():
+    """TEST 5: Verify trend object is created safely when no previous result is provided."""
+    service = PortfolioHealthService()
+    result = service.evaluate(previous=None)
+    assert result.trend is not None
+    assert isinstance(result.trend, PortfolioHealthTrend)
+    assert result.trend.score_change == 0
+    assert result.trend.trend_direction == "STABLE"

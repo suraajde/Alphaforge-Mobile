@@ -111,6 +111,18 @@ class PortfolioHealth(QWidget):
                     lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
                     self.weaknesses_container.addWidget(lbl)
 
+        trend = getattr(result, "trend", None)
+        if trend is not None:
+            if hasattr(self, "lbl_trend_current"):
+                self.lbl_trend_current.setText(f"Current Score: {trend.current_score}")
+            if hasattr(self, "lbl_trend_previous"):
+                self.lbl_trend_previous.setText(f"Previous Score: {trend.previous_score}")
+            if hasattr(self, "lbl_trend_change"):
+                change_str = f"+{trend.score_change}" if trend.score_change > 0 else str(trend.score_change)
+                self.lbl_trend_change.setText(f"Score Change: {change_str}")
+            if hasattr(self, "lbl_trend_direction"):
+                self.lbl_trend_direction.setText(f"Trend: {trend.trend_direction}")
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -264,6 +276,33 @@ class PortfolioHealth(QWidget):
         weaknesses_layout.addLayout(self.weaknesses_container)
 
         root_layout.addWidget(weaknesses_card)
+
+        # Portfolio Health Trend Section
+        trend_card = QFrame()
+        trend_card.setObjectName("metricCard")
+        trend_layout = QVBoxLayout(trend_card)
+        trend_layout.setContentsMargins(16, 14, 16, 14)
+        trend_layout.setSpacing(8)
+
+        lbl_trend_header = QLabel("Portfolio Health Trend")
+        lbl_trend_header.setObjectName("sectionHeader")
+        trend_layout.addWidget(lbl_trend_header)
+
+        self.lbl_trend_current = QLabel("Current Score: -")
+        self.lbl_trend_current.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_trend_previous = QLabel("Previous Score: -")
+        self.lbl_trend_previous.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_trend_change = QLabel("Score Change: -")
+        self.lbl_trend_change.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_trend_direction = QLabel("Trend: -")
+        self.lbl_trend_direction.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        trend_layout.addWidget(self.lbl_trend_current)
+        trend_layout.addWidget(self.lbl_trend_previous)
+        trend_layout.addWidget(self.lbl_trend_change)
+        trend_layout.addWidget(self.lbl_trend_direction)
+
+        root_layout.addWidget(trend_card)
 
         root_layout.addStretch()
 

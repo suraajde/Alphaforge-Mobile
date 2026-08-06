@@ -46,6 +46,16 @@ class PortfolioHealthAnalytics:
 
 
 @dataclass
+class PortfolioHealthTrend:
+    current_score: int
+    previous_score: int
+    score_change: int
+    current_grade: str
+    previous_grade: str
+    trend_direction: str
+
+
+@dataclass
 class PortfolioHealthResult:
     score: int
     grade: str
@@ -55,6 +65,7 @@ class PortfolioHealthResult:
     largest_position_weight_pct: float
     cash_allocation_pct: float
     analytics: Optional[PortfolioHealthAnalytics] = None
+    trend: Optional[PortfolioHealthTrend] = None
 
 
 class PortfolioHealthService:
@@ -204,9 +215,44 @@ class PortfolioHealthService:
             largest_position_weight_pct=round(largest_weight_pct, 2),
         )
 
+    def evaluate_trend(
+        self,
+        current: PortfolioHealthResult,
+        previous: Optional[PortfolioHealthResult] = None,
+    ) -> PortfolioHealthTrend:
+        """Evaluates trend by comparing current PortfolioHealthResult vs previous result."""
+        current_score = getattr(current, "score", 0) if current else 0
+        current_grade = getattr(current, "grade", "D") if current else "D"
+
+        if previous is None:
+            previous_score = current_score
+            previous_grade = current_grade
+            score_change = 0
+            trend_direction = "STABLE"
+        else:
+            previous_score = getattr(previous, "score", current_score)
+            previous_grade = getattr(previous, "grade", current_grade)
+            score_change = current_score - previous_score
+            if score_change >= 3:
+                trend_direction = "IMPROVING"
+            elif score_change <= -3:
+                trend_direction = "DETERIORATING"
+            else:
+                trend_direction = "STABLE"
+
+        return PortfolioHealthTrend(
+            current_score=current_score,
+            previous_score=previous_score,
+            score_change=score_change,
+            current_grade=current_grade,
+            previous_grade=previous_grade,
+            trend_direction=trend_direction,
+        )
+
     def evaluate(
         self,
         snapshot: Optional[PortfolioHealthSnapshot] = None,
+        previous: Optional[PortfolioHealthResult] = None,
     ) -> PortfolioHealthResult:
         """Calculates portfolio health score framework and returns PortfolioHealthResult.
 
@@ -316,7 +362,7 @@ class PortfolioHealthService:
             weaknesses=weaknesses,
         )
 
-        return PortfolioHealthResult(
+        res = PortfolioHealthResult(
             score=total_score,
             grade=grade,
             diversification_rating=diversification_rating,
@@ -326,6 +372,8 @@ class PortfolioHealthService:
             cash_allocation_pct=cash_pct,
             analytics=analytics,
         )
+        res.trend = self.evaluate_trend(res, previous=previous)
+        return res
 
     def _get_app_service(self) -> Optional[Any]:
         if self._portfolio_app_service is not None:

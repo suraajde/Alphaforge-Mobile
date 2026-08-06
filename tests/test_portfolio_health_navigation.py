@@ -248,4 +248,49 @@ def test_weaknesses_section_displays(qapp):
     assert screen.weaknesses_container.count() == 2
 
 
+def test_trend_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_trend_current")
+    assert hasattr(screen, "lbl_trend_previous")
+    assert hasattr(screen, "lbl_trend_change")
+    assert hasattr(screen, "lbl_trend_direction")
+
+
+def test_trend_section_displays_values(qapp):
+    from services.portfolio_health_service import (
+        PortfolioHealthResult,
+        PortfolioHealthTrend,
+    )
+
+    class MockTrendService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=84,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+                trend=PortfolioHealthTrend(
+                    current_score=84,
+                    previous_score=80,
+                    score_change=4,
+                    current_grade="B",
+                    previous_grade="B",
+                    trend_direction="IMPROVING",
+                ),
+            )
+
+    screen = PortfolioHealth(service=MockTrendService())
+    assert "Current Score: 84" in screen.lbl_trend_current.text()
+    assert "Previous Score: 80" in screen.lbl_trend_previous.text()
+    assert "Score Change: +4" in screen.lbl_trend_change.text()
+    assert "Trend: IMPROVING" in screen.lbl_trend_direction.text()
+
+
+
 
