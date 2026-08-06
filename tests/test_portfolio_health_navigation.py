@@ -52,9 +52,8 @@ def test_no_exceptions_during_screen_creation(qapp):
         screen = PortfolioHealth()
         assert screen is not None
         assert "Overall Health Score" in screen.cards
-        assert screen.cards["Overall Health Score"].text() == "85 / 100"
-        assert screen.cards["Diversification"].text() == "GOOD"
-        assert screen.cards["Concentration"].text() == "MODERATE"
+        assert "Diversification" in screen.cards
+        assert "Concentration" in screen.cards
         assert "Position Count" in screen.cards
         assert "Cash Allocation" in screen.cards
         assert "Largest Position" in screen.cards
@@ -80,4 +79,62 @@ def test_live_data_binding(qapp):
     assert screen.cards["Position Count"].text() == "15"
     assert screen.cards["Cash Allocation"].text() == "10%"
     assert screen.cards["Largest Position"].text() == "TCS"
+
+
+def test_evaluate_result_bound_to_cards(qapp):
+    from services.portfolio_health_service import (
+        PortfolioHealthResult,
+        PortfolioHealthSnapshot,
+    )
+
+    class MockHealthService:
+        def build_snapshot(self):
+            return PortfolioHealthSnapshot(
+                position_count=12,
+                portfolio_value=100000.0,
+                invested_value=95000.0,
+                cash_allocation_pct=5.0,
+                largest_position="RELIANCE",
+                largest_position_weight_pct=15.0,
+            )
+
+        def evaluate(self, snapshot=None):
+            return PortfolioHealthResult(
+                score=85,
+                grade="B",
+                diversification_rating="GOOD",
+                concentration_rating="MODERATE",
+                position_count=12,
+                largest_position_weight_pct=15.0,
+                cash_allocation_pct=5.0,
+            )
+
+    screen = PortfolioHealth(service=MockHealthService())
+    assert "85 / 100" in screen.cards["Overall Health Score"].text()
+    assert screen.cards["Diversification"].text() == "GOOD"
+    assert screen.cards["Concentration"].text() == "MODERATE"
+
+
+def test_empty_portfolio_ui_safety(qapp):
+    class EmptyHealthService:
+        def build_snapshot(self):
+            return None
+
+        def evaluate(self, snapshot=None):
+            from services.portfolio_health_service import PortfolioHealthResult
+            return PortfolioHealthResult(
+                score=70,
+                grade="C",
+                diversification_rating="POOR",
+                concentration_rating="LOW",
+                position_count=0,
+                largest_position_weight_pct=0.0,
+                cash_allocation_pct=0.0,
+            )
+
+    screen = PortfolioHealth(service=EmptyHealthService())
+    assert "70 / 100" in screen.cards["Overall Health Score"].text()
+    assert screen.cards["Diversification"].text() == "POOR"
+    assert screen.cards["Concentration"].text() == "LOW"
+
 

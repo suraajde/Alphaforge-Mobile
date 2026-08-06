@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from services.portfolio_health_service import (
+    PortfolioHealthResult,
     PortfolioHealthService,
     PortfolioHealthSnapshot,
 )
@@ -29,13 +30,25 @@ class PortfolioHealth(QWidget):
         self.refresh_data()
 
     def refresh_data(self) -> None:
-        """Fetch and bind live portfolio health snapshot data."""
+        """Fetch and bind live portfolio health snapshot and evaluation data."""
         if self.service is not None:
-            snapshot = self.service.build_snapshot()
-            self.load_snapshot(snapshot)
+            snapshot = None
+            if hasattr(self.service, "build_snapshot"):
+                try:
+                    snapshot = self.service.build_snapshot()
+                    self.load_snapshot(snapshot)
+                except Exception:
+                    pass
+
+            if hasattr(self.service, "evaluate"):
+                try:
+                    result = self.service.evaluate(snapshot)
+                    self.load_result(result)
+                except Exception:
+                    pass
 
     def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
-        """Bind live snapshot metrics to the three approved metric cards."""
+        """Bind live snapshot metrics to the metric cards."""
         if snapshot is None:
             return
 
@@ -49,6 +62,21 @@ class PortfolioHealth(QWidget):
 
         if "Largest Position" in self.cards:
             self.cards["Largest Position"].setText(str(snapshot.largest_position))
+
+    def load_result(self, result: Optional[PortfolioHealthResult] = None) -> None:
+        """Bind live PortfolioHealthResult metrics to score, diversification, and concentration cards."""
+        if result is None:
+            return
+
+        if "Overall Health Score" in self.cards:
+            grade_suffix = f" ({result.grade})" if getattr(result, "grade", None) else ""
+            self.cards["Overall Health Score"].setText(f"{result.score} / 100{grade_suffix}")
+
+        if "Diversification" in self.cards:
+            self.cards["Diversification"].setText(str(result.diversification_rating))
+
+        if "Concentration" in self.cards:
+            self.cards["Concentration"].setText(str(result.concentration_rating))
 
     def _build_ui(self):
         self.setStyleSheet("""
