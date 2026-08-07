@@ -616,6 +616,92 @@ def test_monitoring_corrupt_history_safe(qapp):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
+def test_change_detection_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_cd_snapshots_compared")
+    assert hasattr(screen, "lbl_cd_changes_detected")
+    assert hasattr(screen, "lbl_cd_total_changes")
+    assert hasattr(screen, "changes_list_container")
+
+
+def test_change_detection_values_display(qapp):
+    from services.portfolio_health_change_detection_service import (
+        PortfolioHealthChange,
+        PortfolioHealthChangeReport,
+    )
+
+    class MockChangeDetectionService:
+        def detect_changes(self):
+            return PortfolioHealthChangeReport(
+                snapshot_count=2,
+                total_changes=3,
+                has_changes=True,
+                changes=[
+                    PortfolioHealthChange("Health Score", "84", "91", "INCREASED"),
+                    PortfolioHealthChange("Grade", "B", "A", "CHANGED"),
+                    PortfolioHealthChange("Cash Allocation", "8%", "5%", "DECREASED"),
+                ],
+            )
+
+    cd_svc = MockChangeDetectionService()
+    screen = PortfolioHealth(change_detection_service=cd_svc)
+
+    assert "Snapshots Compared: 2" in screen.lbl_cd_snapshots_compared.text()
+    assert "Changes Detected: YES" in screen.lbl_cd_changes_detected.text()
+    assert "Total Changes: 3" in screen.lbl_cd_total_changes.text()
+    assert screen.changes_list_container.count() == 3
+
+
+def test_change_detection_no_history_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        missing_file = Path(temp_dir) / "missing.json"
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(missing_file))
+        cd_svc = PortfolioHealthChangeDetectionService(history_service=hist_svc)
+        screen = PortfolioHealth(change_detection_service=cd_svc, history_service=hist_svc)
+
+        assert "Snapshots Compared: 0" in screen.lbl_cd_snapshots_compared.text()
+        assert "Changes Detected: NO" in screen.lbl_cd_changes_detected.text()
+        assert "Total Changes: 0" in screen.lbl_cd_total_changes.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+def test_change_detection_single_snapshot_safe(qapp):
+    import json
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        single_file = Path(temp_dir) / "single.json"
+        single_file.write_text(json.dumps([{"score": 85, "grade": "B"}]), encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(single_file))
+        cd_svc = PortfolioHealthChangeDetectionService(history_service=hist_svc)
+        screen = PortfolioHealth(change_detection_service=cd_svc, history_service=hist_svc)
+
+        assert "Snapshots Compared: 1" in screen.lbl_cd_snapshots_compared.text()
+        assert "Changes Detected: NO" in screen.lbl_cd_changes_detected.text()
+        assert "Total Changes: 0" in screen.lbl_cd_total_changes.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
 
 
 

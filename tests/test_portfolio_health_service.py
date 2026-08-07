@@ -486,3 +486,35 @@ def test_monitoring_integration_works():
     assert result.monitoring_state.snapshot_count == 18
     assert result.monitoring_state.latest_score == 91
     assert result.monitoring_state.latest_grade == "A"
+
+
+def test_change_detection_integration_works():
+    """Verify evaluate populates result.change_report."""
+    from services.portfolio_health_change_detection_service import (
+        PortfolioHealthChange,
+        PortfolioHealthChangeReport,
+    )
+
+    class MockChangeDetectionService:
+        def detect_changes(self):
+            return PortfolioHealthChangeReport(
+                snapshot_count=2,
+                total_changes=3,
+                has_changes=True,
+                changes=[
+                    PortfolioHealthChange("Health Score", "84", "91", "INCREASED"),
+                    PortfolioHealthChange("Grade", "B", "A", "CHANGED"),
+                    PortfolioHealthChange("Cash Allocation", "8%", "5%", "DECREASED"),
+                ],
+            )
+
+    cd_svc = MockChangeDetectionService()
+    service = PortfolioHealthService(change_detection_service=cd_svc)
+    result = service.evaluate()
+
+    assert result.change_report is not None
+    assert isinstance(result.change_report, PortfolioHealthChangeReport)
+    assert result.change_report.snapshot_count == 2
+    assert result.change_report.total_changes == 3
+    assert result.change_report.has_changes is True
+    assert len(result.change_report.changes) == 3

@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QScrollArea,
 )
 
+from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
 from services.portfolio_health_service import (
@@ -26,14 +27,17 @@ class PortfolioHealth(QWidget):
         service: Optional[PortfolioHealthService] = None,
         history_service: Optional[PortfolioHealthHistoryService] = None,
         monitor_service: Optional[PortfolioHealthMonitorService] = None,
+        change_detection_service: Optional[PortfolioHealthChangeDetectionService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
         self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
         self.monitor_service = monitor_service if monitor_service is not None else PortfolioHealthMonitorService(history_service=self.history_service)
+        self.change_detection_service = change_detection_service if change_detection_service is not None else PortfolioHealthChangeDetectionService(history_service=self.history_service)
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
+            change_detection_service=self.change_detection_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -58,6 +62,55 @@ class PortfolioHealth(QWidget):
 
         self.load_history()
         self.load_monitoring()
+        self.load_change_detection()
+
+    def load_change_detection(self) -> None:
+        """Bind live portfolio health change detection report to UI."""
+        if getattr(self, "change_detection_service", None) is None:
+            return
+        try:
+            report = self.change_detection_service.detect_changes()
+            self._update_change_detection_ui(report)
+        except Exception:
+            pass
+
+    def _update_change_detection_ui(self, report: Any) -> None:
+        if report is None:
+            return
+        if hasattr(self, "lbl_cd_snapshots_compared"):
+            self.lbl_cd_snapshots_compared.setText(f"Snapshots Compared: {getattr(report, 'snapshot_count', 0)}")
+        if hasattr(self, "lbl_cd_changes_detected"):
+            has_chg = getattr(report, 'has_changes', False)
+            self.lbl_cd_changes_detected.setText(f"Changes Detected: {'YES' if has_chg else 'NO'}")
+        if hasattr(self, "lbl_cd_total_changes"):
+            self.lbl_cd_total_changes.setText(f"Total Changes: {getattr(report, 'total_changes', 0)}")
+
+        if hasattr(self, "changes_list_container"):
+            self._clear_layout(self.changes_list_container)
+            changes = getattr(report, "changes", [])
+            changed_items = [c for c in changes if getattr(c, "change_type", "UNCHANGED") != "UNCHANGED"]
+            if changed_items:
+                for item in changed_items:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+                    fname_lbl = QLabel(getattr(item, "field_name", ""))
+                    fname_lbl.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67;")
+                    val_lbl = QLabel(f"{getattr(item, 'previous_value', '')} → {getattr(item, 'current_value', '')}")
+                    val_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+                    ctype = getattr(item, "change_type", "")
+                    color = "#16a34a" if ctype == "INCREASED" else "#dc2626" if ctype == "DECREASED" else "#2563eb"
+                    type_lbl = QLabel(ctype)
+                    type_lbl.setStyleSheet(f"font-size: 12px; font-weight: 700; color: {color};")
+                    lyt.addWidget(fname_lbl)
+                    lyt.addWidget(val_lbl)
+                    lyt.addWidget(type_lbl)
+                    self.changes_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No changes detected")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.changes_list_container.addWidget(lbl)
 
     def load_monitoring(self) -> None:
         """Bind live portfolio health monitoring metrics to UI."""
@@ -266,6 +319,10 @@ class PortfolioHealth(QWidget):
                 self.lbl_mon_latest_score.setText(f"Latest Score: {mon_state.latest_score}")
             if hasattr(self, "lbl_mon_latest_grade"):
                 self.lbl_mon_latest_grade.setText(f"Latest Grade: {mon_state.latest_grade}")
+
+        cd_report = getattr(result, "change_report", None)
+        if cd_report is not None:
+            self._update_change_detection_ui(cd_report)
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
@@ -656,6 +713,37 @@ class PortfolioHealth(QWidget):
         monitoring_layout.addWidget(self.lbl_mon_latest_grade)
 
         root_layout.addWidget(monitoring_card)
+
+        # Portfolio Health Change Detection Section
+        cd_card = QFrame()
+        cd_card.setObjectName("metricCard")
+        cd_layout = QVBoxLayout(cd_card)
+        cd_layout.setContentsMargins(16, 14, 16, 14)
+        cd_layout.setSpacing(8)
+
+        lbl_cd_header = QLabel("Portfolio Health Change Detection")
+        lbl_cd_header.setObjectName("sectionHeader")
+        cd_layout.addWidget(lbl_cd_header)
+
+        self.lbl_cd_snapshots_compared = QLabel("Snapshots Compared: 0")
+        self.lbl_cd_snapshots_compared.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_cd_changes_detected = QLabel("Changes Detected: NO")
+        self.lbl_cd_changes_detected.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_cd_total_changes = QLabel("Total Changes: 0")
+        self.lbl_cd_total_changes.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        cd_layout.addWidget(self.lbl_cd_snapshots_compared)
+        cd_layout.addWidget(self.lbl_cd_changes_detected)
+        cd_layout.addWidget(self.lbl_cd_total_changes)
+
+        lbl_changes_subheader = QLabel("Changes")
+        lbl_changes_subheader.setStyleSheet("font-size: 15px; font-weight: 700; color: #173b67; margin-top: 6px;")
+        cd_layout.addWidget(lbl_changes_subheader)
+
+        self.changes_list_container = QVBoxLayout()
+        cd_layout.addLayout(self.changes_list_container)
+
+        root_layout.addWidget(cd_card)
 
         root_layout.addStretch()
 

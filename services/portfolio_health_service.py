@@ -71,6 +71,7 @@ class PortfolioHealthResult:
     historical_metrics: Optional[Any] = None
     historical_insights: Optional[Any] = None
     monitoring_state: Optional[Any] = None
+    change_report: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -81,6 +82,7 @@ class PortfolioHealthService:
         portfolio_app_service: Optional[Any] = None,
         history_service: Optional[Any] = None,
         monitor_service: Optional[Any] = None,
+        change_detection_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -89,10 +91,12 @@ class PortfolioHealthService:
                 or similar portfolio data service.
             history_service: Optional instance of PortfolioHealthHistoryService.
             monitor_service: Optional instance of PortfolioHealthMonitorService.
+            change_detection_service: Optional instance of PortfolioHealthChangeDetectionService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
         self._monitor_service = monitor_service
+        self._change_detection_service = change_detection_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -437,6 +441,19 @@ class PortfolioHealthService:
                 res.monitoring_state = mon_svc.get_monitoring_state()
             except Exception:
                 res.monitoring_state = None
+
+        if self._change_detection_service is not None and hasattr(self._change_detection_service, "detect_changes"):
+            try:
+                res.change_report = self._change_detection_service.detect_changes()
+            except Exception:
+                res.change_report = None
+        else:
+            try:
+                from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
+                cd_svc = PortfolioHealthChangeDetectionService(history_service=self._history_service)
+                res.change_report = cd_svc.detect_changes()
+            except Exception:
+                res.change_report = None
 
         return res
 

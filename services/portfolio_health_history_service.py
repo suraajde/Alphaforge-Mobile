@@ -16,6 +16,7 @@ class PortfolioHealthHistoryEntry:
     position_count: int
     largest_position_weight_pct: float
     cash_allocation_pct: float
+    largest_position: str = "N/A"
 
 
 @dataclass
@@ -90,6 +91,7 @@ class PortfolioHealthHistoryService:
             pos_count = int(getattr(result, "position_count", 0))
             largest_weight = float(getattr(result, "largest_position_weight_pct", 0.0))
             cash_pct = float(getattr(result, "cash_allocation_pct", 0.0))
+            largest_pos = str(getattr(result, "largest_position", "N/A"))
 
             entry = PortfolioHealthHistoryEntry(
                 timestamp=timestamp,
@@ -100,6 +102,7 @@ class PortfolioHealthHistoryService:
                 position_count=pos_count,
                 largest_position_weight_pct=largest_weight,
                 cash_allocation_pct=cash_pct,
+                largest_position=largest_pos,
             )
 
             history = self.get_history()
@@ -137,6 +140,7 @@ class PortfolioHealthHistoryService:
                             position_count=int(item.get("position_count", 0)),
                             largest_position_weight_pct=float(item.get("largest_position_weight_pct", 0.0)),
                             cash_allocation_pct=float(item.get("cash_allocation_pct", 0.0)),
+                            largest_position=str(item.get("largest_position", "N/A")),
                         )
                     )
             return entries
