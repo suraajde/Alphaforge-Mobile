@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
+from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
 from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
 from services.portfolio_health_service import (
     PortfolioHealthResult,
@@ -30,6 +31,7 @@ class PortfolioHealth(QWidget):
         monitor_service: Optional[PortfolioHealthMonitorService] = None,
         change_detection_service: Optional[PortfolioHealthChangeDetectionService] = None,
         timeline_service: Optional[PortfolioHealthTimelineService] = None,
+        monitoring_dashboard_service: Optional[PortfolioHealthMonitoringDashboardService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -40,11 +42,18 @@ class PortfolioHealth(QWidget):
             history_service=self.history_service,
             change_detection_service=self.change_detection_service,
         )
+        self.monitoring_dashboard_service = monitoring_dashboard_service if monitoring_dashboard_service is not None else PortfolioHealthMonitoringDashboardService(
+            history_service=self.history_service,
+            monitor_service=self.monitor_service,
+            change_detection_service=self.change_detection_service,
+            timeline_service=self.timeline_service,
+        )
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
             change_detection_service=self.change_detection_service,
             timeline_service=self.timeline_service,
+            monitoring_dashboard_service=self.monitoring_dashboard_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -71,6 +80,41 @@ class PortfolioHealth(QWidget):
         self.load_monitoring()
         self.load_change_detection()
         self.load_timeline()
+        self.load_monitoring_dashboard()
+
+    def load_monitoring_dashboard(self) -> None:
+        """Bind live portfolio health monitoring dashboard to UI."""
+        if getattr(self, "monitoring_dashboard_service", None) is None:
+            return
+        try:
+            dashboard = self.monitoring_dashboard_service.build_dashboard()
+            self._update_monitoring_dashboard_ui(dashboard)
+        except Exception:
+            pass
+
+    def _update_monitoring_dashboard_ui(self, dashboard: Any) -> None:
+        if dashboard is None:
+            return
+        if hasattr(self, "lbl_mon_dash_status"):
+            self.lbl_mon_dash_status.setText(f"Monitoring Status: {getattr(dashboard, 'monitoring_status', 'UNAVAILABLE')}")
+        if hasattr(self, "lbl_mon_dash_enabled"):
+            enabled = getattr(dashboard, 'monitoring_enabled', False)
+            self.lbl_mon_dash_enabled.setText(f"Monitoring Enabled: {'YES' if enabled else 'NO'}")
+        if hasattr(self, "lbl_mon_dash_latest_score"):
+            self.lbl_mon_dash_latest_score.setText(f"Latest Score: {getattr(dashboard, 'latest_score', 0)}")
+        if hasattr(self, "lbl_mon_dash_latest_grade"):
+            self.lbl_mon_dash_latest_grade.setText(f"Latest Grade: {getattr(dashboard, 'latest_grade', '-')}")
+        if hasattr(self, "lbl_mon_dash_latest_snapshot"):
+            snap_time = getattr(dashboard, 'latest_snapshot_time', "N/A") or "N/A"
+            self.lbl_mon_dash_latest_snapshot.setText(f"Latest Snapshot: {snap_time}")
+        if hasattr(self, "lbl_mon_dash_total_snapshots"):
+            self.lbl_mon_dash_total_snapshots.setText(f"Total Snapshots: {getattr(dashboard, 'total_snapshots', 0)}")
+        if hasattr(self, "lbl_mon_dash_timeline_entries"):
+            self.lbl_mon_dash_timeline_entries.setText(f"Timeline Entries: {getattr(dashboard, 'timeline_entries', 0)}")
+        if hasattr(self, "lbl_mon_dash_latest_change_count"):
+            self.lbl_mon_dash_latest_change_count.setText(f"Latest Change Count: {getattr(dashboard, 'latest_change_count', 0)}")
+        if hasattr(self, "lbl_mon_dash_total_detected_changes"):
+            self.lbl_mon_dash_total_detected_changes.setText(f"Total Detected Changes: {getattr(dashboard, 'total_detected_changes', 0)}")
 
     def load_timeline(self) -> None:
         """Bind live portfolio health timeline report to UI."""
@@ -395,6 +439,10 @@ class PortfolioHealth(QWidget):
         timeline = getattr(result, "timeline", None)
         if timeline is not None:
             self._update_timeline_ui(timeline)
+
+        mon_dash = getattr(result, "monitoring_dashboard", None)
+        if mon_dash is not None:
+            self._update_monitoring_dashboard_ui(mon_dash)
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
@@ -843,6 +891,48 @@ class PortfolioHealth(QWidget):
         tl_layout.addLayout(self.timeline_list_container)
 
         root_layout.addWidget(tl_card)
+
+        # Portfolio Health Monitoring Dashboard Section
+        mon_dash_card = QFrame()
+        mon_dash_card.setObjectName("metricCard")
+        mon_dash_layout = QVBoxLayout(mon_dash_card)
+        mon_dash_layout.setContentsMargins(16, 14, 16, 14)
+        mon_dash_layout.setSpacing(8)
+
+        lbl_mon_dash_header = QLabel("Portfolio Health Monitoring Dashboard")
+        lbl_mon_dash_header.setObjectName("sectionHeader")
+        mon_dash_layout.addWidget(lbl_mon_dash_header)
+
+        self.lbl_mon_dash_status = QLabel("Monitoring Status: UNAVAILABLE")
+        self.lbl_mon_dash_status.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_enabled = QLabel("Monitoring Enabled: NO")
+        self.lbl_mon_dash_enabled.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_latest_score = QLabel("Latest Score: 0")
+        self.lbl_mon_dash_latest_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_latest_grade = QLabel("Latest Grade: -")
+        self.lbl_mon_dash_latest_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_latest_snapshot = QLabel("Latest Snapshot: N/A")
+        self.lbl_mon_dash_latest_snapshot.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_total_snapshots = QLabel("Total Snapshots: 0")
+        self.lbl_mon_dash_total_snapshots.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_timeline_entries = QLabel("Timeline Entries: 0")
+        self.lbl_mon_dash_timeline_entries.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_latest_change_count = QLabel("Latest Change Count: 0")
+        self.lbl_mon_dash_latest_change_count.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_dash_total_detected_changes = QLabel("Total Detected Changes: 0")
+        self.lbl_mon_dash_total_detected_changes.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        mon_dash_layout.addWidget(self.lbl_mon_dash_status)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_enabled)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_latest_score)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_latest_grade)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_latest_snapshot)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_total_snapshots)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_timeline_entries)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_latest_change_count)
+        mon_dash_layout.addWidget(self.lbl_mon_dash_total_detected_changes)
+
+        root_layout.addWidget(mon_dash_card)
 
         root_layout.addStretch()
 

@@ -73,6 +73,7 @@ class PortfolioHealthResult:
     monitoring_state: Optional[Any] = None
     change_report: Optional[Any] = None
     timeline: Optional[Any] = None
+    monitoring_dashboard: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -85,6 +86,7 @@ class PortfolioHealthService:
         monitor_service: Optional[Any] = None,
         change_detection_service: Optional[Any] = None,
         timeline_service: Optional[Any] = None,
+        monitoring_dashboard_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -95,12 +97,14 @@ class PortfolioHealthService:
             monitor_service: Optional instance of PortfolioHealthMonitorService.
             change_detection_service: Optional instance of PortfolioHealthChangeDetectionService.
             timeline_service: Optional instance of PortfolioHealthTimelineService.
+            monitoring_dashboard_service: Optional instance of PortfolioHealthMonitoringDashboardService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
         self._monitor_service = monitor_service
         self._change_detection_service = change_detection_service
         self._timeline_service = timeline_service
+        self._monitoring_dashboard_service = monitoring_dashboard_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -474,6 +478,24 @@ class PortfolioHealthService:
                 res.timeline = tl_svc.build_timeline()
             except Exception:
                 res.timeline = None
+
+        if self._monitoring_dashboard_service is not None and hasattr(self._monitoring_dashboard_service, "build_dashboard"):
+            try:
+                res.monitoring_dashboard = self._monitoring_dashboard_service.build_dashboard()
+            except Exception:
+                res.monitoring_dashboard = None
+        else:
+            try:
+                from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
+                dash_svc = PortfolioHealthMonitoringDashboardService(
+                    history_service=self._history_service,
+                    monitor_service=self._monitor_service,
+                    change_detection_service=self._change_detection_service,
+                    timeline_service=self._timeline_service,
+                )
+                res.monitoring_dashboard = dash_svc.build_dashboard()
+            except Exception:
+                res.monitoring_dashboard = None
 
         return res
 

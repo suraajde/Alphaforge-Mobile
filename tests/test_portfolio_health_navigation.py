@@ -789,6 +789,78 @@ def test_timeline_single_snapshot_safe(qapp):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
+def test_monitoring_dashboard_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_mon_dash_status")
+    assert hasattr(screen, "lbl_mon_dash_enabled")
+    assert hasattr(screen, "lbl_mon_dash_latest_score")
+    assert hasattr(screen, "lbl_mon_dash_latest_grade")
+    assert hasattr(screen, "lbl_mon_dash_latest_snapshot")
+    assert hasattr(screen, "lbl_mon_dash_total_snapshots")
+    assert hasattr(screen, "lbl_mon_dash_timeline_entries")
+    assert hasattr(screen, "lbl_mon_dash_latest_change_count")
+    assert hasattr(screen, "lbl_mon_dash_total_detected_changes")
+
+
+def test_monitoring_dashboard_values_display(qapp):
+    from services.portfolio_health_monitor_dashboard_service import (
+        PortfolioHealthMonitoringDashboard,
+    )
+
+    class MockDashboardService:
+        def build_dashboard(self):
+            return PortfolioHealthMonitoringDashboard(
+                monitoring_status="READY",
+                monitoring_enabled=True,
+                latest_score=91,
+                latest_grade="A",
+                latest_snapshot_time="2026-08-08 09:15",
+                total_snapshots=18,
+                total_detected_changes=27,
+                latest_change_count=3,
+                timeline_entries=18,
+            )
+
+    dash_svc = MockDashboardService()
+    screen = PortfolioHealth(monitoring_dashboard_service=dash_svc)
+
+    assert "Monitoring Status: READY" in screen.lbl_mon_dash_status.text()
+    assert "Monitoring Enabled: YES" in screen.lbl_mon_dash_enabled.text()
+    assert "Latest Score: 91" in screen.lbl_mon_dash_latest_score.text()
+    assert "Latest Grade: A" in screen.lbl_mon_dash_latest_grade.text()
+    assert "Latest Snapshot: 2026-08-08 09:15" in screen.lbl_mon_dash_latest_snapshot.text()
+    assert "Total Snapshots: 18" in screen.lbl_mon_dash_total_snapshots.text()
+    assert "Timeline Entries: 18" in screen.lbl_mon_dash_timeline_entries.text()
+    assert "Latest Change Count: 3" in screen.lbl_mon_dash_latest_change_count.text()
+    assert "Total Detected Changes: 27" in screen.lbl_mon_dash_total_detected_changes.text()
+
+
+def test_monitoring_dashboard_empty_dashboard_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+    from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        empty_file = Path(temp_dir) / "empty.json"
+        empty_file.write_text("[]", encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(empty_file))
+        dash_svc = PortfolioHealthMonitoringDashboardService(history_service=hist_svc)
+        screen = PortfolioHealth(monitoring_dashboard_service=dash_svc, history_service=hist_svc)
+
+        assert "Monitoring Status: WAITING" in screen.lbl_mon_dash_status.text()
+        assert "Monitoring Enabled: YES" in screen.lbl_mon_dash_enabled.text()
+        assert "Total Snapshots: 0" in screen.lbl_mon_dash_total_snapshots.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
 
 
 

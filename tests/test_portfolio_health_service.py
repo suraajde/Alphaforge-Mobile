@@ -550,3 +550,37 @@ def test_timeline_integration_works():
     assert result.timeline.earliest_timestamp == "2026-07-01"
     assert result.timeline.latest_timestamp == "2026-08-08"
     assert len(result.timeline.entries) == 3
+
+
+def test_monitoring_dashboard_integration_works():
+    """Verify evaluate populates result.monitoring_dashboard."""
+    from services.portfolio_health_monitor_dashboard_service import (
+        PortfolioHealthMonitoringDashboard,
+    )
+
+    class MockDashboardService:
+        def build_dashboard(self):
+            return PortfolioHealthMonitoringDashboard(
+                monitoring_status="READY",
+                monitoring_enabled=True,
+                latest_score=91,
+                latest_grade="A",
+                latest_snapshot_time="2026-08-08 09:15",
+                total_snapshots=18,
+                total_detected_changes=27,
+                latest_change_count=3,
+                timeline_entries=18,
+            )
+
+    dash_svc = MockDashboardService()
+    service = PortfolioHealthService(monitoring_dashboard_service=dash_svc)
+    result = service.evaluate()
+
+    assert result.monitoring_dashboard is not None
+    assert isinstance(result.monitoring_dashboard, PortfolioHealthMonitoringDashboard)
+    assert result.monitoring_dashboard.monitoring_status == "READY"
+    assert result.monitoring_dashboard.monitoring_enabled is True
+    assert result.monitoring_dashboard.latest_score == 91
+    assert result.monitoring_dashboard.latest_grade == "A"
+    assert result.monitoring_dashboard.total_snapshots == 18
+    assert result.monitoring_dashboard.total_detected_changes == 27
