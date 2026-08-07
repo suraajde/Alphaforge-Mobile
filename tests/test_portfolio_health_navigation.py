@@ -1181,18 +1181,50 @@ def test_empty_alert_management_safe(qapp):
     assert "Active: 0" in screen.lbl_am_active.text()
 
 
+def test_decision_engine_section_loads(qapp):
+    """Verify Decision Engine section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_de_status")
+    assert hasattr(screen, "lbl_de_total")
+    assert hasattr(screen, "lbl_de_pending")
+    assert hasattr(screen, "lbl_de_informational")
+    assert hasattr(screen, "decision_engine_list_container")
 
 
+def test_decision_engine_values_display(qapp):
+    """Verify Decision Engine values display correctly."""
+    from services.decision_engine_service import DecisionEngineResult, DecisionSummary, DecisionEngineService
+
+    class MockDecisionEngineService:
+        def evaluate(self, **kwargs):
+            summary = DecisionSummary(
+                total_decisions=0,
+                pending_decisions=0,
+                informational_decisions=0,
+                engine_status="READY",
+            )
+            return DecisionEngineResult(summary=summary, decisions=[])
+
+    dec_svc = MockDecisionEngineService()
+    screen = PortfolioHealth(decision_engine_service=dec_svc)
+
+    assert "Engine Status: READY" in screen.lbl_de_status.text()
+    assert "Total Decisions: 0" in screen.lbl_de_total.text()
+    assert "Pending Decisions: 0" in screen.lbl_de_pending.text()
+    assert "Informational Decisions: 0" in screen.lbl_de_informational.text()
 
 
+def test_empty_decision_engine_safe(qapp):
+    """Verify empty Decision Engine displays safely."""
+    from services.decision_engine_service import DecisionEngineResult, DecisionSummary, DecisionEngineService
 
+    class MockEmptyDecService:
+        def evaluate(self, **kwargs):
+            summary = DecisionSummary(0, 0, 0, "UNAVAILABLE")
+            return DecisionEngineResult(summary=summary, decisions=[])
 
+    dec_svc = MockEmptyDecService()
+    screen = PortfolioHealth(decision_engine_service=dec_svc)
 
-
-
-
-
-
-
-
-
+    assert "Engine Status: UNAVAILABLE" in screen.lbl_de_status.text()
+    assert "Total Decisions: 0" in screen.lbl_de_total.text()

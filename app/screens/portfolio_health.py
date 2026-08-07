@@ -16,6 +16,7 @@ from services.alert_rules_service import AlertRulesService
 from services.alert_dashboard_service import AlertDashboardService
 from services.alert_history_service import AlertHistoryService
 from services.alert_management_service import AlertManagementService
+from services.decision_engine_service import DecisionEngineService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
@@ -44,6 +45,7 @@ class PortfolioHealth(QWidget):
         alert_dashboard_service: Optional[AlertDashboardService] = None,
         alert_history_service: Optional[AlertHistoryService] = None,
         alert_management_service: Optional[AlertManagementService] = None,
+        decision_engine_service: Optional[DecisionEngineService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -80,6 +82,7 @@ class PortfolioHealth(QWidget):
             alert_history_service=self.alert_history_service,
             alert_dashboard_service=self.alert_dashboard_service,
         )
+        self.decision_engine_service = decision_engine_service if decision_engine_service is not None else DecisionEngineService()
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -92,6 +95,7 @@ class PortfolioHealth(QWidget):
             alert_dashboard_service=self.alert_dashboard_service,
             alert_history_service=self.alert_history_service,
             alert_management_service=self.alert_management_service,
+            decision_engine_service=self.decision_engine_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -125,6 +129,49 @@ class PortfolioHealth(QWidget):
         self.load_alert_dashboard()
         self.load_alert_history()
         self.load_alert_management()
+        self.load_decision_engine()
+
+    def load_decision_engine(self) -> None:
+        """Bind live decision engine result to UI."""
+        if getattr(self, "decision_engine_service", None) is None:
+            return
+        try:
+            res = self.decision_engine_service.evaluate()
+            self._update_decision_engine_ui(res)
+        except Exception:
+            pass
+
+    def _update_decision_engine_ui(self, result: Any) -> None:
+        if result is None:
+            return
+        summary = getattr(result, "summary", None)
+        if summary is not None:
+            if hasattr(self, "lbl_de_status"):
+                self.lbl_de_status.setText(f"Engine Status: {getattr(summary, 'engine_status', 'UNAVAILABLE')}")
+            if hasattr(self, "lbl_de_total"):
+                self.lbl_de_total.setText(f"Total Decisions: {getattr(summary, 'total_decisions', 0)}")
+            if hasattr(self, "lbl_de_pending"):
+                self.lbl_de_pending.setText(f"Pending Decisions: {getattr(summary, 'pending_decisions', 0)}")
+            if hasattr(self, "lbl_de_informational"):
+                self.lbl_de_informational.setText(f"Informational Decisions: {getattr(summary, 'informational_decisions', 0)}")
+
+        if hasattr(self, "decision_engine_list_container"):
+            self._clear_layout(self.decision_engine_list_container)
+            decisions = getattr(result, "decisions", [])
+            if decisions:
+                for decision in decisions:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+                    lbl = QLabel(str(decision))
+                    lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
+                    lyt.addWidget(lbl)
+                    self.decision_engine_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No decisions available.")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.decision_engine_list_container.addWidget(lbl)
 
     def load_alert_management(self) -> None:
         """Bind live alert management summary to UI."""
@@ -1527,6 +1574,36 @@ class PortfolioHealth(QWidget):
         am_layout.addLayout(self.alert_management_list_container)
 
         root_layout.addWidget(am_card)
+
+        # Decision Engine Section
+        de_card = QFrame()
+        de_card.setObjectName("metricCard")
+        de_layout = QVBoxLayout(de_card)
+        de_layout.setContentsMargins(16, 14, 16, 14)
+        de_layout.setSpacing(8)
+
+        lbl_de_header = QLabel("Decision Engine")
+        lbl_de_header.setObjectName("sectionHeader")
+        de_layout.addWidget(lbl_de_header)
+
+        self.lbl_de_status = QLabel("Engine Status: READY")
+        self.lbl_de_status.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_de_total = QLabel("Total Decisions: 0")
+        self.lbl_de_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_de_pending = QLabel("Pending Decisions: 0")
+        self.lbl_de_pending.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_de_informational = QLabel("Informational Decisions: 0")
+        self.lbl_de_informational.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        de_layout.addWidget(self.lbl_de_status)
+        de_layout.addWidget(self.lbl_de_total)
+        de_layout.addWidget(self.lbl_de_pending)
+        de_layout.addWidget(self.lbl_de_informational)
+
+        self.decision_engine_list_container = QVBoxLayout()
+        de_layout.addLayout(self.decision_engine_list_container)
+
+        root_layout.addWidget(de_card)
 
         root_layout.addStretch()
 

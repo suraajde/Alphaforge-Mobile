@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from services.decision_engine_service import DecisionEngineResult
 from services.portfolio_analytics_service import (
     PortfolioAnalytics,
 )
@@ -80,6 +81,7 @@ class PortfolioHealthResult:
     alert_dashboard: Optional[Any] = None
     alert_history: Optional[Any] = None
     alert_management: Optional[Any] = None
+    decision_engine: Optional[DecisionEngineResult] = None
 
 
 class PortfolioHealthService:
@@ -99,6 +101,7 @@ class PortfolioHealthService:
         alert_dashboard_service: Optional[Any] = None,
         alert_history_service: Optional[Any] = None,
         alert_management_service: Optional[Any] = None,
+        decision_engine_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -116,6 +119,7 @@ class PortfolioHealthService:
             alert_dashboard_service: Optional instance of AlertDashboardService.
             alert_history_service: Optional instance of AlertHistoryService.
             alert_management_service: Optional instance of AlertManagementService.
+            decision_engine_service: Optional instance of DecisionEngineService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -129,6 +133,7 @@ class PortfolioHealthService:
         self._alert_dashboard_service = alert_dashboard_service
         self._alert_history_service = alert_history_service
         self._alert_management_service = alert_management_service
+        self._decision_engine_service = decision_engine_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -654,6 +659,26 @@ class PortfolioHealthService:
                 res.alert_management = mgmt_svc.get_management_result()
             except Exception:
                 res.alert_management = None
+
+        # Phase: Decision Engine
+        if self._decision_engine_service is not None and hasattr(self._decision_engine_service, "evaluate"):
+            try:
+                res.decision_engine = self._decision_engine_service.evaluate(
+                    portfolio_health_result=res,
+                    alert_management_result=res.alert_management,
+                )
+            except Exception:
+                res.decision_engine = None
+        else:
+            try:
+                from services.decision_engine_service import DecisionEngineService
+                dec_svc = DecisionEngineService()
+                res.decision_engine = dec_svc.evaluate(
+                    portfolio_health_result=res,
+                    alert_management_result=res.alert_management,
+                )
+            except Exception:
+                res.decision_engine = None
 
         return res
 

@@ -774,3 +774,28 @@ def test_alert_management_integration_works():
     assert result.alert_management.summary.active_alerts == 1
     assert result.alert_management.summary.acknowledged_alerts == 1
     assert len(result.alert_management.alerts) == 2
+
+
+def test_decision_engine_integration_works():
+    """Verify evaluate populates result.decision_engine."""
+    from services.decision_engine_service import DecisionEngineResult, DecisionSummary
+
+    class MockDecisionEngineService:
+        def evaluate(self, **kwargs):
+            summary = DecisionSummary(
+                total_decisions=0,
+                pending_decisions=0,
+                informational_decisions=0,
+                engine_status="READY",
+            )
+            return DecisionEngineResult(summary=summary, decisions=[])
+
+    dec_svc = MockDecisionEngineService()
+    service = PortfolioHealthService(decision_engine_service=dec_svc)
+    result = service.evaluate()
+
+    assert result.decision_engine is not None
+    assert isinstance(result.decision_engine, DecisionEngineResult)
+    assert result.decision_engine.summary.engine_status == "READY"
+    assert result.decision_engine.summary.total_decisions == 0
+    assert result.decision_engine.decisions == []
