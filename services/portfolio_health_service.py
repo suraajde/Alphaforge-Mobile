@@ -74,6 +74,7 @@ class PortfolioHealthResult:
     change_report: Optional[Any] = None
     timeline: Optional[Any] = None
     monitoring_dashboard: Optional[Any] = None
+    alert_center: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -87,6 +88,7 @@ class PortfolioHealthService:
         change_detection_service: Optional[Any] = None,
         timeline_service: Optional[Any] = None,
         monitoring_dashboard_service: Optional[Any] = None,
+        alert_center_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -98,6 +100,7 @@ class PortfolioHealthService:
             change_detection_service: Optional instance of PortfolioHealthChangeDetectionService.
             timeline_service: Optional instance of PortfolioHealthTimelineService.
             monitoring_dashboard_service: Optional instance of PortfolioHealthMonitoringDashboardService.
+            alert_center_service: Optional instance of AlertCenterService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -105,6 +108,7 @@ class PortfolioHealthService:
         self._change_detection_service = change_detection_service
         self._timeline_service = timeline_service
         self._monitoring_dashboard_service = monitoring_dashboard_service
+        self._alert_center_service = alert_center_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -496,6 +500,19 @@ class PortfolioHealthService:
                 res.monitoring_dashboard = dash_svc.build_dashboard()
             except Exception:
                 res.monitoring_dashboard = None
+
+        if self._alert_center_service is not None and hasattr(self._alert_center_service, "get_state"):
+            try:
+                res.alert_center = self._alert_center_service.get_state()
+            except Exception:
+                res.alert_center = None
+        else:
+            try:
+                from services.alert_center_service import AlertCenterService
+                ac_svc = AlertCenterService()
+                res.alert_center = ac_svc.get_state()
+            except Exception:
+                res.alert_center = None
 
         return res
 

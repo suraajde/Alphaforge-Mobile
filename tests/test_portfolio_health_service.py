@@ -584,3 +584,33 @@ def test_monitoring_dashboard_integration_works():
     assert result.monitoring_dashboard.latest_grade == "A"
     assert result.monitoring_dashboard.total_snapshots == 18
     assert result.monitoring_dashboard.total_detected_changes == 27
+
+
+def test_alert_center_integration_works():
+    """Verify evaluate populates result.alert_center."""
+    from services.alert_center_service import AlertCenterState, PortfolioAlert
+
+    class MockAlertCenterService:
+        def get_state(self):
+            return AlertCenterState(
+                total_alerts=4,
+                active_alerts=2,
+                acknowledged_alerts=1,
+                dismissed_alerts=1,
+                alerts=[
+                    PortfolioAlert("1", "2026-08-08", "TYPE1", "HIGH", "Title 1", "Desc 1", "ACTIVE"),
+                    PortfolioAlert("2", "2026-08-06", "TYPE2", "LOW", "Title 2", "Desc 2", "ACKNOWLEDGED"),
+                ],
+            )
+
+    ac_svc = MockAlertCenterService()
+    service = PortfolioHealthService(alert_center_service=ac_svc)
+    result = service.evaluate()
+
+    assert result.alert_center is not None
+    assert isinstance(result.alert_center, AlertCenterState)
+    assert result.alert_center.total_alerts == 4
+    assert result.alert_center.active_alerts == 2
+    assert result.alert_center.acknowledged_alerts == 1
+    assert result.alert_center.dismissed_alerts == 1
+    assert len(result.alert_center.alerts) == 2

@@ -860,6 +860,66 @@ def test_monitoring_dashboard_empty_dashboard_safe(qapp):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
+def test_alert_center_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_ac_total")
+    assert hasattr(screen, "lbl_ac_active")
+    assert hasattr(screen, "lbl_ac_acknowledged")
+    assert hasattr(screen, "lbl_ac_dismissed")
+    assert hasattr(screen, "alerts_list_container")
+
+
+def test_alert_values_display(qapp):
+    from services.alert_center_service import AlertCenterState, PortfolioAlert
+
+    class MockAlertCenterService:
+        def get_state(self):
+            return AlertCenterState(
+                total_alerts=4,
+                active_alerts=2,
+                acknowledged_alerts=1,
+                dismissed_alerts=1,
+                alerts=[
+                    PortfolioAlert("1", "2026-08-08", "CONCENTRATION", "HIGH", "Portfolio concentration increased", "Desc 1", "ACTIVE"),
+                    PortfolioAlert("2", "2026-08-06", "CASH", "LOW", "Cash allocation changed", "Desc 2", "ACKNOWLEDGED"),
+                ],
+            )
+
+    ac_svc = MockAlertCenterService()
+    screen = PortfolioHealth(alert_center_service=ac_svc)
+
+    assert "Total Alerts: 4" in screen.lbl_ac_total.text()
+    assert "Active: 2" in screen.lbl_ac_active.text()
+    assert "Acknowledged: 1" in screen.lbl_ac_acknowledged.text()
+    assert "Dismissed: 1" in screen.lbl_ac_dismissed.text()
+    assert screen.alerts_list_container.count() == 2
+
+
+def test_empty_alert_center_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.alert_center_service import AlertCenterService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        empty_file = Path(temp_dir) / "empty.json"
+        empty_file.write_text("[]", encoding="utf-8")
+
+        ac_svc = AlertCenterService(storage_path=str(empty_file))
+        screen = PortfolioHealth(alert_center_service=ac_svc)
+
+        assert "Total Alerts: 0" in screen.lbl_ac_total.text()
+        assert "Active: 0" in screen.lbl_ac_active.text()
+        assert "Acknowledged: 0" in screen.lbl_ac_acknowledged.text()
+        assert "Dismissed: 0" in screen.lbl_ac_dismissed.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
 
 
 
