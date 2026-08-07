@@ -18,6 +18,7 @@ from services.portfolio_health_service import (
     PortfolioHealthService,
     PortfolioHealthSnapshot,
 )
+from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
 
 
 class PortfolioHealth(QWidget):
@@ -28,16 +29,22 @@ class PortfolioHealth(QWidget):
         history_service: Optional[PortfolioHealthHistoryService] = None,
         monitor_service: Optional[PortfolioHealthMonitorService] = None,
         change_detection_service: Optional[PortfolioHealthChangeDetectionService] = None,
+        timeline_service: Optional[PortfolioHealthTimelineService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
         self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
         self.monitor_service = monitor_service if monitor_service is not None else PortfolioHealthMonitorService(history_service=self.history_service)
         self.change_detection_service = change_detection_service if change_detection_service is not None else PortfolioHealthChangeDetectionService(history_service=self.history_service)
+        self.timeline_service = timeline_service if timeline_service is not None else PortfolioHealthTimelineService(
+            history_service=self.history_service,
+            change_detection_service=self.change_detection_service,
+        )
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
             change_detection_service=self.change_detection_service,
+            timeline_service=self.timeline_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -63,6 +70,67 @@ class PortfolioHealth(QWidget):
         self.load_history()
         self.load_monitoring()
         self.load_change_detection()
+        self.load_timeline()
+
+    def load_timeline(self) -> None:
+        """Bind live portfolio health timeline report to UI."""
+        if getattr(self, "timeline_service", None) is None:
+            return
+        try:
+            timeline = self.timeline_service.build_timeline()
+            self._update_timeline_ui(timeline)
+        except Exception:
+            pass
+
+    def _update_timeline_ui(self, timeline: Any) -> None:
+        if timeline is None:
+            return
+        if hasattr(self, "lbl_tl_entries"):
+            self.lbl_tl_entries.setText(f"Entries: {getattr(timeline, 'total_entries', 0)}")
+        if hasattr(self, "lbl_tl_earliest"):
+            earliest = getattr(timeline, "earliest_timestamp", "N/A") or "N/A"
+            self.lbl_tl_earliest.setText(f"Earliest: {earliest}")
+        if hasattr(self, "lbl_tl_latest"):
+            latest = getattr(timeline, "latest_timestamp", "N/A") or "N/A"
+            self.lbl_tl_latest.setText(f"Latest: {latest}")
+
+        if hasattr(self, "timeline_list_container"):
+            self._clear_layout(self.timeline_list_container)
+            entries = getattr(timeline, "entries", [])
+            if entries:
+                for entry in entries:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    ts_lbl = QLabel(f"#{getattr(entry, 'sequence', '')}  {getattr(entry, 'timestamp', '')}")
+                    ts_lbl.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67;")
+
+                    score_lbl = QLabel(f"Score: {getattr(entry, 'score', 0)}")
+                    score_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+
+                    grade_lbl = QLabel(f"Grade: {getattr(entry, 'grade', '-')}")
+                    grade_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+
+                    trend = getattr(entry, "trend_direction", "STABLE")
+                    t_color = "#16a34a" if trend == "IMPROVING" else "#dc2626" if trend == "DETERIORATING" else "#64748b"
+                    trend_lbl = QLabel(f"Trend: {trend}")
+                    trend_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {t_color};")
+
+                    changes_lbl = QLabel(f"Changes: {getattr(entry, 'change_count', 0)}")
+                    changes_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+
+                    lyt.addWidget(ts_lbl)
+                    lyt.addWidget(score_lbl)
+                    lyt.addWidget(grade_lbl)
+                    lyt.addWidget(trend_lbl)
+                    lyt.addWidget(changes_lbl)
+                    self.timeline_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No timeline entries available")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.timeline_list_container.addWidget(lbl)
 
     def load_change_detection(self) -> None:
         """Bind live portfolio health change detection report to UI."""
@@ -323,6 +391,10 @@ class PortfolioHealth(QWidget):
         cd_report = getattr(result, "change_report", None)
         if cd_report is not None:
             self._update_change_detection_ui(cd_report)
+
+        timeline = getattr(result, "timeline", None)
+        if timeline is not None:
+            self._update_timeline_ui(timeline)
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
@@ -744,6 +816,33 @@ class PortfolioHealth(QWidget):
         cd_layout.addLayout(self.changes_list_container)
 
         root_layout.addWidget(cd_card)
+
+        # Portfolio Health Timeline Section
+        tl_card = QFrame()
+        tl_card.setObjectName("metricCard")
+        tl_layout = QVBoxLayout(tl_card)
+        tl_layout.setContentsMargins(16, 14, 16, 14)
+        tl_layout.setSpacing(8)
+
+        lbl_tl_header = QLabel("Portfolio Health Timeline")
+        lbl_tl_header.setObjectName("sectionHeader")
+        tl_layout.addWidget(lbl_tl_header)
+
+        self.lbl_tl_entries = QLabel("Entries: 0")
+        self.lbl_tl_entries.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_tl_earliest = QLabel("Earliest: N/A")
+        self.lbl_tl_earliest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_tl_latest = QLabel("Latest: N/A")
+        self.lbl_tl_latest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        tl_layout.addWidget(self.lbl_tl_entries)
+        tl_layout.addWidget(self.lbl_tl_earliest)
+        tl_layout.addWidget(self.lbl_tl_latest)
+
+        self.timeline_list_container = QVBoxLayout()
+        tl_layout.addLayout(self.timeline_list_container)
+
+        root_layout.addWidget(tl_card)
 
         root_layout.addStretch()
 

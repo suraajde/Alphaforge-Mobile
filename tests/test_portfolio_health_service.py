@@ -518,3 +518,35 @@ def test_change_detection_integration_works():
     assert result.change_report.total_changes == 3
     assert result.change_report.has_changes is True
     assert len(result.change_report.changes) == 3
+
+
+def test_timeline_integration_works():
+    """Verify evaluate populates result.timeline."""
+    from services.portfolio_health_timeline_service import (
+        PortfolioHealthTimeline,
+        PortfolioHealthTimelineEntry,
+    )
+
+    class MockTimelineService:
+        def build_timeline(self):
+            return PortfolioHealthTimeline(
+                total_entries=3,
+                latest_timestamp="2026-08-08",
+                earliest_timestamp="2026-07-01",
+                entries=[
+                    PortfolioHealthTimelineEntry(1, "2026-07-01", 80, "B", "STABLE", 0),
+                    PortfolioHealthTimelineEntry(2, "2026-07-15", 84, "B", "IMPROVING", 2),
+                    PortfolioHealthTimelineEntry(3, "2026-08-08", 91, "A", "IMPROVING", 3),
+                ],
+            )
+
+    tl_svc = MockTimelineService()
+    service = PortfolioHealthService(timeline_service=tl_svc)
+    result = service.evaluate()
+
+    assert result.timeline is not None
+    assert isinstance(result.timeline, PortfolioHealthTimeline)
+    assert result.timeline.total_entries == 3
+    assert result.timeline.earliest_timestamp == "2026-07-01"
+    assert result.timeline.latest_timestamp == "2026-08-08"
+    assert len(result.timeline.entries) == 3

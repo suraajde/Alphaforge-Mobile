@@ -701,6 +701,95 @@ def test_change_detection_single_snapshot_safe(qapp):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
+def test_timeline_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_tl_entries")
+    assert hasattr(screen, "lbl_tl_earliest")
+    assert hasattr(screen, "lbl_tl_latest")
+    assert hasattr(screen, "timeline_list_container")
+
+
+def test_timeline_entries_display(qapp):
+    from services.portfolio_health_timeline_service import (
+        PortfolioHealthTimeline,
+        PortfolioHealthTimelineEntry,
+    )
+
+    class MockTimelineService:
+        def build_timeline(self):
+            return PortfolioHealthTimeline(
+                total_entries=3,
+                latest_timestamp="2026-08-08",
+                earliest_timestamp="2026-07-01",
+                entries=[
+                    PortfolioHealthTimelineEntry(1, "2026-07-01", 80, "B", "STABLE", 0),
+                    PortfolioHealthTimelineEntry(2, "2026-07-15", 84, "B", "IMPROVING", 2),
+                    PortfolioHealthTimelineEntry(3, "2026-08-08", 91, "A", "IMPROVING", 3),
+                ],
+            )
+
+    tl_svc = MockTimelineService()
+    screen = PortfolioHealth(timeline_service=tl_svc)
+
+    assert "Entries: 3" in screen.lbl_tl_entries.text()
+    assert "Earliest: 2026-07-01" in screen.lbl_tl_earliest.text()
+    assert "Latest: 2026-08-08" in screen.lbl_tl_latest.text()
+    assert screen.timeline_list_container.count() == 3
+
+
+def test_timeline_empty_timeline_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+    from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        empty_file = Path(temp_dir) / "empty.json"
+        empty_file.write_text("[]", encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(empty_file))
+        tl_svc = PortfolioHealthTimelineService(history_service=hist_svc)
+        screen = PortfolioHealth(timeline_service=tl_svc, history_service=hist_svc)
+
+        assert "Entries: 0" in screen.lbl_tl_entries.text()
+        assert "Earliest: N/A" in screen.lbl_tl_earliest.text()
+        assert "Latest: N/A" in screen.lbl_tl_latest.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+def test_timeline_single_snapshot_safe(qapp):
+    import json
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+    from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        single_file = Path(temp_dir) / "single.json"
+        single_file.write_text(json.dumps([{"timestamp": "2026-08-01", "score": 85, "grade": "B"}]), encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(single_file))
+        tl_svc = PortfolioHealthTimelineService(history_service=hist_svc)
+        screen = PortfolioHealth(timeline_service=tl_svc, history_service=hist_svc)
+
+        assert "Entries: 1" in screen.lbl_tl_entries.text()
+        assert "Earliest: 2026-08-01" in screen.lbl_tl_earliest.text()
+        assert "Latest: 2026-08-01" in screen.lbl_tl_latest.text()
+        assert screen.timeline_list_container.count() == 1
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
 
 
 

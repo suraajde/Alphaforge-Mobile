@@ -72,6 +72,7 @@ class PortfolioHealthResult:
     historical_insights: Optional[Any] = None
     monitoring_state: Optional[Any] = None
     change_report: Optional[Any] = None
+    timeline: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -83,6 +84,7 @@ class PortfolioHealthService:
         history_service: Optional[Any] = None,
         monitor_service: Optional[Any] = None,
         change_detection_service: Optional[Any] = None,
+        timeline_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -92,11 +94,13 @@ class PortfolioHealthService:
             history_service: Optional instance of PortfolioHealthHistoryService.
             monitor_service: Optional instance of PortfolioHealthMonitorService.
             change_detection_service: Optional instance of PortfolioHealthChangeDetectionService.
+            timeline_service: Optional instance of PortfolioHealthTimelineService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
         self._monitor_service = monitor_service
         self._change_detection_service = change_detection_service
+        self._timeline_service = timeline_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -454,6 +458,22 @@ class PortfolioHealthService:
                 res.change_report = cd_svc.detect_changes()
             except Exception:
                 res.change_report = None
+
+        if self._timeline_service is not None and hasattr(self._timeline_service, "build_timeline"):
+            try:
+                res.timeline = self._timeline_service.build_timeline()
+            except Exception:
+                res.timeline = None
+        else:
+            try:
+                from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
+                tl_svc = PortfolioHealthTimelineService(
+                    history_service=self._history_service,
+                    change_detection_service=self._change_detection_service,
+                )
+                res.timeline = tl_svc.build_timeline()
+            except Exception:
+                res.timeline = None
 
         return res
 
