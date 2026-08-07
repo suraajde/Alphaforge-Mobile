@@ -77,6 +77,7 @@ class PortfolioHealthResult:
     alert_center: Optional[Any] = None
     generated_alerts: Optional[Any] = None
     alert_rules: Optional[Any] = None
+    alert_dashboard: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -93,6 +94,7 @@ class PortfolioHealthService:
         alert_center_service: Optional[Any] = None,
         alert_generation_service: Optional[Any] = None,
         alert_rules_service: Optional[Any] = None,
+        alert_dashboard_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -107,6 +109,7 @@ class PortfolioHealthService:
             alert_center_service: Optional instance of AlertCenterService.
             alert_generation_service: Optional instance of AlertGenerationService.
             alert_rules_service: Optional instance of AlertRulesService.
+            alert_dashboard_service: Optional instance of AlertDashboardService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -117,6 +120,7 @@ class PortfolioHealthService:
         self._alert_center_service = alert_center_service
         self._alert_generation_service = alert_generation_service
         self._alert_rules_service = alert_rules_service
+        self._alert_dashboard_service = alert_dashboard_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -574,6 +578,32 @@ class PortfolioHealthService:
                 )
             except Exception:
                 res.alert_rules = None
+
+        # Phase: Alert Dashboard
+        if self._alert_dashboard_service is not None and hasattr(self._alert_dashboard_service, "build_dashboard"):
+            try:
+                res.alert_dashboard = self._alert_dashboard_service.build_dashboard(
+                    alert_center_state=res.alert_center,
+                    generated_alerts=res.generated_alerts,
+                    alert_rules_result=res.alert_rules,
+                )
+            except Exception:
+                res.alert_dashboard = None
+        else:
+            try:
+                from services.alert_dashboard_service import AlertDashboardService
+                dash_svc = AlertDashboardService(
+                    alert_center_service=self._alert_center_service,
+                    alert_generation_service=self._alert_generation_service,
+                    alert_rules_service=self._alert_rules_service,
+                )
+                res.alert_dashboard = dash_svc.build_dashboard(
+                    alert_center_state=res.alert_center,
+                    generated_alerts=res.generated_alerts,
+                    alert_rules_result=res.alert_rules,
+                )
+            except Exception:
+                res.alert_dashboard = None
 
         return res
 

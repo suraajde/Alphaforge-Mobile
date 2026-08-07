@@ -1008,6 +1008,72 @@ def test_empty_alert_rules_safe(qapp):
     assert "Triggered Rules: 0" in screen.lbl_alert_rules_triggered.text()
 
 
+def test_alert_dashboard_section_loads(qapp):
+    """Verify Alert Dashboard section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_ad_total")
+    assert hasattr(screen, "lbl_ad_active")
+    assert hasattr(screen, "lbl_ad_acknowledged")
+    assert hasattr(screen, "lbl_ad_dismissed")
+    assert hasattr(screen, "lbl_ad_info")
+    assert hasattr(screen, "lbl_ad_low")
+    assert hasattr(screen, "lbl_ad_medium")
+    assert hasattr(screen, "lbl_ad_high")
+    assert hasattr(screen, "lbl_ad_critical")
+    assert hasattr(screen, "alert_dashboard_list_container")
+
+
+def test_alert_dashboard_values_display(qapp):
+    """Verify Alert Dashboard values display correctly."""
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_dashboard_service import AlertDashboard, AlertDashboardSummary, AlertDashboardService
+
+    class MockAlertDashboardService:
+        def build_dashboard(self, **kwargs):
+            summary = AlertDashboardSummary(
+                total_alerts=3,
+                active_alerts=2,
+                acknowledged_alerts=1,
+                dismissed_alerts=0,
+                info_alerts=1,
+                low_alerts=1,
+                medium_alerts=1,
+                high_alerts=0,
+                critical_alerts=0,
+            )
+            alerts = [
+                PortfolioAlert("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+                PortfolioAlert("2", "2026-08-07 10:00", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+                PortfolioAlert("3", "2026-08-07 10:00", "TIMELINE_UPDATED", "LOW", "Timeline", "Desc", "ACKNOWLEDGED"),
+            ]
+            return AlertDashboard(summary=summary, alerts=alerts)
+
+    dash_svc = MockAlertDashboardService()
+    screen = PortfolioHealth(alert_dashboard_service=dash_svc)
+
+    assert "Total Alerts: 3" in screen.lbl_ad_total.text()
+    assert "Active: 2" in screen.lbl_ad_active.text()
+    assert "Acknowledged: 1" in screen.lbl_ad_acknowledged.text()
+    assert "INFO: 1" in screen.lbl_ad_info.text()
+    assert screen.alert_dashboard_list_container.count() == 3
+
+
+def test_empty_alert_dashboard_safe(qapp):
+    """Verify empty Alert Dashboard displays safely."""
+    from services.alert_dashboard_service import AlertDashboard, AlertDashboardSummary, AlertDashboardService
+
+    class MockEmptyDashService:
+        def build_dashboard(self, **kwargs):
+            summary = AlertDashboardSummary(0, 0, 0, 0, 0, 0, 0, 0, 0)
+            return AlertDashboard(summary=summary, alerts=[])
+
+    dash_svc = MockEmptyDashService()
+    screen = PortfolioHealth(alert_dashboard_service=dash_svc)
+
+    assert "Total Alerts: 0" in screen.lbl_ad_total.text()
+    assert "Active: 0" in screen.lbl_ad_active.text()
+
+
 
 
 

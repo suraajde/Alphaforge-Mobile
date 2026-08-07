@@ -672,3 +672,41 @@ def test_alert_rules_integration_works():
     assert len(result.alert_rules.rules) == 5
     assert result.alert_rules.rules[0].rule_name == "Monitoring Ready"
     assert result.alert_rules.rules[0].triggered is True
+
+
+def test_alert_dashboard_integration_works():
+    """Verify evaluate populates result.alert_dashboard."""
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_dashboard_service import AlertDashboard, AlertDashboardSummary
+
+    class MockAlertDashboardService:
+        def build_dashboard(self, **kwargs):
+            summary = AlertDashboardSummary(
+                total_alerts=3,
+                active_alerts=2,
+                acknowledged_alerts=1,
+                dismissed_alerts=0,
+                info_alerts=1,
+                low_alerts=1,
+                medium_alerts=1,
+                high_alerts=0,
+                critical_alerts=0,
+            )
+            alerts = [
+                PortfolioAlert("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+                PortfolioAlert("2", "2026-08-07 10:00", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+                PortfolioAlert("3", "2026-08-07 10:00", "TIMELINE_UPDATED", "LOW", "Timeline", "Desc", "ACKNOWLEDGED"),
+            ]
+            return AlertDashboard(summary=summary, alerts=alerts)
+
+    dash_svc = MockAlertDashboardService()
+    service = PortfolioHealthService(alert_dashboard_service=dash_svc)
+    result = service.evaluate()
+
+    assert result.alert_dashboard is not None
+    assert isinstance(result.alert_dashboard, AlertDashboard)
+    assert result.alert_dashboard.summary.total_alerts == 3
+    assert result.alert_dashboard.summary.active_alerts == 2
+    assert result.alert_dashboard.summary.acknowledged_alerts == 1
+    assert result.alert_dashboard.summary.info_alerts == 1
+    assert len(result.alert_dashboard.alerts) == 3
