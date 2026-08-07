@@ -79,6 +79,7 @@ class PortfolioHealthResult:
     alert_rules: Optional[Any] = None
     alert_dashboard: Optional[Any] = None
     alert_history: Optional[Any] = None
+    alert_management: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -97,6 +98,7 @@ class PortfolioHealthService:
         alert_rules_service: Optional[Any] = None,
         alert_dashboard_service: Optional[Any] = None,
         alert_history_service: Optional[Any] = None,
+        alert_management_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -113,6 +115,7 @@ class PortfolioHealthService:
             alert_rules_service: Optional instance of AlertRulesService.
             alert_dashboard_service: Optional instance of AlertDashboardService.
             alert_history_service: Optional instance of AlertHistoryService.
+            alert_management_service: Optional instance of AlertManagementService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -125,6 +128,7 @@ class PortfolioHealthService:
         self._alert_rules_service = alert_rules_service
         self._alert_dashboard_service = alert_dashboard_service
         self._alert_history_service = alert_history_service
+        self._alert_management_service = alert_management_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -632,6 +636,24 @@ class PortfolioHealthService:
                 res.alert_history = hist_svc.get_history()
             except Exception:
                 res.alert_history = None
+
+        # Phase: Alert Management
+        if self._alert_management_service is not None and hasattr(self._alert_management_service, "get_management_result"):
+            try:
+                res.alert_management = self._alert_management_service.get_management_result()
+            except Exception:
+                res.alert_management = None
+        else:
+            try:
+                from services.alert_management_service import AlertManagementService
+                mgmt_svc = AlertManagementService(
+                    alert_center_service=self._alert_center_service,
+                    alert_history_service=self._alert_history_service,
+                    alert_dashboard_service=self._alert_dashboard_service,
+                )
+                res.alert_management = mgmt_svc.get_management_result()
+            except Exception:
+                res.alert_management = None
 
         return res
 

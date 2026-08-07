@@ -15,6 +15,7 @@ from services.alert_generation_service import AlertGenerationService
 from services.alert_rules_service import AlertRulesService
 from services.alert_dashboard_service import AlertDashboardService
 from services.alert_history_service import AlertHistoryService
+from services.alert_management_service import AlertManagementService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
@@ -42,6 +43,7 @@ class PortfolioHealth(QWidget):
         alert_rules_service: Optional[AlertRulesService] = None,
         alert_dashboard_service: Optional[AlertDashboardService] = None,
         alert_history_service: Optional[AlertHistoryService] = None,
+        alert_management_service: Optional[AlertManagementService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -73,6 +75,11 @@ class PortfolioHealth(QWidget):
             alert_rules_service=self.alert_rules_service,
         )
         self.alert_history_service = alert_history_service if alert_history_service is not None else AlertHistoryService()
+        self.alert_management_service = alert_management_service if alert_management_service is not None else AlertManagementService(
+            alert_center_service=self.alert_center_service,
+            alert_history_service=self.alert_history_service,
+            alert_dashboard_service=self.alert_dashboard_service,
+        )
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -84,6 +91,7 @@ class PortfolioHealth(QWidget):
             alert_rules_service=self.alert_rules_service,
             alert_dashboard_service=self.alert_dashboard_service,
             alert_history_service=self.alert_history_service,
+            alert_management_service=self.alert_management_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -116,6 +124,72 @@ class PortfolioHealth(QWidget):
         self.load_alert_rules()
         self.load_alert_dashboard()
         self.load_alert_history()
+        self.load_alert_management()
+
+    def load_alert_management(self) -> None:
+        """Bind live alert management summary to UI."""
+        if getattr(self, "alert_management_service", None) is None:
+            return
+        try:
+            res = self.alert_management_service.get_management_result()
+            self._update_alert_management_ui(res)
+        except Exception:
+            pass
+
+    def _update_alert_management_ui(self, mgmt_result: Any) -> None:
+        if mgmt_result is None:
+            return
+        summary = getattr(mgmt_result, "summary", None)
+        if summary is not None:
+            if hasattr(self, "lbl_am_total"):
+                self.lbl_am_total.setText(f"Total Alerts: {getattr(summary, 'total_alerts', 0)}")
+            if hasattr(self, "lbl_am_active"):
+                self.lbl_am_active.setText(f"Active: {getattr(summary, 'active_alerts', 0)}")
+            if hasattr(self, "lbl_am_acknowledged"):
+                self.lbl_am_acknowledged.setText(f"Acknowledged: {getattr(summary, 'acknowledged_alerts', 0)}")
+            if hasattr(self, "lbl_am_dismissed"):
+                self.lbl_am_dismissed.setText(f"Dismissed: {getattr(summary, 'dismissed_alerts', 0)}")
+            if hasattr(self, "lbl_am_last_updated"):
+                updated = getattr(summary, "last_updated", "N/A") or "N/A"
+                self.lbl_am_last_updated.setText(f"Last Updated: {updated}")
+
+        if hasattr(self, "alert_management_list_container"):
+            self._clear_layout(self.alert_management_list_container)
+            alerts = getattr(mgmt_result, "alerts", [])
+            if alerts:
+                for alert in alerts:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    id_lbl = QLabel(f"Alert ID: {getattr(alert, 'alert_id', '')}")
+                    id_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: 600;")
+
+                    sev = getattr(alert, 'severity', 'INFO')
+                    sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
+                    sev_lbl = QLabel(f"[{sev}]")
+                    sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+                    title_lbl = QLabel(getattr(alert, 'title', ''))
+                    title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+                    status_lbl = QLabel(f"Current Status: {getattr(alert, 'status', 'ACTIVE')}")
+                    status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+                    ts_lbl = QLabel(getattr(alert, 'timestamp', ''))
+                    ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+                    lyt.addWidget(id_lbl)
+                    lyt.addWidget(sev_lbl)
+                    lyt.addWidget(title_lbl)
+                    lyt.addWidget(status_lbl)
+                    lyt.addWidget(ts_lbl)
+                    self.alert_management_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No managed alerts")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.alert_management_list_container.addWidget(lbl)
 
     def load_alert_history(self) -> None:
         """Bind live alert history summary to UI."""
@@ -1420,6 +1494,39 @@ class PortfolioHealth(QWidget):
         ah_layout.addLayout(self.alert_history_list_container)
 
         root_layout.addWidget(ah_card)
+
+        # Alert Management Section
+        am_card = QFrame()
+        am_card.setObjectName("metricCard")
+        am_layout = QVBoxLayout(am_card)
+        am_layout.setContentsMargins(16, 14, 16, 14)
+        am_layout.setSpacing(8)
+
+        lbl_am_header = QLabel("Alert Management")
+        lbl_am_header.setObjectName("sectionHeader")
+        am_layout.addWidget(lbl_am_header)
+
+        self.lbl_am_total = QLabel("Total Alerts: 0")
+        self.lbl_am_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_am_active = QLabel("Active: 0")
+        self.lbl_am_active.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_am_acknowledged = QLabel("Acknowledged: 0")
+        self.lbl_am_acknowledged.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_am_dismissed = QLabel("Dismissed: 0")
+        self.lbl_am_dismissed.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_am_last_updated = QLabel("Last Updated: N/A")
+        self.lbl_am_last_updated.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        am_layout.addWidget(self.lbl_am_total)
+        am_layout.addWidget(self.lbl_am_active)
+        am_layout.addWidget(self.lbl_am_acknowledged)
+        am_layout.addWidget(self.lbl_am_dismissed)
+        am_layout.addWidget(self.lbl_am_last_updated)
+
+        self.alert_management_list_container = QVBoxLayout()
+        am_layout.addLayout(self.alert_management_list_container)
+
+        root_layout.addWidget(am_card)
 
         root_layout.addStretch()
 

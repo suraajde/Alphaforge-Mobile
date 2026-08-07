@@ -1125,6 +1125,63 @@ def test_empty_alert_history_safe(qapp):
     assert "Earliest: N/A" in screen.lbl_ah_earliest.text()
 
 
+def test_alert_management_section_loads(qapp):
+    """Verify Alert Management section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_am_total")
+    assert hasattr(screen, "lbl_am_active")
+    assert hasattr(screen, "lbl_am_acknowledged")
+    assert hasattr(screen, "lbl_am_dismissed")
+    assert hasattr(screen, "lbl_am_last_updated")
+    assert hasattr(screen, "alert_management_list_container")
+
+
+def test_alert_management_values_display(qapp):
+    """Verify Alert Management values display correctly."""
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_management_service import AlertManagementResult, AlertManagementSummary, AlertManagementService
+
+    class MockAlertManagementService:
+        def get_management_result(self):
+            summary = AlertManagementSummary(
+                total_alerts=2,
+                active_alerts=1,
+                acknowledged_alerts=1,
+                dismissed_alerts=0,
+                last_updated="2026-08-07 10:00",
+            )
+            alerts = [
+                PortfolioAlert("1", "2026-08-07 10:00", "TYPE1", "INFO", "Title 1", "Desc 1", "ACTIVE"),
+                PortfolioAlert("2", "2026-08-07 10:00", "TYPE2", "MEDIUM", "Title 2", "Desc 2", "ACKNOWLEDGED"),
+            ]
+            return AlertManagementResult(summary=summary, alerts=alerts)
+
+    mgmt_svc = MockAlertManagementService()
+    screen = PortfolioHealth(alert_management_service=mgmt_svc)
+
+    assert "Total Alerts: 2" in screen.lbl_am_total.text()
+    assert "Active: 1" in screen.lbl_am_active.text()
+    assert "Acknowledged: 1" in screen.lbl_am_acknowledged.text()
+    assert screen.alert_management_list_container.count() == 2
+
+
+def test_empty_alert_management_safe(qapp):
+    """Verify empty Alert Management displays safely."""
+    from services.alert_management_service import AlertManagementResult, AlertManagementSummary, AlertManagementService
+
+    class MockEmptyMgmtService:
+        def get_management_result(self):
+            summary = AlertManagementSummary(0, 0, 0, 0, None)
+            return AlertManagementResult(summary=summary, alerts=[])
+
+    mgmt_svc = MockEmptyMgmtService()
+    screen = PortfolioHealth(alert_management_service=mgmt_svc)
+
+    assert "Total Alerts: 0" in screen.lbl_am_total.text()
+    assert "Active: 0" in screen.lbl_am_active.text()
+
+
+
 
 
 

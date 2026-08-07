@@ -30,7 +30,8 @@ class PortfolioHealthRule:
         health: PortfolioHealth,
     ) -> None:
 
-        if health.overall_grade == "A":
+        grade = getattr(health, "grade", getattr(health, "overall_grade", ""))
+        if grade == "A":
 
             report.portfolio_recommendations.append(
 

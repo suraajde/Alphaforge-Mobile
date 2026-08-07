@@ -742,3 +742,35 @@ def test_alert_history_integration_works():
     assert result.alert_history.latest_timestamp == "2026-08-07 10:05"
     assert result.alert_history.earliest_timestamp == "2026-08-07 10:00"
     assert len(result.alert_history.entries) == 2
+
+
+def test_alert_management_integration_works():
+    """Verify evaluate populates result.alert_management."""
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_management_service import AlertManagementResult, AlertManagementSummary
+
+    class MockAlertManagementService:
+        def get_management_result(self):
+            summary = AlertManagementSummary(
+                total_alerts=2,
+                active_alerts=1,
+                acknowledged_alerts=1,
+                dismissed_alerts=0,
+                last_updated="2026-08-07 10:00",
+            )
+            alerts = [
+                PortfolioAlert("1", "2026-08-07 10:00", "TYPE1", "INFO", "Title 1", "Desc 1", "ACTIVE"),
+                PortfolioAlert("2", "2026-08-07 10:00", "TYPE2", "MEDIUM", "Title 2", "Desc 2", "ACKNOWLEDGED"),
+            ]
+            return AlertManagementResult(summary=summary, alerts=alerts)
+
+    mgmt_svc = MockAlertManagementService()
+    service = PortfolioHealthService(alert_management_service=mgmt_svc)
+    result = service.evaluate()
+
+    assert result.alert_management is not None
+    assert isinstance(result.alert_management, AlertManagementResult)
+    assert result.alert_management.summary.total_alerts == 2
+    assert result.alert_management.summary.active_alerts == 1
+    assert result.alert_management.summary.acknowledged_alerts == 1
+    assert len(result.alert_management.alerts) == 2
