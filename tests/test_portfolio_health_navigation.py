@@ -1074,6 +1074,58 @@ def test_empty_alert_dashboard_safe(qapp):
     assert "Active: 0" in screen.lbl_ad_active.text()
 
 
+def test_alert_history_section_loads(qapp):
+    """Verify Alert History section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_ah_total")
+    assert hasattr(screen, "lbl_ah_latest")
+    assert hasattr(screen, "lbl_ah_earliest")
+    assert hasattr(screen, "alert_history_list_container")
+
+
+def test_alert_history_values_display(qapp):
+    """Verify Alert History values display correctly."""
+    from services.alert_history_service import AlertHistory, AlertHistoryEntry, AlertHistoryService
+
+    class MockAlertHistoryService:
+        def get_history(self):
+            entries = [
+                AlertHistoryEntry("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+                AlertHistoryEntry("2", "2026-08-07 10:05", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+            ]
+            return AlertHistory(
+                total_entries=2,
+                latest_timestamp="2026-08-07 10:05",
+                earliest_timestamp="2026-08-07 10:00",
+                entries=entries,
+            )
+
+    hist_svc = MockAlertHistoryService()
+    screen = PortfolioHealth(alert_history_service=hist_svc)
+
+    assert "Total Entries: 2" in screen.lbl_ah_total.text()
+    assert "Latest: 2026-08-07 10:05" in screen.lbl_ah_latest.text()
+    assert "Earliest: 2026-08-07 10:00" in screen.lbl_ah_earliest.text()
+    assert screen.alert_history_list_container.count() == 2
+
+
+def test_empty_alert_history_safe(qapp):
+    """Verify empty Alert History displays safely."""
+    from services.alert_history_service import AlertHistory, AlertHistoryService
+
+    class MockEmptyHistoryService:
+        def get_history(self):
+            return AlertHistory(total_entries=0, latest_timestamp=None, earliest_timestamp=None, entries=[])
+
+    hist_svc = MockEmptyHistoryService()
+    screen = PortfolioHealth(alert_history_service=hist_svc)
+
+    assert "Total Entries: 0" in screen.lbl_ah_total.text()
+    assert "Latest: N/A" in screen.lbl_ah_latest.text()
+    assert "Earliest: N/A" in screen.lbl_ah_earliest.text()
+
+
+
 
 
 

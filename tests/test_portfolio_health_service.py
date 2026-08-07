@@ -710,3 +710,35 @@ def test_alert_dashboard_integration_works():
     assert result.alert_dashboard.summary.acknowledged_alerts == 1
     assert result.alert_dashboard.summary.info_alerts == 1
     assert len(result.alert_dashboard.alerts) == 3
+
+
+def test_alert_history_integration_works():
+    """Verify evaluate populates result.alert_history."""
+    from services.alert_history_service import AlertHistory, AlertHistoryEntry
+
+    class MockAlertHistoryService:
+        def save_history(self, alerts):
+            pass
+
+        def get_history(self):
+            entries = [
+                AlertHistoryEntry("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+                AlertHistoryEntry("2", "2026-08-07 10:05", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+            ]
+            return AlertHistory(
+                total_entries=2,
+                latest_timestamp="2026-08-07 10:05",
+                earliest_timestamp="2026-08-07 10:00",
+                entries=entries,
+            )
+
+    hist_svc = MockAlertHistoryService()
+    service = PortfolioHealthService(alert_history_service=hist_svc)
+    result = service.evaluate()
+
+    assert result.alert_history is not None
+    assert isinstance(result.alert_history, AlertHistory)
+    assert result.alert_history.total_entries == 2
+    assert result.alert_history.latest_timestamp == "2026-08-07 10:05"
+    assert result.alert_history.earliest_timestamp == "2026-08-07 10:00"
+    assert len(result.alert_history.entries) == 2

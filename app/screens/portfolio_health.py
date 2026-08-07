@@ -14,6 +14,7 @@ from services.alert_center_service import AlertCenterService
 from services.alert_generation_service import AlertGenerationService
 from services.alert_rules_service import AlertRulesService
 from services.alert_dashboard_service import AlertDashboardService
+from services.alert_history_service import AlertHistoryService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
@@ -40,6 +41,7 @@ class PortfolioHealth(QWidget):
         alert_generation_service: Optional[AlertGenerationService] = None,
         alert_rules_service: Optional[AlertRulesService] = None,
         alert_dashboard_service: Optional[AlertDashboardService] = None,
+        alert_history_service: Optional[AlertHistoryService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -70,6 +72,7 @@ class PortfolioHealth(QWidget):
             alert_generation_service=self.alert_generation_service,
             alert_rules_service=self.alert_rules_service,
         )
+        self.alert_history_service = alert_history_service if alert_history_service is not None else AlertHistoryService()
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -80,6 +83,7 @@ class PortfolioHealth(QWidget):
             alert_generation_service=self.alert_generation_service,
             alert_rules_service=self.alert_rules_service,
             alert_dashboard_service=self.alert_dashboard_service,
+            alert_history_service=self.alert_history_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -111,6 +115,67 @@ class PortfolioHealth(QWidget):
         self.load_generated_alerts()
         self.load_alert_rules()
         self.load_alert_dashboard()
+        self.load_alert_history()
+
+    def load_alert_history(self) -> None:
+        """Bind live alert history summary to UI."""
+        if getattr(self, "alert_history_service", None) is None:
+            return
+        try:
+            res = self.alert_history_service.get_history()
+            self._update_alert_history_ui(res)
+        except Exception:
+            pass
+
+    def _update_alert_history_ui(self, history: Any) -> None:
+        if history is None:
+            return
+        if hasattr(self, "lbl_ah_total"):
+            self.lbl_ah_total.setText(f"Total Entries: {getattr(history, 'total_entries', 0)}")
+        if hasattr(self, "lbl_ah_latest"):
+            latest = getattr(history, "latest_timestamp", "N/A") or "N/A"
+            self.lbl_ah_latest.setText(f"Latest: {latest}")
+        if hasattr(self, "lbl_ah_earliest"):
+            earliest = getattr(history, "earliest_timestamp", "N/A") or "N/A"
+            self.lbl_ah_earliest.setText(f"Earliest: {earliest}")
+
+        if hasattr(self, "alert_history_list_container"):
+            self._clear_layout(self.alert_history_list_container)
+            entries = getattr(history, "entries", [])
+            if entries:
+                for entry in entries:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    ts_lbl = QLabel(getattr(entry, 'timestamp', ''))
+                    ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+                    sev = getattr(entry, 'severity', 'INFO')
+                    sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
+                    sev_lbl = QLabel(f"[{sev}]")
+                    sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+                    type_lbl = QLabel(f"Type: {getattr(entry, 'alert_type', '')}")
+                    type_lbl.setStyleSheet("font-size: 13px; color: #475569; font-weight: 600;")
+
+                    title_lbl = QLabel(getattr(entry, 'title', ''))
+                    title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+                    status_lbl = QLabel(f"Status: {getattr(entry, 'status', 'ACTIVE')}")
+                    status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+                    lyt.addWidget(ts_lbl)
+                    lyt.addWidget(sev_lbl)
+                    lyt.addWidget(type_lbl)
+                    lyt.addWidget(title_lbl)
+                    lyt.addWidget(status_lbl)
+                    self.alert_history_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No alert history")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.alert_history_list_container.addWidget(lbl)
 
     def load_alert_dashboard(self) -> None:
         """Bind live alert dashboard summary to UI."""
@@ -1328,6 +1393,33 @@ class PortfolioHealth(QWidget):
         ad_layout.addLayout(self.alert_dashboard_list_container)
 
         root_layout.addWidget(ad_card)
+
+        # Alert History Section
+        ah_card = QFrame()
+        ah_card.setObjectName("metricCard")
+        ah_layout = QVBoxLayout(ah_card)
+        ah_layout.setContentsMargins(16, 14, 16, 14)
+        ah_layout.setSpacing(8)
+
+        lbl_ah_header = QLabel("Alert History")
+        lbl_ah_header.setObjectName("sectionHeader")
+        ah_layout.addWidget(lbl_ah_header)
+
+        self.lbl_ah_total = QLabel("Total Entries: 0")
+        self.lbl_ah_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_ah_latest = QLabel("Latest: N/A")
+        self.lbl_ah_latest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_ah_earliest = QLabel("Earliest: N/A")
+        self.lbl_ah_earliest.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        ah_layout.addWidget(self.lbl_ah_total)
+        ah_layout.addWidget(self.lbl_ah_latest)
+        ah_layout.addWidget(self.lbl_ah_earliest)
+
+        self.alert_history_list_container = QVBoxLayout()
+        ah_layout.addLayout(self.alert_history_list_container)
+
+        root_layout.addWidget(ah_card)
 
         root_layout.addStretch()
 

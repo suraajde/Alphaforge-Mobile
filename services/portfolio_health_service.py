@@ -78,6 +78,7 @@ class PortfolioHealthResult:
     generated_alerts: Optional[Any] = None
     alert_rules: Optional[Any] = None
     alert_dashboard: Optional[Any] = None
+    alert_history: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -95,6 +96,7 @@ class PortfolioHealthService:
         alert_generation_service: Optional[Any] = None,
         alert_rules_service: Optional[Any] = None,
         alert_dashboard_service: Optional[Any] = None,
+        alert_history_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -110,6 +112,7 @@ class PortfolioHealthService:
             alert_generation_service: Optional instance of AlertGenerationService.
             alert_rules_service: Optional instance of AlertRulesService.
             alert_dashboard_service: Optional instance of AlertDashboardService.
+            alert_history_service: Optional instance of AlertHistoryService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -121,6 +124,7 @@ class PortfolioHealthService:
         self._alert_generation_service = alert_generation_service
         self._alert_rules_service = alert_rules_service
         self._alert_dashboard_service = alert_dashboard_service
+        self._alert_history_service = alert_history_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -604,6 +608,30 @@ class PortfolioHealthService:
                 )
             except Exception:
                 res.alert_dashboard = None
+
+        # Phase: Alert History
+        if self._alert_history_service is not None and hasattr(self._alert_history_service, "get_history"):
+            try:
+                if res.alert_dashboard is not None and hasattr(self._alert_history_service, "save_history"):
+                    try:
+                        self._alert_history_service.save_history(getattr(res.alert_dashboard, "alerts", []))
+                    except Exception:
+                        pass
+                res.alert_history = self._alert_history_service.get_history()
+            except Exception:
+                res.alert_history = None
+        else:
+            try:
+                from services.alert_history_service import AlertHistoryService
+                hist_svc = AlertHistoryService()
+                if res.alert_dashboard is not None:
+                    try:
+                        hist_svc.save_history(getattr(res.alert_dashboard, "alerts", []))
+                    except Exception:
+                        pass
+                res.alert_history = hist_svc.get_history()
+            except Exception:
+                res.alert_history = None
 
         return res
 
