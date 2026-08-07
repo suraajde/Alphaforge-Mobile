@@ -458,3 +458,31 @@ def test_historical_insights_integration_works():
     assert result.historical_insights.improvement_percentage == 66.7
     assert result.historical_insights.consistency_score == 33.4
     assert result.historical_insights.direction_rating == "IMPROVING"
+
+
+def test_monitoring_integration_works():
+    """Verify evaluate populates result.monitoring_state."""
+    from services.portfolio_health_monitor_service import PortfolioHealthMonitoringState
+
+    class MockMonitorService:
+        def get_monitoring_state(self):
+            return PortfolioHealthMonitoringState(
+                monitoring_enabled=True,
+                monitoring_status="READY",
+                snapshot_count=18,
+                latest_snapshot_time="2026-08-07 09:15",
+                latest_score=91,
+                latest_grade="A",
+            )
+
+    mon_svc = MockMonitorService()
+    service = PortfolioHealthService(monitor_service=mon_svc)
+    result = service.evaluate()
+
+    assert result.monitoring_state is not None
+    assert isinstance(result.monitoring_state, PortfolioHealthMonitoringState)
+    assert result.monitoring_state.monitoring_enabled is True
+    assert result.monitoring_state.monitoring_status == "READY"
+    assert result.monitoring_state.snapshot_count == 18
+    assert result.monitoring_state.latest_score == 91
+    assert result.monitoring_state.latest_grade == "A"

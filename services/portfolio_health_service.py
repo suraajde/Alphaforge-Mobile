@@ -70,6 +70,7 @@ class PortfolioHealthResult:
     dashboard_summary: Optional[Any] = None
     historical_metrics: Optional[Any] = None
     historical_insights: Optional[Any] = None
+    monitoring_state: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -79,6 +80,7 @@ class PortfolioHealthService:
         self,
         portfolio_app_service: Optional[Any] = None,
         history_service: Optional[Any] = None,
+        monitor_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -86,9 +88,11 @@ class PortfolioHealthService:
             portfolio_app_service: Optional instance or provider of PortfolioApplicationService
                 or similar portfolio data service.
             history_service: Optional instance of PortfolioHealthHistoryService.
+            monitor_service: Optional instance of PortfolioHealthMonitorService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
+        self._monitor_service = monitor_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -420,6 +424,20 @@ class PortfolioHealthService:
                 res.historical_insights = self._history_service.get_historical_insights()
             except Exception:
                 res.historical_insights = None
+
+        if self._monitor_service is not None and hasattr(self._monitor_service, "get_monitoring_state"):
+            try:
+                res.monitoring_state = self._monitor_service.get_monitoring_state()
+            except Exception:
+                res.monitoring_state = None
+        else:
+            try:
+                from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
+                mon_svc = PortfolioHealthMonitorService(history_service=self._history_service)
+                res.monitoring_state = mon_svc.get_monitoring_state()
+            except Exception:
+                res.monitoring_state = None
+
         return res
 
     def _get_app_service(self) -> Optional[Any]:

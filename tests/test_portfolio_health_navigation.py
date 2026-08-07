@@ -532,6 +532,91 @@ def test_historical_insights_values_display(qapp):
     assert "Direction Rating: IMPROVING" in screen.lbl_insights_direction.text()
 
 
+def test_monitoring_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_mon_enabled")
+    assert hasattr(screen, "lbl_mon_status")
+    assert hasattr(screen, "lbl_mon_snapshots")
+    assert hasattr(screen, "lbl_mon_latest_snapshot")
+    assert hasattr(screen, "lbl_mon_latest_score")
+    assert hasattr(screen, "lbl_mon_latest_grade")
+
+
+def test_monitoring_values_display(qapp):
+    from services.portfolio_health_monitor_service import PortfolioHealthMonitoringState
+
+    class MockMonitorService:
+        def get_monitoring_state(self):
+            return PortfolioHealthMonitoringState(
+                monitoring_enabled=True,
+                monitoring_status="READY",
+                snapshot_count=18,
+                latest_snapshot_time="2026-08-07 09:15",
+                latest_score=91,
+                latest_grade="A",
+            )
+
+    mon_svc = MockMonitorService()
+    screen = PortfolioHealth(monitor_service=mon_svc)
+    assert "Monitoring Enabled: YES" in screen.lbl_mon_enabled.text()
+    assert "Monitoring Status: READY" in screen.lbl_mon_status.text()
+    assert "Snapshots Available: 18" in screen.lbl_mon_snapshots.text()
+    assert "Latest Snapshot: 2026-08-07 09:15" in screen.lbl_mon_latest_snapshot.text()
+    assert "Latest Score: 91" in screen.lbl_mon_latest_score.text()
+    assert "Latest Grade: A" in screen.lbl_mon_latest_grade.text()
+
+
+def test_monitoring_empty_history_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+    from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        empty_file = Path(temp_dir) / "empty.json"
+        empty_file.write_text("[]", encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(empty_file))
+        mon_svc = PortfolioHealthMonitorService(history_service=hist_svc)
+        screen = PortfolioHealth(monitor_service=mon_svc, history_service=hist_svc)
+
+        assert "Monitoring Enabled: YES" in screen.lbl_mon_enabled.text()
+        assert "Monitoring Status: WAITING" in screen.lbl_mon_status.text()
+        assert "Snapshots Available: 0" in screen.lbl_mon_snapshots.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+def test_monitoring_corrupt_history_safe(qapp):
+    import shutil
+    import tempfile
+    from pathlib import Path
+    from services.portfolio_health_history_service import PortfolioHealthHistoryService
+    from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
+
+    scratch_dir = Path("d:/ALPHAFORGE/scratch")
+    scratch_dir.mkdir(exist_ok=True, parents=True)
+    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    try:
+        corrupt_file = Path(temp_dir) / "corrupt.json"
+        corrupt_file.write_text("INVALID{", encoding="utf-8")
+
+        hist_svc = PortfolioHealthHistoryService(storage_path=str(corrupt_file))
+        mon_svc = PortfolioHealthMonitorService(history_service=hist_svc)
+        screen = PortfolioHealth(monitor_service=mon_svc, history_service=hist_svc)
+
+        assert "Monitoring Enabled: NO" in screen.lbl_mon_enabled.text()
+        assert "Monitoring Status: UNAVAILABLE" in screen.lbl_mon_status.text()
+        assert "Snapshots Available: 0" in screen.lbl_mon_snapshots.text()
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+
 
 
 

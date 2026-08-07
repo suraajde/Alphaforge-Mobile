@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
+from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
 from services.portfolio_health_service import (
     PortfolioHealthResult,
     PortfolioHealthService,
@@ -24,11 +25,16 @@ class PortfolioHealth(QWidget):
         self,
         service: Optional[PortfolioHealthService] = None,
         history_service: Optional[PortfolioHealthHistoryService] = None,
+        monitor_service: Optional[PortfolioHealthMonitorService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
         self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
-        self.service = service if service is not None else PortfolioHealthService(history_service=self.history_service)
+        self.monitor_service = monitor_service if monitor_service is not None else PortfolioHealthMonitorService(history_service=self.history_service)
+        self.service = service if service is not None else PortfolioHealthService(
+            history_service=self.history_service,
+            monitor_service=self.monitor_service,
+        )
         self._build_ui()
         self.refresh_data()
 
@@ -51,6 +57,31 @@ class PortfolioHealth(QWidget):
                     pass
 
         self.load_history()
+        self.load_monitoring()
+
+    def load_monitoring(self) -> None:
+        """Bind live portfolio health monitoring metrics to UI."""
+        if getattr(self, "monitor_service", None) is None:
+            return
+        try:
+            state = self.monitor_service.get_monitoring_state()
+            if state is not None:
+                if hasattr(self, "lbl_mon_enabled"):
+                    enabled_str = "YES" if state.monitoring_enabled else "NO"
+                    self.lbl_mon_enabled.setText(f"Monitoring Enabled: {enabled_str}")
+                if hasattr(self, "lbl_mon_status"):
+                    self.lbl_mon_status.setText(f"Monitoring Status: {state.monitoring_status}")
+                if hasattr(self, "lbl_mon_snapshots"):
+                    self.lbl_mon_snapshots.setText(f"Snapshots Available: {state.snapshot_count}")
+                if hasattr(self, "lbl_mon_latest_snapshot"):
+                    time_str = state.latest_snapshot_time if state.latest_snapshot_time else "N/A"
+                    self.lbl_mon_latest_snapshot.setText(f"Latest Snapshot: {time_str}")
+                if hasattr(self, "lbl_mon_latest_score"):
+                    self.lbl_mon_latest_score.setText(f"Latest Score: {state.latest_score}")
+                if hasattr(self, "lbl_mon_latest_grade"):
+                    self.lbl_mon_latest_grade.setText(f"Latest Grade: {state.latest_grade}")
+        except Exception:
+            pass
 
     def load_history(self) -> None:
         """Bind live portfolio health history metrics to UI."""
@@ -218,6 +249,23 @@ class PortfolioHealth(QWidget):
                 self.lbl_insights_quality.setText(f"Quality Rating: {insights.quality_rating}")
             if hasattr(self, "lbl_insights_direction"):
                 self.lbl_insights_direction.setText(f"Direction Rating: {insights.direction_rating}")
+
+        mon_state = getattr(result, "monitoring_state", None)
+        if mon_state is not None:
+            if hasattr(self, "lbl_mon_enabled"):
+                enabled_str = "YES" if mon_state.monitoring_enabled else "NO"
+                self.lbl_mon_enabled.setText(f"Monitoring Enabled: {enabled_str}")
+            if hasattr(self, "lbl_mon_status"):
+                self.lbl_mon_status.setText(f"Monitoring Status: {mon_state.monitoring_status}")
+            if hasattr(self, "lbl_mon_snapshots"):
+                self.lbl_mon_snapshots.setText(f"Snapshots Available: {mon_state.snapshot_count}")
+            if hasattr(self, "lbl_mon_latest_snapshot"):
+                time_str = mon_state.latest_snapshot_time if mon_state.latest_snapshot_time else "N/A"
+                self.lbl_mon_latest_snapshot.setText(f"Latest Snapshot: {time_str}")
+            if hasattr(self, "lbl_mon_latest_score"):
+                self.lbl_mon_latest_score.setText(f"Latest Score: {mon_state.latest_score}")
+            if hasattr(self, "lbl_mon_latest_grade"):
+                self.lbl_mon_latest_grade.setText(f"Latest Grade: {mon_state.latest_grade}")
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
@@ -575,6 +623,39 @@ class PortfolioHealth(QWidget):
         insights_layout.addWidget(self.lbl_insights_direction)
 
         root_layout.addWidget(insights_card)
+
+        # Portfolio Health Monitoring Section
+        monitoring_card = QFrame()
+        monitoring_card.setObjectName("metricCard")
+        monitoring_layout = QVBoxLayout(monitoring_card)
+        monitoring_layout.setContentsMargins(16, 14, 16, 14)
+        monitoring_layout.setSpacing(8)
+
+        lbl_monitoring_header = QLabel("Portfolio Health Monitoring")
+        lbl_monitoring_header.setObjectName("sectionHeader")
+        monitoring_layout.addWidget(lbl_monitoring_header)
+
+        self.lbl_mon_enabled = QLabel("Monitoring Enabled: NO")
+        self.lbl_mon_enabled.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_status = QLabel("Monitoring Status: UNAVAILABLE")
+        self.lbl_mon_status.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_snapshots = QLabel("Snapshots Available: 0")
+        self.lbl_mon_snapshots.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_latest_snapshot = QLabel("Latest Snapshot: N/A")
+        self.lbl_mon_latest_snapshot.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_latest_score = QLabel("Latest Score: 0")
+        self.lbl_mon_latest_score.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_mon_latest_grade = QLabel("Latest Grade: -")
+        self.lbl_mon_latest_grade.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        monitoring_layout.addWidget(self.lbl_mon_enabled)
+        monitoring_layout.addWidget(self.lbl_mon_status)
+        monitoring_layout.addWidget(self.lbl_mon_snapshots)
+        monitoring_layout.addWidget(self.lbl_mon_latest_snapshot)
+        monitoring_layout.addWidget(self.lbl_mon_latest_score)
+        monitoring_layout.addWidget(self.lbl_mon_latest_grade)
+
+        root_layout.addWidget(monitoring_card)
 
         root_layout.addStretch()
 
