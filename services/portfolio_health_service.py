@@ -75,6 +75,7 @@ class PortfolioHealthResult:
     timeline: Optional[Any] = None
     monitoring_dashboard: Optional[Any] = None
     alert_center: Optional[Any] = None
+    generated_alerts: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -89,6 +90,7 @@ class PortfolioHealthService:
         timeline_service: Optional[Any] = None,
         monitoring_dashboard_service: Optional[Any] = None,
         alert_center_service: Optional[Any] = None,
+        alert_generation_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -101,6 +103,7 @@ class PortfolioHealthService:
             timeline_service: Optional instance of PortfolioHealthTimelineService.
             monitoring_dashboard_service: Optional instance of PortfolioHealthMonitoringDashboardService.
             alert_center_service: Optional instance of AlertCenterService.
+            alert_generation_service: Optional instance of AlertGenerationService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -109,6 +112,7 @@ class PortfolioHealthService:
         self._timeline_service = timeline_service
         self._monitoring_dashboard_service = monitoring_dashboard_service
         self._alert_center_service = alert_center_service
+        self._alert_generation_service = alert_generation_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -513,6 +517,35 @@ class PortfolioHealthService:
                 res.alert_center = ac_svc.get_state()
             except Exception:
                 res.alert_center = None
+
+        if self._alert_generation_service is not None and hasattr(self._alert_generation_service, "generate_alerts"):
+            try:
+                res.generated_alerts = self._alert_generation_service.generate_alerts(
+                    monitoring_state=res.monitoring_state,
+                    change_report=res.change_report,
+                    timeline=res.timeline,
+                    monitoring_dashboard=res.monitoring_dashboard,
+                )
+            except Exception:
+                res.generated_alerts = None
+        else:
+            try:
+                from services.alert_generation_service import AlertGenerationService
+                gen_svc = AlertGenerationService(
+                    history_service=self._history_service,
+                    monitor_service=self._monitor_service,
+                    change_detection_service=self._change_detection_service,
+                    timeline_service=self._timeline_service,
+                    dashboard_service=self._monitoring_dashboard_service,
+                )
+                res.generated_alerts = gen_svc.generate_alerts(
+                    monitoring_state=res.monitoring_state,
+                    change_report=res.change_report,
+                    timeline=res.timeline,
+                    monitoring_dashboard=res.monitoring_dashboard,
+                )
+            except Exception:
+                res.generated_alerts = None
 
         return res
 

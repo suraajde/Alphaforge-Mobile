@@ -919,6 +919,47 @@ def test_empty_alert_center_safe(qapp):
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
+def test_generated_alerts_section_loads(qapp):
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_gen_alerts_count")
+    assert hasattr(screen, "generated_alerts_container")
+
+
+def test_generated_alerts_display(qapp):
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_generation_service import AlertGenerationResult
+
+    class MockAlertGenerationService:
+        def generate_alerts(self, **kwargs):
+            return AlertGenerationResult(
+                generated_alerts=2,
+                alerts=[
+                    PortfolioAlert("1", "2026-08-08 10:00", "MONITORING_STATUS", "INFO", "Monitoring ready", "Desc 1", "ACTIVE"),
+                    PortfolioAlert("2", "2026-08-08 10:00", "CHANGE_DETECTED", "MEDIUM", "Portfolio changes detected", "Desc 2", "ACTIVE"),
+                ],
+            )
+
+    gen_svc = MockAlertGenerationService()
+    screen = PortfolioHealth(alert_generation_service=gen_svc)
+
+    assert "Generated Alerts: 2" in screen.lbl_gen_alerts_count.text()
+    assert screen.generated_alerts_container.count() == 2
+
+
+def test_empty_generated_alerts_safe(qapp):
+    from services.alert_generation_service import AlertGenerationResult, AlertGenerationService
+
+    class MockEmptyGenService:
+        def generate_alerts(self, **kwargs):
+            return AlertGenerationResult(generated_alerts=0, alerts=[])
+
+    gen_svc = MockEmptyGenService()
+    screen = PortfolioHealth(alert_generation_service=gen_svc)
+
+    assert "Generated Alerts: 0" in screen.lbl_gen_alerts_count.text()
+
+
+
 
 
 

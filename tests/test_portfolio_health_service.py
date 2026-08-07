@@ -614,3 +614,30 @@ def test_alert_center_integration_works():
     assert result.alert_center.acknowledged_alerts == 1
     assert result.alert_center.dismissed_alerts == 1
     assert len(result.alert_center.alerts) == 2
+
+
+def test_generated_alert_integration_works():
+    """Verify evaluate populates result.generated_alerts."""
+    from services.alert_center_service import PortfolioAlert
+    from services.alert_generation_service import AlertGenerationResult
+
+    class MockAlertGenerationService:
+        def generate_alerts(self, **kwargs):
+            return AlertGenerationResult(
+                generated_alerts=2,
+                alerts=[
+                    PortfolioAlert("1", "2026-08-08 10:00", "MONITORING_STATUS", "INFO", "Monitoring ready", "Desc 1", "ACTIVE"),
+                    PortfolioAlert("2", "2026-08-08 10:00", "CHANGE_DETECTED", "MEDIUM", "Portfolio changes detected", "Desc 2", "ACTIVE"),
+                ],
+            )
+
+    gen_svc = MockAlertGenerationService()
+    service = PortfolioHealthService(alert_generation_service=gen_svc)
+    result = service.evaluate()
+
+    assert result.generated_alerts is not None
+    assert isinstance(result.generated_alerts, AlertGenerationResult)
+    assert result.generated_alerts.generated_alerts == 2
+    assert len(result.generated_alerts.alerts) == 2
+    assert result.generated_alerts.alerts[0].alert_type == "MONITORING_STATUS"
+    assert result.generated_alerts.alerts[1].alert_type == "CHANGE_DETECTED"

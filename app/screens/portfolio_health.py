@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 )
 
 from services.alert_center_service import AlertCenterService
+from services.alert_generation_service import AlertGenerationService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
@@ -34,6 +35,7 @@ class PortfolioHealth(QWidget):
         timeline_service: Optional[PortfolioHealthTimelineService] = None,
         monitoring_dashboard_service: Optional[PortfolioHealthMonitoringDashboardService] = None,
         alert_center_service: Optional[AlertCenterService] = None,
+        alert_generation_service: Optional[AlertGenerationService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -51,6 +53,13 @@ class PortfolioHealth(QWidget):
             timeline_service=self.timeline_service,
         )
         self.alert_center_service = alert_center_service if alert_center_service is not None else AlertCenterService()
+        self.alert_generation_service = alert_generation_service if alert_generation_service is not None else AlertGenerationService(
+            history_service=self.history_service,
+            monitor_service=self.monitor_service,
+            change_detection_service=self.change_detection_service,
+            timeline_service=self.timeline_service,
+            dashboard_service=self.monitoring_dashboard_service,
+        )
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -58,6 +67,7 @@ class PortfolioHealth(QWidget):
             timeline_service=self.timeline_service,
             monitoring_dashboard_service=self.monitoring_dashboard_service,
             alert_center_service=self.alert_center_service,
+            alert_generation_service=self.alert_generation_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -86,6 +96,61 @@ class PortfolioHealth(QWidget):
         self.load_timeline()
         self.load_monitoring_dashboard()
         self.load_alert_center()
+        self.load_generated_alerts()
+
+    def load_generated_alerts(self) -> None:
+        """Bind live generated alerts report to UI."""
+        if getattr(self, "alert_generation_service", None) is None:
+            return
+        try:
+            res = self.alert_generation_service.generate_alerts()
+            self._update_generated_alerts_ui(res)
+        except Exception:
+            pass
+
+    def _update_generated_alerts_ui(self, gen_result: Any) -> None:
+        if gen_result is None:
+            return
+        if hasattr(self, "lbl_gen_alerts_count"):
+            self.lbl_gen_alerts_count.setText(f"Generated Alerts: {getattr(gen_result, 'generated_alerts', 0)}")
+
+        if hasattr(self, "generated_alerts_container"):
+            self._clear_layout(self.generated_alerts_container)
+            alerts = getattr(gen_result, "alerts", [])
+            if alerts:
+                for alert in alerts:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    sev = getattr(alert, 'severity', 'INFO')
+                    sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#2563eb"
+                    sev_lbl = QLabel(f"[{sev}]")
+                    sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+                    type_lbl = QLabel(f"Type: {getattr(alert, 'alert_type', '')}")
+                    type_lbl.setStyleSheet("font-size: 13px; color: #475569; font-weight: 600;")
+
+                    ts_lbl = QLabel(getattr(alert, 'timestamp', ''))
+                    ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+                    title_lbl = QLabel(getattr(alert, 'title', ''))
+                    title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+                    status_lbl = QLabel(getattr(alert, 'status', 'ACTIVE'))
+                    status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+                    lyt.addWidget(sev_lbl)
+                    lyt.addWidget(type_lbl)
+                    lyt.addWidget(ts_lbl)
+                    lyt.addWidget(title_lbl)
+                    lyt.addWidget(status_lbl)
+                    self.generated_alerts_container.addWidget(card)
+            else:
+                lbl = QLabel("No generated alerts")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.generated_alerts_container.addWidget(lbl)
 
     def load_alert_center(self) -> None:
         """Bind live alert center state to UI."""
@@ -508,6 +573,10 @@ class PortfolioHealth(QWidget):
         ac_state = getattr(result, "alert_center", None)
         if ac_state is not None:
             self._update_alert_center_ui(ac_state)
+
+        gen_res = getattr(result, "generated_alerts", None)
+        if gen_res is not None:
+            self._update_generated_alerts_ui(gen_res)
 
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
@@ -1028,6 +1097,26 @@ class PortfolioHealth(QWidget):
         ac_layout.addLayout(self.alerts_list_container)
 
         root_layout.addWidget(ac_card)
+
+        # Generated Alerts Section
+        gen_card = QFrame()
+        gen_card.setObjectName("metricCard")
+        gen_layout = QVBoxLayout(gen_card)
+        gen_layout.setContentsMargins(16, 14, 16, 14)
+        gen_layout.setSpacing(8)
+
+        lbl_gen_header = QLabel("Generated Alerts")
+        lbl_gen_header.setObjectName("sectionHeader")
+        gen_layout.addWidget(lbl_gen_header)
+
+        self.lbl_gen_alerts_count = QLabel("Generated Alerts: 0")
+        self.lbl_gen_alerts_count.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        gen_layout.addWidget(self.lbl_gen_alerts_count)
+
+        self.generated_alerts_container = QVBoxLayout()
+        gen_layout.addLayout(self.generated_alerts_container)
+
+        root_layout.addWidget(gen_card)
 
         root_layout.addStretch()
 
