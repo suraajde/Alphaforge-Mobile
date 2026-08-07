@@ -641,3 +641,34 @@ def test_generated_alert_integration_works():
     assert len(result.generated_alerts.alerts) == 2
     assert result.generated_alerts.alerts[0].alert_type == "MONITORING_STATUS"
     assert result.generated_alerts.alerts[1].alert_type == "CHANGE_DETECTED"
+
+
+def test_alert_rules_integration_works():
+    """Verify evaluate populates result.alert_rules."""
+    from services.alert_rules_service import AlertRule, AlertRulesResult
+
+    class MockAlertRulesService:
+        def evaluate_rules(self, **kwargs):
+            return AlertRulesResult(
+                total_rules=5,
+                triggered_rules=2,
+                rules=[
+                    AlertRule("Monitoring Ready", True, "INFO", "MONITORING_STATUS", True, "Monitoring ready."),
+                    AlertRule("Monitoring Unavailable", True, "HIGH", "MONITORING_STATUS", False, "Monitoring unavailable."),
+                    AlertRule("Portfolio Changes Detected", True, "MEDIUM", "CHANGE_DETECTED", True, "Changes detected."),
+                    AlertRule("Timeline Updated", True, "LOW", "TIMELINE_UPDATED", False, "Timeline updated."),
+                    AlertRule("Health Score Changed", True, "MEDIUM", "HEALTH_SCORE_CHANGED", False, "Score changed."),
+                ],
+            )
+
+    rules_svc = MockAlertRulesService()
+    service = PortfolioHealthService(alert_rules_service=rules_svc)
+    result = service.evaluate()
+
+    assert result.alert_rules is not None
+    assert isinstance(result.alert_rules, AlertRulesResult)
+    assert result.alert_rules.total_rules == 5
+    assert result.alert_rules.triggered_rules == 2
+    assert len(result.alert_rules.rules) == 5
+    assert result.alert_rules.rules[0].rule_name == "Monitoring Ready"
+    assert result.alert_rules.rules[0].triggered is True

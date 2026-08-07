@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 
 from services.alert_center_service import AlertCenterService
 from services.alert_generation_service import AlertGenerationService
+from services.alert_rules_service import AlertRulesService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
@@ -36,6 +37,7 @@ class PortfolioHealth(QWidget):
         monitoring_dashboard_service: Optional[PortfolioHealthMonitoringDashboardService] = None,
         alert_center_service: Optional[AlertCenterService] = None,
         alert_generation_service: Optional[AlertGenerationService] = None,
+        alert_rules_service: Optional[AlertRulesService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -60,6 +62,7 @@ class PortfolioHealth(QWidget):
             timeline_service=self.timeline_service,
             dashboard_service=self.monitoring_dashboard_service,
         )
+        self.alert_rules_service = alert_rules_service if alert_rules_service is not None else AlertRulesService()
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -68,6 +71,7 @@ class PortfolioHealth(QWidget):
             monitoring_dashboard_service=self.monitoring_dashboard_service,
             alert_center_service=self.alert_center_service,
             alert_generation_service=self.alert_generation_service,
+            alert_rules_service=self.alert_rules_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -97,6 +101,62 @@ class PortfolioHealth(QWidget):
         self.load_monitoring_dashboard()
         self.load_alert_center()
         self.load_generated_alerts()
+        self.load_alert_rules()
+
+    def load_alert_rules(self) -> None:
+        """Bind live alert rules evaluation to UI."""
+        if getattr(self, "alert_rules_service", None) is None:
+            return
+        try:
+            res = self.alert_rules_service.evaluate_rules()
+            self._update_alert_rules_ui(res)
+        except Exception:
+            pass
+
+    def _update_alert_rules_ui(self, rules_result: Any) -> None:
+        if rules_result is None:
+            return
+        if hasattr(self, "lbl_alert_rules_total"):
+            self.lbl_alert_rules_total.setText(f"Total Rules: {getattr(rules_result, 'total_rules', 0)}")
+        if hasattr(self, "lbl_alert_rules_triggered"):
+            self.lbl_alert_rules_triggered.setText(f"Triggered Rules: {getattr(rules_result, 'triggered_rules', 0)}")
+
+        if hasattr(self, "alert_rules_list_container"):
+            self._clear_layout(self.alert_rules_list_container)
+            rules = getattr(rules_result, "rules", [])
+            if rules:
+                for rule in rules:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    name_lbl = QLabel(getattr(rule, 'rule_name', ''))
+                    name_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+                    sev = getattr(rule, 'severity', 'INFO')
+                    sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
+                    sev_lbl = QLabel(f"Severity: {sev}")
+                    sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+                    triggered = getattr(rule, 'triggered', False)
+                    triggered_text = "YES" if triggered else "NO"
+                    triggered_color = "#16a34a" if triggered else "#64748b"
+                    triggered_lbl = QLabel(f"Triggered: {triggered_text}")
+                    triggered_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {triggered_color};")
+
+                    desc_lbl = QLabel(getattr(rule, 'description', ''))
+                    desc_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+                    lyt.addWidget(name_lbl)
+                    lyt.addWidget(sev_lbl)
+                    lyt.addWidget(triggered_lbl)
+                    lyt.addWidget(desc_lbl)
+                    self.alert_rules_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No alert rules evaluated")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.alert_rules_list_container.addWidget(lbl)
 
     def load_generated_alerts(self) -> None:
         """Bind live generated alerts report to UI."""
@@ -1117,6 +1177,30 @@ class PortfolioHealth(QWidget):
         gen_layout.addLayout(self.generated_alerts_container)
 
         root_layout.addWidget(gen_card)
+
+        # Alert Rules Section
+        ar_card = QFrame()
+        ar_card.setObjectName("metricCard")
+        ar_layout = QVBoxLayout(ar_card)
+        ar_layout.setContentsMargins(16, 14, 16, 14)
+        ar_layout.setSpacing(8)
+
+        lbl_ar_header = QLabel("Alert Rules")
+        lbl_ar_header.setObjectName("sectionHeader")
+        ar_layout.addWidget(lbl_ar_header)
+
+        self.lbl_alert_rules_total = QLabel("Total Rules: 0")
+        self.lbl_alert_rules_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_alert_rules_triggered = QLabel("Triggered Rules: 0")
+        self.lbl_alert_rules_triggered.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        ar_layout.addWidget(self.lbl_alert_rules_total)
+        ar_layout.addWidget(self.lbl_alert_rules_triggered)
+
+        self.alert_rules_list_container = QVBoxLayout()
+        ar_layout.addLayout(self.alert_rules_list_container)
+
+        root_layout.addWidget(ar_card)
 
         root_layout.addStretch()
 

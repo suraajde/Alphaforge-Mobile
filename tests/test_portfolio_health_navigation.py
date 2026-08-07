@@ -959,6 +959,55 @@ def test_empty_generated_alerts_safe(qapp):
     assert "Generated Alerts: 0" in screen.lbl_gen_alerts_count.text()
 
 
+def test_alert_rules_section_loads(qapp):
+    """Verify Alert Rules section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_alert_rules_total")
+    assert hasattr(screen, "lbl_alert_rules_triggered")
+    assert hasattr(screen, "alert_rules_list_container")
+
+
+def test_alert_rules_values_display(qapp):
+    """Verify Alert Rules values display correctly."""
+    from services.alert_rules_service import AlertRule, AlertRulesResult, AlertRulesService
+
+    class MockAlertRulesService:
+        def evaluate_rules(self, **kwargs):
+            return AlertRulesResult(
+                total_rules=5,
+                triggered_rules=2,
+                rules=[
+                    AlertRule("Monitoring Ready", True, "INFO", "MONITORING_STATUS", True, "Monitoring ready."),
+                    AlertRule("Monitoring Unavailable", True, "HIGH", "MONITORING_STATUS", False, "Monitoring unavailable."),
+                    AlertRule("Portfolio Changes Detected", True, "MEDIUM", "CHANGE_DETECTED", True, "Changes detected."),
+                    AlertRule("Timeline Updated", True, "LOW", "TIMELINE_UPDATED", False, "Timeline updated."),
+                    AlertRule("Health Score Changed", True, "MEDIUM", "HEALTH_SCORE_CHANGED", False, "Score changed."),
+                ],
+            )
+
+    rules_svc = MockAlertRulesService()
+    screen = PortfolioHealth(alert_rules_service=rules_svc)
+
+    assert "Total Rules: 5" in screen.lbl_alert_rules_total.text()
+    assert "Triggered Rules: 2" in screen.lbl_alert_rules_triggered.text()
+    assert screen.alert_rules_list_container.count() == 5
+
+
+def test_empty_alert_rules_safe(qapp):
+    """Verify empty Alert Rules displays safely."""
+    from services.alert_rules_service import AlertRulesResult, AlertRulesService
+
+    class MockEmptyRulesService:
+        def evaluate_rules(self, **kwargs):
+            return AlertRulesResult(total_rules=0, triggered_rules=0, rules=[])
+
+    rules_svc = MockEmptyRulesService()
+    screen = PortfolioHealth(alert_rules_service=rules_svc)
+
+    assert "Total Rules: 0" in screen.lbl_alert_rules_total.text()
+    assert "Triggered Rules: 0" in screen.lbl_alert_rules_triggered.text()
+
+
 
 
 

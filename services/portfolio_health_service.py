@@ -76,6 +76,7 @@ class PortfolioHealthResult:
     monitoring_dashboard: Optional[Any] = None
     alert_center: Optional[Any] = None
     generated_alerts: Optional[Any] = None
+    alert_rules: Optional[Any] = None
 
 
 class PortfolioHealthService:
@@ -91,6 +92,7 @@ class PortfolioHealthService:
         monitoring_dashboard_service: Optional[Any] = None,
         alert_center_service: Optional[Any] = None,
         alert_generation_service: Optional[Any] = None,
+        alert_rules_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService.
 
@@ -104,6 +106,7 @@ class PortfolioHealthService:
             monitoring_dashboard_service: Optional instance of PortfolioHealthMonitoringDashboardService.
             alert_center_service: Optional instance of AlertCenterService.
             alert_generation_service: Optional instance of AlertGenerationService.
+            alert_rules_service: Optional instance of AlertRulesService.
         """
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
@@ -113,6 +116,7 @@ class PortfolioHealthService:
         self._monitoring_dashboard_service = monitoring_dashboard_service
         self._alert_center_service = alert_center_service
         self._alert_generation_service = alert_generation_service
+        self._alert_rules_service = alert_rules_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -546,6 +550,30 @@ class PortfolioHealthService:
                 )
             except Exception:
                 res.generated_alerts = None
+
+        # Phase: Alert Rules Engine
+        if self._alert_rules_service is not None and hasattr(self._alert_rules_service, "evaluate_rules"):
+            try:
+                res.alert_rules = self._alert_rules_service.evaluate_rules(
+                    monitoring_state=res.monitoring_state,
+                    change_report=res.change_report,
+                    timeline=res.timeline,
+                    monitoring_dashboard=res.monitoring_dashboard,
+                )
+            except Exception:
+                res.alert_rules = None
+        else:
+            try:
+                from services.alert_rules_service import AlertRulesService
+                rules_svc = AlertRulesService()
+                res.alert_rules = rules_svc.evaluate_rules(
+                    monitoring_state=res.monitoring_state,
+                    change_report=res.change_report,
+                    timeline=res.timeline,
+                    monitoring_dashboard=res.monitoring_dashboard,
+                )
+            except Exception:
+                res.alert_rules = None
 
         return res
 
