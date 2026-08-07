@@ -16,6 +16,7 @@ from services.alert_rules_service import AlertRulesService
 from services.alert_dashboard_service import AlertDashboardService
 from services.alert_history_service import AlertHistoryService
 from services.alert_management_service import AlertManagementService
+from services.decision_classification_service import DecisionClassificationService
 from services.decision_engine_service import DecisionEngineService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
@@ -46,6 +47,7 @@ class PortfolioHealth(QWidget):
         alert_history_service: Optional[AlertHistoryService] = None,
         alert_management_service: Optional[AlertManagementService] = None,
         decision_engine_service: Optional[DecisionEngineService] = None,
+        decision_classification_service: Optional[DecisionClassificationService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -83,6 +85,7 @@ class PortfolioHealth(QWidget):
             alert_dashboard_service=self.alert_dashboard_service,
         )
         self.decision_engine_service = decision_engine_service if decision_engine_service is not None else DecisionEngineService()
+        self.decision_classification_service = decision_classification_service if decision_classification_service is not None else DecisionClassificationService()
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -96,6 +99,7 @@ class PortfolioHealth(QWidget):
             alert_history_service=self.alert_history_service,
             alert_management_service=self.alert_management_service,
             decision_engine_service=self.decision_engine_service,
+            decision_classification_service=self.decision_classification_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -130,6 +134,45 @@ class PortfolioHealth(QWidget):
         self.load_alert_history()
         self.load_alert_management()
         self.load_decision_engine()
+        self.load_decision_classification()
+
+    def load_decision_classification(self) -> None:
+        """Bind live decision classification result to UI."""
+        if getattr(self, "decision_classification_service", None) is None:
+            return
+        try:
+            res = self.decision_classification_service.classify()
+            self._update_decision_classification_ui(res)
+        except Exception:
+            pass
+
+    def _update_decision_classification_ui(self, result: Any) -> None:
+        if result is None:
+            return
+        if hasattr(self, "lbl_dc_total"):
+            self.lbl_dc_total.setText(f"Total Classifications: {getattr(result, 'total_classifications', 0)}")
+        if hasattr(self, "lbl_dc_classified"):
+            self.lbl_dc_classified.setText(f"Classified: {getattr(result, 'classified', 0)}")
+        if hasattr(self, "lbl_dc_unclassified"):
+            self.lbl_dc_unclassified.setText(f"Unclassified: {getattr(result, 'unclassified', 0)}")
+
+        if hasattr(self, "decision_classification_list_container"):
+            self._clear_layout(self.decision_classification_list_container)
+            classifications = getattr(result, "classifications", [])
+            if classifications:
+                for item in classifications:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+                    lbl = QLabel(str(item))
+                    lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
+                    lyt.addWidget(lbl)
+                    self.decision_classification_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No classifications available.")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.decision_classification_list_container.addWidget(lbl)
 
     def load_decision_engine(self) -> None:
         """Bind live decision engine result to UI."""
@@ -1604,6 +1647,33 @@ class PortfolioHealth(QWidget):
         de_layout.addLayout(self.decision_engine_list_container)
 
         root_layout.addWidget(de_card)
+
+        # Decision Classification Section
+        dc_card = QFrame()
+        dc_card.setObjectName("metricCard")
+        dc_layout = QVBoxLayout(dc_card)
+        dc_layout.setContentsMargins(16, 14, 16, 14)
+        dc_layout.setSpacing(8)
+
+        lbl_dc_header = QLabel("Decision Classification")
+        lbl_dc_header.setObjectName("sectionHeader")
+        dc_layout.addWidget(lbl_dc_header)
+
+        self.lbl_dc_total = QLabel("Total Classifications: 0")
+        self.lbl_dc_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dc_classified = QLabel("Classified: 0")
+        self.lbl_dc_classified.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dc_unclassified = QLabel("Unclassified: 0")
+        self.lbl_dc_unclassified.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        dc_layout.addWidget(self.lbl_dc_total)
+        dc_layout.addWidget(self.lbl_dc_classified)
+        dc_layout.addWidget(self.lbl_dc_unclassified)
+
+        self.decision_classification_list_container = QVBoxLayout()
+        dc_layout.addLayout(self.decision_classification_list_container)
+
+        root_layout.addWidget(dc_card)
 
         root_layout.addStretch()
 

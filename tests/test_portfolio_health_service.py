@@ -799,3 +799,30 @@ def test_decision_engine_integration_works():
     assert result.decision_engine.summary.engine_status == "READY"
     assert result.decision_engine.summary.total_decisions == 0
     assert result.decision_engine.decisions == []
+
+
+def test_decision_classification_integration_works():
+    """Verify evaluate populates result.decision_classification."""
+    from services.decision_classification_service import (
+        DecisionClassificationResult,
+    )
+
+    class MockDecisionClassificationService:
+        def classify(self, **kwargs):
+            return DecisionClassificationResult(
+                total_classifications=0,
+                classified=0,
+                unclassified=0,
+                classifications=[],
+            )
+
+    cls_svc = MockDecisionClassificationService()
+    service = PortfolioHealthService(decision_classification_service=cls_svc)
+    result = service.evaluate()
+
+    assert result.decision_classification is not None
+    assert isinstance(result.decision_classification, DecisionClassificationResult)
+    assert result.decision_classification.total_classifications == 0
+    assert result.decision_classification.classified == 0
+    assert result.decision_classification.unclassified == 0
+    assert result.decision_classification.classifications == []

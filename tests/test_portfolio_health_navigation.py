@@ -1228,3 +1228,53 @@ def test_empty_decision_engine_safe(qapp):
 
     assert "Engine Status: UNAVAILABLE" in screen.lbl_de_status.text()
     assert "Total Decisions: 0" in screen.lbl_de_total.text()
+
+
+def test_decision_classification_section_loads(qapp):
+    """Verify Decision Classification section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_dc_total")
+    assert hasattr(screen, "lbl_dc_classified")
+    assert hasattr(screen, "lbl_dc_unclassified")
+    assert hasattr(screen, "decision_classification_list_container")
+
+
+def test_decision_classification_values_display(qapp):
+    """Verify Decision Classification values display correctly."""
+    from services.decision_classification_service import (
+        DecisionClassificationResult,
+    )
+
+    class MockDecisionClassificationService:
+        def classify(self, **kwargs):
+            return DecisionClassificationResult(
+                total_classifications=0,
+                classified=0,
+                unclassified=0,
+                classifications=[],
+            )
+
+    cls_svc = MockDecisionClassificationService()
+    screen = PortfolioHealth(decision_classification_service=cls_svc)
+
+    assert "Total Classifications: 0" in screen.lbl_dc_total.text()
+    assert "Classified: 0" in screen.lbl_dc_classified.text()
+    assert "Unclassified: 0" in screen.lbl_dc_unclassified.text()
+
+
+def test_empty_decision_classification_safe(qapp):
+    """Verify empty Decision Classification displays safely."""
+    from services.decision_classification_service import (
+        DecisionClassificationResult,
+    )
+
+    class MockEmptyClsService:
+        def classify(self, **kwargs):
+            return DecisionClassificationResult(0, 0, 0, [])
+
+    cls_svc = MockEmptyClsService()
+    screen = PortfolioHealth(decision_classification_service=cls_svc)
+
+    assert "Total Classifications: 0" in screen.lbl_dc_total.text()
+    assert "Classified: 0" in screen.lbl_dc_classified.text()
+    assert "Unclassified: 0" in screen.lbl_dc_unclassified.text()

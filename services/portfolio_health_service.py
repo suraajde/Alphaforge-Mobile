@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from services.decision_classification_service import DecisionClassificationResult
 from services.decision_engine_service import DecisionEngineResult
 from services.portfolio_analytics_service import (
     PortfolioAnalytics,
@@ -82,6 +83,7 @@ class PortfolioHealthResult:
     alert_history: Optional[Any] = None
     alert_management: Optional[Any] = None
     decision_engine: Optional[DecisionEngineResult] = None
+    decision_classification: Optional[DecisionClassificationResult] = None
 
 
 class PortfolioHealthService:
@@ -102,25 +104,9 @@ class PortfolioHealthService:
         alert_history_service: Optional[Any] = None,
         alert_management_service: Optional[Any] = None,
         decision_engine_service: Optional[Any] = None,
+        decision_classification_service: Optional[Any] = None,
     ) -> None:
-        """Initialize PortfolioHealthService.
-
-        Args:
-            portfolio_app_service: Optional instance or provider of PortfolioApplicationService
-                or similar portfolio data service.
-            history_service: Optional instance of PortfolioHealthHistoryService.
-            monitor_service: Optional instance of PortfolioHealthMonitorService.
-            change_detection_service: Optional instance of PortfolioHealthChangeDetectionService.
-            timeline_service: Optional instance of PortfolioHealthTimelineService.
-            monitoring_dashboard_service: Optional instance of PortfolioHealthMonitoringDashboardService.
-            alert_center_service: Optional instance of AlertCenterService.
-            alert_generation_service: Optional instance of AlertGenerationService.
-            alert_rules_service: Optional instance of AlertRulesService.
-            alert_dashboard_service: Optional instance of AlertDashboardService.
-            alert_history_service: Optional instance of AlertHistoryService.
-            alert_management_service: Optional instance of AlertManagementService.
-            decision_engine_service: Optional instance of DecisionEngineService.
-        """
+        """Initialize PortfolioHealthService."""
         self._portfolio_app_service = portfolio_app_service
         self._history_service = history_service
         self._monitor_service = monitor_service
@@ -134,6 +120,7 @@ class PortfolioHealthService:
         self._alert_history_service = alert_history_service
         self._alert_management_service = alert_management_service
         self._decision_engine_service = decision_engine_service
+        self._decision_classification_service = decision_classification_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -679,6 +666,28 @@ class PortfolioHealthService:
                 )
             except Exception:
                 res.decision_engine = None
+
+        # Phase: Decision Classification
+        if self._decision_classification_service is not None and hasattr(self._decision_classification_service, "classify"):
+            try:
+                res.decision_classification = self._decision_classification_service.classify(
+                    decision_engine_result=res.decision_engine,
+                    portfolio_health_result=res,
+                    alert_management_result=res.alert_management,
+                )
+            except Exception:
+                res.decision_classification = None
+        else:
+            try:
+                from services.decision_classification_service import DecisionClassificationService
+                cls_svc = DecisionClassificationService()
+                res.decision_classification = cls_svc.classify(
+                    decision_engine_result=res.decision_engine,
+                    portfolio_health_result=res,
+                    alert_management_result=res.alert_management,
+                )
+            except Exception:
+                res.decision_classification = None
 
         return res
 
