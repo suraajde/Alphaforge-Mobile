@@ -12,6 +12,7 @@ from app.screens.research_radar import ResearchRadar
 from app.screens.portfolio import Portfolio
 from app.screens.portfolio_health import PortfolioHealth
 from app.screens.portfolio_action_center import PortfolioActionCenter
+from app.screens.watchtower import Watchtower
 from app.screens.settings import Settings
 
 
@@ -45,6 +46,7 @@ class MainWindow(QMainWindow):
         )
         self.portfolio_health = PortfolioHealth()
         self.action_center = PortfolioActionCenter()
+        self.watchtower = Watchtower()
         self.settings = Settings()
 
         self.pages.addWidget(self.dashboard)
@@ -53,6 +55,7 @@ class MainWindow(QMainWindow):
         self.pages.addWidget(self.portfolio)
         self.pages.addWidget(self.portfolio_health)
         self.pages.addWidget(self.action_center)
+        self.pages.addWidget(self.watchtower)
         self.pages.addWidget(self.settings)
 
         # ---------------- Layout ----------------
@@ -86,6 +89,10 @@ class MainWindow(QMainWindow):
 
         self.sidebar.action_center_btn.clicked.connect(
             lambda: self.pages.setCurrentWidget(self.action_center)
+        )
+
+        self.sidebar.watchtower_btn.clicked.connect(
+            lambda: self.pages.setCurrentWidget(self.watchtower)
         )
 
         self.sidebar.settings_btn.clicked.connect(

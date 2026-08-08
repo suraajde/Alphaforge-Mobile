@@ -1,145 +1,53 @@
 # AlphaForge Version Information
 
-Project
-
-AlphaForge – AI Portfolio Construction Engine
+Project: AlphaForge – AI Portfolio Construction Engine
 
 ---
 
-Current Version
-
-v0.1.0
+Current Version: v1.0.0-rc1
 
 ---
 
-Project Status
-
-Development Build
+Project Status: Release Candidate Baseline (Chapter 20 In Progress)
 
 ---
 
-Release Date
-
-July 2026
+Release Date: August 2026
 
 ---
 
-Current Milestone
-
-Stock Explorer Completed
-
-Professional UI Next
+Current Milestone: Sprint 14.0.0 — Release Candidate Foundation Completed
 
 ---
 
-Completed Features
+Completed Chapters:
 
-✓ Desktop Application
-
-✓ Dashboard
-
-✓ Sidebar Navigation
-
-✓ Live Stock Search
-
-✓ Company Information
-
-✓ Current Price
-
-✓ Market Capitalization
-
-✓ PE Ratio
-
-✓ PB Ratio
-
-✓ ROE
-
-✓ ROCE
-
-✓ Debt to Equity
-
-✓ Formatting Engine
-
-✓ Modular Architecture
-
-✓ Git Version Control
-
-✓ Documentation
+✓ Chapter 14 — Portfolio Construction Engine
+✓ Chapter 15 — Alert Center & Rules Engine
+✓ Chapter 16 — Decision Audit Trail & Analytics
+✓ Chapter 17 — Rebalancing & Drift Engine
+✓ Chapter 18 — Portfolio Intelligence Layer (Score, Quality, SIP, Opportunity, Risk)
+✓ Chapter 19 — Alpha 12 Integration Layer (Mapping, Health, Challenger, Governance, Stability)
+✓ Chapter 20 (Sprint 14.0.0) — Release Candidate Foundation & UI Hardening
 
 ---
 
-Next Release
+Target Milestone:
 
-v0.2.0
-
-Professional UI
-
-Metric Cards
-
-Company Cards
-
-Alpha Score Card
-
-Dark Theme Improvements
-
-Professional Layout
+v1.0.0 Stable Release (Sprint 14.0.4)
 
 ---
 
-Future Releases
-
-v0.3.0
-
-Fundamental Engine
-
-v0.4.0
-
-Technical Engine
-
-v0.5.0
-
-Alpha Score Engine
-
-v0.6.0
-
-Ranking Engine
-
-v0.7.0
-
-Research Radar
-
-v0.8.0
-
-Portfolio Engine
-
-v0.9.0
-
-AI Assistant
-
-v1.0.0
-
-Complete AI Portfolio Construction Platform
+Latest Git Commit: 0c9587ca24779431c93776c01001c7daddbab985
 
 ---
 
-Latest Stable Git Commit
-
-104ebc5
+Author: Suraj Dev
 
 ---
 
-Author
+Project Motto:
 
-Suraj Dev
-
----
-
-Project Motto
-
-Invest Less.
-
-Understand More.
-
-Own The Best.
+Invest Less. Understand More. Own The Best.
 
 AlphaForge
