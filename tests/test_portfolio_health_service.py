@@ -1,861 +1,1779 @@
 import pytest
+
 from services.portfolio_health_service import (
+
     PortfolioHealthAnalytics,
+
     PortfolioHealthResult,
+
     PortfolioHealthService,
+
     PortfolioHealthSnapshot,
+
     PortfolioHealthTrend,
+
 )
 
 
+
+
+
 def test_service_instantiation():
+
     """TEST 1: Verify service instantiation."""
+
     service = PortfolioHealthService()
+
     assert service is not None
 
 
+
+
+
 def test_build_snapshot_return_type():
+
     """TEST 2: Verify returned object is PortfolioHealthSnapshot."""
+
     service = PortfolioHealthService()
+
     snapshot = service.build_snapshot()
+
     assert isinstance(snapshot, PortfolioHealthSnapshot)
+
+
+
 
 
 def test_snapshot_contains_required_fields():
+
     """TEST 3: Verify snapshot contains all required fields."""
+
     service = PortfolioHealthService()
+
     snapshot = service.build_snapshot()
 
+
+
     assert hasattr(snapshot, "position_count")
+
     assert hasattr(snapshot, "portfolio_value")
+
     assert hasattr(snapshot, "invested_value")
+
     assert hasattr(snapshot, "cash_allocation_pct")
+
     assert hasattr(snapshot, "largest_position")
+
     assert hasattr(snapshot, "largest_position_weight_pct")
 
+
+
     assert isinstance(snapshot.position_count, int)
+
     assert isinstance(snapshot.portfolio_value, float)
+
     assert isinstance(snapshot.invested_value, float)
+
     assert isinstance(snapshot.cash_allocation_pct, float)
+
     assert isinstance(snapshot.largest_position, str)
+
     assert isinstance(snapshot.largest_position_weight_pct, float)
 
 
+
+
+
 def test_build_snapshot_defensive_empty_unavailable():
+
     """TEST 4: Verify service does not throw exceptions when portfolio data is empty or unavailable."""
+
     # Case 1: None app service with missing file/data
+
     service_none = PortfolioHealthService(portfolio_app_service=None)
+
     snapshot = service_none.build_snapshot()
+
     assert isinstance(snapshot, PortfolioHealthSnapshot)
 
+
+
     # Case 2: App service raising exception
+
     class FaultyAppService:
+
         def get_status(self):
+
             raise RuntimeError("Data pipeline failure")
 
+
+
     service_faulty = PortfolioHealthService(portfolio_app_service=FaultyAppService())
+
     snapshot_faulty = service_faulty.build_snapshot()
+
     assert isinstance(snapshot_faulty, PortfolioHealthSnapshot)
+
     assert snapshot_faulty.position_count == 0
+
     assert snapshot_faulty.largest_position == "N/A"
 
+
+
     # Case 3: Empty state dictionary
+
     class EmptyAppService:
+
         def get_status(self):
+
             return {"status": "OK", "state": {}}
 
+
+
     service_empty = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
     snapshot_empty = service_empty.build_snapshot()
+
     assert isinstance(snapshot_empty, PortfolioHealthSnapshot)
+
     assert snapshot_empty.position_count == 0
 
 
+
+
+
 def test_build_snapshot_with_mock_portfolio():
+
     """Verify snapshot calculation accuracy with mock portfolio data."""
+
     class MockAppService:
+
         def get_status(self):
+
             return {
+
                 "status": "OK",
+
                 "state": {
+
                     "cash_balance": 5000.0,
+
                     "total_portfolio_value": 100000.0,
+
                     "positions": {
+
                         "KPITTECH": {
+
                             "symbol": "KPITTECH",
+
                             "quantity": 10,
+
                             "invested_cost": 40000.0,
+
                             "current_value": 60000.0,
+
                         },
+
                         "INFY": {
+
                             "symbol": "INFY",
+
                             "quantity": 20,
+
                             "invested_cost": 30000.0,
+
                             "current_value": 35000.0,
+
                         },
+
                     },
+
                 },
+
             }
 
+
+
     service = PortfolioHealthService(portfolio_app_service=MockAppService())
+
     snapshot = service.build_snapshot()
 
+
+
     assert snapshot.position_count == 2
+
     assert snapshot.portfolio_value == 100000.0
+
     assert snapshot.invested_value == 70000.0
+
     assert snapshot.cash_allocation_pct == 5.0
+
     assert snapshot.largest_position == "KPITTECH"
+
     assert snapshot.largest_position_weight_pct == 60.0
 
 
+
+
+
 def test_evaluate_healthy_portfolio():
+
     """Verify evaluation of a healthy portfolio."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(
+
         position_count=12,
+
         portfolio_value=100000.0,
+
         invested_value=95000.0,
+
         cash_allocation_pct=5.0,
+
         largest_position="RELIANCE",
+
         largest_position_weight_pct=9.5,
+
     )
+
     result = service.evaluate(snapshot)
+
     assert isinstance(result, PortfolioHealthResult)
+
     assert result.score > 80
+
     assert result.grade in ["A", "B"]
 
 
+
+
+
 def test_evaluate_high_concentration():
+
     """Verify evaluation of high concentration risk."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(
+
         position_count=10,
+
         portfolio_value=100000.0,
+
         invested_value=95000.0,
+
         cash_allocation_pct=5.0,
+
         largest_position="RELIANCE",
+
         largest_position_weight_pct=25.0,
+
     )
+
     result = service.evaluate(snapshot)
+
     assert result.largest_position_weight_pct > 20
+
     assert result.concentration_rating == "HIGH"
 
 
+
+
+
 def test_evaluate_poor_diversification():
+
     """Verify evaluation of poor diversification."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(
+
         position_count=3,
+
         portfolio_value=100000.0,
+
         invested_value=95000.0,
+
         cash_allocation_pct=5.0,
+
         largest_position="RELIANCE",
+
         largest_position_weight_pct=10.0,
+
     )
+
     result = service.evaluate(snapshot)
+
     assert result.position_count < 6
+
     assert result.diversification_rating == "POOR"
+
+
+
 
 
 def test_evaluate_grade_mapping():
+
     """Verify grade mapping rules (A, B, C, D)."""
+
     service = PortfolioHealthService()
 
+
+
     # Score = 40 (pos) + 40 (conc) + 20 (cash) = 100 -> Grade A
+
     snap_a = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     res_a = service.evaluate(snap_a)
+
     assert res_a.score >= 90
+
     assert res_a.grade == "A"
 
+
+
     # Score = 30 (pos 7) + 30 (conc 12%) + 20 (cash 5%) = 80 -> Grade B
+
     snap_b = PortfolioHealthSnapshot(7, 100000.0, 95000.0, 5.0, "SYM", 12.0)
+
     res_b = service.evaluate(snap_b)
+
     assert 80 <= res_b.score <= 89
+
     assert res_b.grade == "B"
 
+
+
     # Score = 20 (pos 4) + 30 (conc 14%) + 20 (cash 5%) = 70 -> Grade C
+
     snap_c = PortfolioHealthSnapshot(4, 100000.0, 95000.0, 5.0, "SYM", 14.0)
+
     res_c = service.evaluate(snap_c)
+
     assert 70 <= res_c.score <= 79
+
     assert res_c.grade == "C"
 
+
+
     # Score = 10 (pos 2) + 10 (conc 25%) + 20 (cash 5%) = 40 -> Grade D
+
     snap_d = PortfolioHealthSnapshot(2, 100000.0, 95000.0, 5.0, "SYM", 25.0)
+
     res_d = service.evaluate(snap_d)
+
     assert res_d.score < 70
+
     assert res_d.grade == "D"
 
 
+
+
+
 def test_evaluate_empty_portfolio_safety():
+
     """Verify evaluate() handles empty portfolio safely without exceptions."""
+
     class EmptyAppService:
+
         def get_status(self):
+
             return {"status": "OK", "state": {}}
 
+
+
     service = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
     result = service.evaluate()
+
     assert isinstance(result, PortfolioHealthResult)
+
     assert result.position_count == 0
+
     assert result.diversification_rating == "POOR"
+
     assert result.concentration_rating == "LOW"
 
 
+
+
+
 def test_analytics_object_exists():
+
     """TEST 1: Verify analytics object exists on result."""
+
     service = PortfolioHealthService()
+
     result = service.evaluate()
+
     assert result.analytics is not None
+
     assert isinstance(result.analytics, PortfolioHealthAnalytics)
+
+
+
 
 
 def test_breakdown_sums_correctly():
+
     """TEST 2: Verify breakdown scores sum to total score."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     result = service.evaluate(snapshot)
+
     analytics = result.analytics
+
     assert analytics is not None
+
     assert (
+
         analytics.diversification_score
+
         + analytics.concentration_score
+
         + analytics.cash_score
+
         == result.score
+
     )
+
+
+
 
 
 def test_healthy_portfolio_produces_strengths():
+
     """TEST 3: Verify healthy portfolio produces strengths."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     result = service.evaluate(snapshot)
+
     assert result.analytics is not None
+
     assert len(result.analytics.strengths) > 0
+
     assert "Good diversification" in result.analytics.strengths
+
     assert "Low concentration risk" in result.analytics.strengths
+
     assert "Healthy cash allocation" in result.analytics.strengths
 
 
+
+
+
 def test_weak_portfolio_produces_weaknesses():
+
     """TEST 4: Verify weak portfolio produces weaknesses."""
+
     service = PortfolioHealthService()
+
     snapshot = PortfolioHealthSnapshot(2, 100000.0, 70000.0, 30.0, "SYM", 35.0)
+
     result = service.evaluate(snapshot)
+
     assert result.analytics is not None
+
     assert len(result.analytics.weaknesses) > 0
+
     assert "Portfolio may be under-diversified" in result.analytics.weaknesses
+
     assert "High concentration risk" in result.analytics.weaknesses
+
     assert "Elevated cash allocation" in result.analytics.weaknesses
 
 
+
+
+
 def test_empty_portfolio_safety_analytics():
+
     """TEST 5: Verify evaluate() handles empty portfolio safely and returns valid analytics."""
+
     class EmptyAppService:
+
         def get_status(self):
+
             return {"status": "OK", "state": {}}
 
+
+
     service = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
     result = service.evaluate()
+
     assert result.analytics is not None
+
     assert isinstance(result.analytics, PortfolioHealthAnalytics)
+
     assert result.analytics.diversification_score == 10
+
     assert result.analytics.concentration_score == 40
+
     assert result.analytics.cash_score == 20
 
 
+
+
+
 def test_trend_object_exists():
+
     """TEST 1: Verify trend object exists on result."""
+
     service = PortfolioHealthService()
+
     result = service.evaluate()
+
     assert result.trend is not None
+
     assert isinstance(result.trend, PortfolioHealthTrend)
+
+
+
 
 
 def test_improving_trend():
+
     """TEST 2: Verify improving trend direction when score increases by >= 3."""
+
     service = PortfolioHealthService()
+
     curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     prev_snap = PortfolioHealthSnapshot(7, 100000.0, 95000.0, 5.0, "SYM", 12.0)
+
     prev_res = service.evaluate(prev_snap)
+
     curr_res = service.evaluate(curr_snap, previous=prev_res)
 
+
+
     assert curr_res.trend is not None
+
     assert curr_res.trend.score_change > 0
+
     assert curr_res.trend.trend_direction == "IMPROVING"
 
 
+
+
+
 def test_deteriorating_trend():
+
     """TEST 3: Verify deteriorating trend direction when score decreases by >= 3."""
+
     service = PortfolioHealthService()
+
     curr_snap = PortfolioHealthSnapshot(3, 100000.0, 70000.0, 30.0, "SYM", 25.0)
+
     prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     prev_res = service.evaluate(prev_snap)
+
     curr_res = service.evaluate(curr_snap, previous=prev_res)
 
+
+
     assert curr_res.trend is not None
+
     assert curr_res.trend.score_change < 0
+
     assert curr_res.trend.trend_direction == "DETERIORATING"
 
 
+
+
+
 def test_stable_trend():
+
     """TEST 4: Verify stable trend direction when score change is within (-3, 3)."""
+
     service = PortfolioHealthService()
+
     curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     prev_res = service.evaluate(prev_snap)
+
     curr_res = service.evaluate(curr_snap, previous=prev_res)
 
+
+
     assert curr_res.trend is not None
+
     assert curr_res.trend.score_change == 0
+
     assert curr_res.trend.trend_direction == "STABLE"
 
 
+
+
+
 def test_no_previous_result_trend_safety():
+
     """TEST 5: Verify trend object is created safely when no previous result is provided."""
+
     service = PortfolioHealthService()
+
     result = service.evaluate(previous=None)
+
     assert result.trend is not None
+
     assert isinstance(result.trend, PortfolioHealthTrend)
+
     assert result.trend.score_change == 0
+
     assert result.trend.trend_direction == "STABLE"
 
 
+
+
+
 def test_trend_uses_history_service_safely():
+
     """Verify trend evaluation uses history_service get_latest() safely when previous is None."""
+
     class MockHistoryService:
+
         def get_latest(self):
+
             return PortfolioHealthResult(
+
                 score=80,
+
                 grade="B",
+
                 diversification_rating="GOOD",
+
                 concentration_rating="MODERATE",
+
                 position_count=10,
+
                 largest_position_weight_pct=12.0,
+
                 cash_allocation_pct=5.0,
+
             )
 
+
+
     history_svc = MockHistoryService()
+
     service = PortfolioHealthService(history_service=history_svc)
 
+
+
     curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
     result = service.evaluate(curr_snap, previous=None)
 
+
+
     assert result.trend is not None
+
     assert result.trend.previous_score == 80
+
     assert result.trend.current_score == 100
+
     assert result.trend.score_change == 20
+
     assert result.trend.trend_direction == "IMPROVING"
 
 
+
+
+
 def test_historical_analytics_integration_works():
+
     """Verify evaluate populates result.historical_analytics from history_service."""
+
     from services.portfolio_health_history_service import PortfolioHealthHistoricalAnalytics
 
+
+
     class MockHistoryService:
+
         def get_latest(self):
+
             return None
 
+
+
         def get_historical_analytics(self):
+
             return PortfolioHealthHistoricalAnalytics(
+
                 history_count=5,
+
                 best_score=92,
+
                 worst_score=71,
+
                 average_score=83.4,
+
                 current_score=84,
+
                 overall_trend="IMPROVING",
+
             )
 
+
+
     history_svc = MockHistoryService()
+
     service = PortfolioHealthService(history_service=history_svc)
+
     result = service.evaluate()
 
+
+
     assert result.historical_analytics is not None
+
     assert result.historical_analytics.history_count == 5
+
     assert result.historical_analytics.best_score == 92
+
     assert result.historical_analytics.overall_trend == "IMPROVING"
 
 
+
+
+
 def test_dashboard_summary_integration_works():
+
     """Verify evaluate populates result.dashboard_summary from history_service."""
+
     from services.portfolio_health_history_service import PortfolioHealthDashboardSummary
 
+
+
     class MockHistoryService:
+
         def get_latest(self):
+
             return None
 
+
+
         def get_dashboard_summary(self):
+
             return PortfolioHealthDashboardSummary(
+
                 total_snapshots=4,
+
                 current_score=71,
+
                 current_grade="C",
+
                 best_score=92,
+
                 best_grade="A",
+
                 worst_score=71,
+
                 worst_grade="C",
+
                 average_score=81.8,
+
             )
 
+
+
     history_svc = MockHistoryService()
+
     service = PortfolioHealthService(history_service=history_svc)
+
     result = service.evaluate()
 
+
+
     assert result.dashboard_summary is not None
+
     assert result.dashboard_summary.total_snapshots == 4
+
     assert result.dashboard_summary.best_score == 92
+
     assert result.dashboard_summary.worst_score == 71
 
 
+
+
+
 def test_historical_metrics_integration_works():
+
     """Verify evaluate populates result.historical_metrics from history_service."""
+
     from services.portfolio_health_history_service import PortfolioHealthHistoricalMetrics
 
+
+
     class MockHistoryService:
+
         def get_latest(self):
+
             return None
 
+
+
         def get_historical_metrics(self):
+
             return PortfolioHealthHistoricalMetrics(
+
                 score_range=21,
+
                 best_score=92,
+
                 worst_score=71,
+
                 volatility_score=4.7,
+
                 improving_periods=2,
+
                 deteriorating_periods=1,
+
                 stability_rating="STABLE",
+
             )
 
+
+
     history_svc = MockHistoryService()
+
     service = PortfolioHealthService(history_service=history_svc)
+
     result = service.evaluate()
 
+
+
     assert result.historical_metrics is not None
+
     assert result.historical_metrics.score_range == 21
+
     assert result.historical_metrics.volatility_score == 4.7
+
     assert result.historical_metrics.stability_rating == "STABLE"
 
 
+
+
+
 def test_historical_insights_integration_works():
+
     """Verify evaluate populates result.historical_insights from history_service."""
+
     from services.portfolio_health_history_service import PortfolioHealthHistoricalInsights
 
+
+
     class MockHistoryService:
+
         def get_latest(self):
+
             return None
 
+
+
         def get_historical_insights(self):
+
             return PortfolioHealthHistoricalInsights(
+
                 improvement_percentage=66.7,
+
                 deterioration_percentage=33.3,
+
                 neutral_percentage=0.0,
+
                 consistency_score=33.4,
+
                 quality_rating="FAIR",
+
                 direction_rating="IMPROVING",
+
             )
 
+
+
     history_svc = MockHistoryService()
+
     service = PortfolioHealthService(history_service=history_svc)
+
     result = service.evaluate()
 
+
+
     assert result.historical_insights is not None
+
     assert result.historical_insights.improvement_percentage == 66.7
+
     assert result.historical_insights.consistency_score == 33.4
+
     assert result.historical_insights.direction_rating == "IMPROVING"
 
 
+
+
+
 def test_monitoring_integration_works():
+
     """Verify evaluate populates result.monitoring_state."""
+
     from services.portfolio_health_monitor_service import PortfolioHealthMonitoringState
 
+
+
     class MockMonitorService:
+
         def get_monitoring_state(self):
+
             return PortfolioHealthMonitoringState(
+
                 monitoring_enabled=True,
+
                 monitoring_status="READY",
+
                 snapshot_count=18,
+
                 latest_snapshot_time="2026-08-07 09:15",
+
                 latest_score=91,
+
                 latest_grade="A",
+
             )
 
+
+
     mon_svc = MockMonitorService()
+
     service = PortfolioHealthService(monitor_service=mon_svc)
+
     result = service.evaluate()
 
+
+
     assert result.monitoring_state is not None
+
     assert isinstance(result.monitoring_state, PortfolioHealthMonitoringState)
+
     assert result.monitoring_state.monitoring_enabled is True
+
     assert result.monitoring_state.monitoring_status == "READY"
+
     assert result.monitoring_state.snapshot_count == 18
+
     assert result.monitoring_state.latest_score == 91
+
     assert result.monitoring_state.latest_grade == "A"
 
 
+
+
+
 def test_change_detection_integration_works():
+
     """Verify evaluate populates result.change_report."""
+
     from services.portfolio_health_change_detection_service import (
+
         PortfolioHealthChange,
+
         PortfolioHealthChangeReport,
+
     )
 
+
+
     class MockChangeDetectionService:
+
         def detect_changes(self):
+
             return PortfolioHealthChangeReport(
+
                 snapshot_count=2,
+
                 total_changes=3,
+
                 has_changes=True,
+
                 changes=[
+
                     PortfolioHealthChange("Health Score", "84", "91", "INCREASED"),
+
                     PortfolioHealthChange("Grade", "B", "A", "CHANGED"),
+
                     PortfolioHealthChange("Cash Allocation", "8%", "5%", "DECREASED"),
+
                 ],
+
             )
 
+
+
     cd_svc = MockChangeDetectionService()
+
     service = PortfolioHealthService(change_detection_service=cd_svc)
+
     result = service.evaluate()
 
+
+
     assert result.change_report is not None
+
     assert isinstance(result.change_report, PortfolioHealthChangeReport)
+
     assert result.change_report.snapshot_count == 2
+
     assert result.change_report.total_changes == 3
+
     assert result.change_report.has_changes is True
+
     assert len(result.change_report.changes) == 3
 
 
+
+
+
 def test_timeline_integration_works():
+
     """Verify evaluate populates result.timeline."""
+
     from services.portfolio_health_timeline_service import (
+
         PortfolioHealthTimeline,
+
         PortfolioHealthTimelineEntry,
+
     )
 
+
+
     class MockTimelineService:
+
         def build_timeline(self):
+
             return PortfolioHealthTimeline(
+
                 total_entries=3,
+
                 latest_timestamp="2026-08-08",
+
                 earliest_timestamp="2026-07-01",
+
                 entries=[
+
                     PortfolioHealthTimelineEntry(1, "2026-07-01", 80, "B", "STABLE", 0),
+
                     PortfolioHealthTimelineEntry(2, "2026-07-15", 84, "B", "IMPROVING", 2),
+
                     PortfolioHealthTimelineEntry(3, "2026-08-08", 91, "A", "IMPROVING", 3),
+
                 ],
+
             )
 
+
+
     tl_svc = MockTimelineService()
+
     service = PortfolioHealthService(timeline_service=tl_svc)
+
     result = service.evaluate()
 
+
+
     assert result.timeline is not None
+
     assert isinstance(result.timeline, PortfolioHealthTimeline)
+
     assert result.timeline.total_entries == 3
+
     assert result.timeline.earliest_timestamp == "2026-07-01"
+
     assert result.timeline.latest_timestamp == "2026-08-08"
+
     assert len(result.timeline.entries) == 3
 
 
+
+
+
 def test_monitoring_dashboard_integration_works():
+
     """Verify evaluate populates result.monitoring_dashboard."""
+
     from services.portfolio_health_monitor_dashboard_service import (
+
         PortfolioHealthMonitoringDashboard,
+
     )
 
+
+
     class MockDashboardService:
+
         def build_dashboard(self):
+
             return PortfolioHealthMonitoringDashboard(
+
                 monitoring_status="READY",
+
                 monitoring_enabled=True,
+
                 latest_score=91,
+
                 latest_grade="A",
+
                 latest_snapshot_time="2026-08-08 09:15",
+
                 total_snapshots=18,
+
                 total_detected_changes=27,
+
                 latest_change_count=3,
+
                 timeline_entries=18,
+
             )
 
+
+
     dash_svc = MockDashboardService()
+
     service = PortfolioHealthService(monitoring_dashboard_service=dash_svc)
+
     result = service.evaluate()
 
+
+
     assert result.monitoring_dashboard is not None
+
     assert isinstance(result.monitoring_dashboard, PortfolioHealthMonitoringDashboard)
+
     assert result.monitoring_dashboard.monitoring_status == "READY"
+
     assert result.monitoring_dashboard.monitoring_enabled is True
+
     assert result.monitoring_dashboard.latest_score == 91
+
     assert result.monitoring_dashboard.latest_grade == "A"
+
     assert result.monitoring_dashboard.total_snapshots == 18
+
     assert result.monitoring_dashboard.total_detected_changes == 27
 
 
+
+
+
 def test_alert_center_integration_works():
+
     """Verify evaluate populates result.alert_center."""
+
     from services.alert_center_service import AlertCenterState, PortfolioAlert
 
+
+
     class MockAlertCenterService:
+
         def get_state(self):
+
             return AlertCenterState(
+
                 total_alerts=4,
+
                 active_alerts=2,
+
                 acknowledged_alerts=1,
+
                 dismissed_alerts=1,
+
                 alerts=[
+
                     PortfolioAlert("1", "2026-08-08", "TYPE1", "HIGH", "Title 1", "Desc 1", "ACTIVE"),
+
                     PortfolioAlert("2", "2026-08-06", "TYPE2", "LOW", "Title 2", "Desc 2", "ACKNOWLEDGED"),
+
                 ],
+
             )
 
+
+
     ac_svc = MockAlertCenterService()
+
     service = PortfolioHealthService(alert_center_service=ac_svc)
+
     result = service.evaluate()
 
+
+
     assert result.alert_center is not None
+
     assert isinstance(result.alert_center, AlertCenterState)
+
     assert result.alert_center.total_alerts == 4
+
     assert result.alert_center.active_alerts == 2
+
     assert result.alert_center.acknowledged_alerts == 1
+
     assert result.alert_center.dismissed_alerts == 1
+
     assert len(result.alert_center.alerts) == 2
 
 
+
+
+
 def test_generated_alert_integration_works():
+
     """Verify evaluate populates result.generated_alerts."""
+
     from services.alert_center_service import PortfolioAlert
+
     from services.alert_generation_service import AlertGenerationResult
 
+
+
     class MockAlertGenerationService:
+
         def generate_alerts(self, **kwargs):
+
             return AlertGenerationResult(
+
                 generated_alerts=2,
+
                 alerts=[
+
                     PortfolioAlert("1", "2026-08-08 10:00", "MONITORING_STATUS", "INFO", "Monitoring ready", "Desc 1", "ACTIVE"),
+
                     PortfolioAlert("2", "2026-08-08 10:00", "CHANGE_DETECTED", "MEDIUM", "Portfolio changes detected", "Desc 2", "ACTIVE"),
+
                 ],
+
             )
 
+
+
     gen_svc = MockAlertGenerationService()
+
     service = PortfolioHealthService(alert_generation_service=gen_svc)
+
     result = service.evaluate()
 
+
+
     assert result.generated_alerts is not None
+
     assert isinstance(result.generated_alerts, AlertGenerationResult)
+
     assert result.generated_alerts.generated_alerts == 2
+
     assert len(result.generated_alerts.alerts) == 2
+
     assert result.generated_alerts.alerts[0].alert_type == "MONITORING_STATUS"
+
     assert result.generated_alerts.alerts[1].alert_type == "CHANGE_DETECTED"
 
 
+
+
+
 def test_alert_rules_integration_works():
+
     """Verify evaluate populates result.alert_rules."""
+
     from services.alert_rules_service import AlertRule, AlertRulesResult
 
+
+
     class MockAlertRulesService:
+
         def evaluate_rules(self, **kwargs):
+
             return AlertRulesResult(
+
                 total_rules=5,
+
                 triggered_rules=2,
+
                 rules=[
+
                     AlertRule("Monitoring Ready", True, "INFO", "MONITORING_STATUS", True, "Monitoring ready."),
+
                     AlertRule("Monitoring Unavailable", True, "HIGH", "MONITORING_STATUS", False, "Monitoring unavailable."),
+
                     AlertRule("Portfolio Changes Detected", True, "MEDIUM", "CHANGE_DETECTED", True, "Changes detected."),
+
                     AlertRule("Timeline Updated", True, "LOW", "TIMELINE_UPDATED", False, "Timeline updated."),
+
                     AlertRule("Health Score Changed", True, "MEDIUM", "HEALTH_SCORE_CHANGED", False, "Score changed."),
+
                 ],
+
             )
 
+
+
     rules_svc = MockAlertRulesService()
+
     service = PortfolioHealthService(alert_rules_service=rules_svc)
+
     result = service.evaluate()
 
+
+
     assert result.alert_rules is not None
+
     assert isinstance(result.alert_rules, AlertRulesResult)
+
     assert result.alert_rules.total_rules == 5
+
     assert result.alert_rules.triggered_rules == 2
+
     assert len(result.alert_rules.rules) == 5
+
     assert result.alert_rules.rules[0].rule_name == "Monitoring Ready"
+
     assert result.alert_rules.rules[0].triggered is True
 
 
+
+
+
 def test_alert_dashboard_integration_works():
+
     """Verify evaluate populates result.alert_dashboard."""
+
     from services.alert_center_service import PortfolioAlert
+
     from services.alert_dashboard_service import AlertDashboard, AlertDashboardSummary
 
+
+
     class MockAlertDashboardService:
+
         def build_dashboard(self, **kwargs):
+
             summary = AlertDashboardSummary(
+
                 total_alerts=3,
+
                 active_alerts=2,
+
                 acknowledged_alerts=1,
+
                 dismissed_alerts=0,
+
                 info_alerts=1,
+
                 low_alerts=1,
+
                 medium_alerts=1,
+
                 high_alerts=0,
+
                 critical_alerts=0,
+
             )
+
             alerts = [
+
                 PortfolioAlert("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+
                 PortfolioAlert("2", "2026-08-07 10:00", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+
                 PortfolioAlert("3", "2026-08-07 10:00", "TIMELINE_UPDATED", "LOW", "Timeline", "Desc", "ACKNOWLEDGED"),
+
             ]
+
             return AlertDashboard(summary=summary, alerts=alerts)
 
+
+
     dash_svc = MockAlertDashboardService()
+
     service = PortfolioHealthService(alert_dashboard_service=dash_svc)
+
     result = service.evaluate()
 
+
+
     assert result.alert_dashboard is not None
+
     assert isinstance(result.alert_dashboard, AlertDashboard)
+
     assert result.alert_dashboard.summary.total_alerts == 3
+
     assert result.alert_dashboard.summary.active_alerts == 2
+
     assert result.alert_dashboard.summary.acknowledged_alerts == 1
+
     assert result.alert_dashboard.summary.info_alerts == 1
+
     assert len(result.alert_dashboard.alerts) == 3
 
 
+
+
+
 def test_alert_history_integration_works():
+
     """Verify evaluate populates result.alert_history."""
+
     from services.alert_history_service import AlertHistory, AlertHistoryEntry
 
+
+
     class MockAlertHistoryService:
+
         def save_history(self, alerts):
+
             pass
 
+
+
         def get_history(self):
+
             entries = [
+
                 AlertHistoryEntry("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+
                 AlertHistoryEntry("2", "2026-08-07 10:05", "CHANGE_DETECTED", "MEDIUM", "Changes", "Desc", "ACTIVE"),
+
             ]
+
             return AlertHistory(
+
                 total_entries=2,
+
                 latest_timestamp="2026-08-07 10:05",
+
                 earliest_timestamp="2026-08-07 10:00",
+
                 entries=entries,
+
             )
 
+
+
     hist_svc = MockAlertHistoryService()
+
     service = PortfolioHealthService(alert_history_service=hist_svc)
+
     result = service.evaluate()
 
+
+
     assert result.alert_history is not None
+
     assert isinstance(result.alert_history, AlertHistory)
+
     assert result.alert_history.total_entries == 2
+
     assert result.alert_history.latest_timestamp == "2026-08-07 10:05"
+
     assert result.alert_history.earliest_timestamp == "2026-08-07 10:00"
+
     assert len(result.alert_history.entries) == 2
 
 
+
+
+
 def test_alert_management_integration_works():
+
     """Verify evaluate populates result.alert_management."""
+
     from services.alert_center_service import PortfolioAlert
+
     from services.alert_management_service import AlertManagementResult, AlertManagementSummary
 
+
+
     class MockAlertManagementService:
+
         def get_management_result(self):
+
             summary = AlertManagementSummary(
+
                 total_alerts=2,
+
                 active_alerts=1,
+
                 acknowledged_alerts=1,
+
                 dismissed_alerts=0,
+
                 last_updated="2026-08-07 10:00",
+
             )
+
             alerts = [
+
                 PortfolioAlert("1", "2026-08-07 10:00", "TYPE1", "INFO", "Title 1", "Desc 1", "ACTIVE"),
+
                 PortfolioAlert("2", "2026-08-07 10:00", "TYPE2", "MEDIUM", "Title 2", "Desc 2", "ACKNOWLEDGED"),
+
             ]
+
             return AlertManagementResult(summary=summary, alerts=alerts)
 
+
+
     mgmt_svc = MockAlertManagementService()
+
     service = PortfolioHealthService(alert_management_service=mgmt_svc)
+
     result = service.evaluate()
 
+
+
     assert result.alert_management is not None
+
     assert isinstance(result.alert_management, AlertManagementResult)
+
     assert result.alert_management.summary.total_alerts == 2
+
     assert result.alert_management.summary.active_alerts == 1
+
     assert result.alert_management.summary.acknowledged_alerts == 1
+
     assert len(result.alert_management.alerts) == 2
 
 
+
+
+
 def test_decision_engine_integration_works():
+
     """Verify evaluate populates result.decision_engine."""
+
     from services.decision_engine_service import DecisionEngineResult, DecisionSummary
 
+
+
     class MockDecisionEngineService:
+
         def evaluate(self, **kwargs):
+
             summary = DecisionSummary(
+
                 total_decisions=0,
+
                 pending_decisions=0,
+
                 informational_decisions=0,
+
                 engine_status="READY",
+
             )
+
             return DecisionEngineResult(summary=summary, decisions=[])
 
+
+
     dec_svc = MockDecisionEngineService()
+
     service = PortfolioHealthService(decision_engine_service=dec_svc)
+
     result = service.evaluate()
 
+
+
     assert result.decision_engine is not None
+
     assert isinstance(result.decision_engine, DecisionEngineResult)
+
     assert result.decision_engine.summary.engine_status == "READY"
+
     assert result.decision_engine.summary.total_decisions == 0
+
     assert result.decision_engine.decisions == []
 
 
+
+
+
 def test_decision_classification_integration_works():
+
     """Verify evaluate populates result.decision_classification."""
+
     from services.decision_classification_service import (
+
         DecisionClassificationResult,
+
     )
 
+
+
     class MockDecisionClassificationService:
+
         def classify(self, **kwargs):
+
             return DecisionClassificationResult(
+
                 total_classifications=0,
+
                 classified=0,
+
                 unclassified=0,
+
                 classifications=[],
+
             )
 
+
+
     cls_svc = MockDecisionClassificationService()
+
     service = PortfolioHealthService(decision_classification_service=cls_svc)
+
     result = service.evaluate()
 
+
+
     assert result.decision_classification is not None
+
     assert isinstance(result.decision_classification, DecisionClassificationResult)
+
     assert result.decision_classification.total_classifications == 0
+
     assert result.decision_classification.classified == 0
+
     assert result.decision_classification.unclassified == 0
+
     assert result.decision_classification.classifications == []
 
 
+
+
+
 def test_decision_prioritization_integration_works():
+
     """Verify evaluate populates result.decision_prioritization."""
+
     from services.decision_prioritization_service import (
+
         DecisionPrioritizationResult,
+
     )
 
+
+
     class MockDecisionPrioritizationService:
+
         def prioritize(self, **kwargs):
+
             return DecisionPrioritizationResult(
+
                 total_prioritized=0,
+
                 critical_count=0,
+
                 high_count=0,
+
                 medium_count=0,
+
                 low_count=0,
+
                 info_count=0,
+
                 priorities=[],
+
             )
 
+
+
     prio_svc = MockDecisionPrioritizationService()
+
     service = PortfolioHealthService(decision_prioritization_service=prio_svc)
+
     result = service.evaluate()
 
+
+
     assert result.decision_prioritization is not None
+
     assert isinstance(result.decision_prioritization, DecisionPrioritizationResult)
+
     assert result.decision_prioritization.total_prioritized == 0
+
     assert result.decision_prioritization.critical_count == 0
+
     assert result.decision_prioritization.high_count == 0
+
     assert result.decision_prioritization.medium_count == 0
+
     assert result.decision_prioritization.low_count == 0
+
     assert result.decision_prioritization.info_count == 0
+
     assert result.decision_prioritization.priorities == []
+
+
+
+
+
+def test_decision_audit_integration_works():
+
+    """Verify evaluate populates result.decision_audit."""
+
+    from services.decision_audit_service import (
+
+        DecisionAuditService,
+
+        DecisionAuditTrail,
+
+    )
+
+
+
+    class MockDecisionAuditService:
+
+        def record_decisions(self, **kwargs):
+
+            return DecisionAuditTrail(
+
+                total_entries=0,
+
+                latest_timestamp=None,
+
+                earliest_timestamp=None,
+
+                entries=[],
+
+            )
+
+
+
+        def get_audit_trail(self):
+
+            return DecisionAuditTrail(0, None, None, [])
+
+
+
+    audit_svc = MockDecisionAuditService()
+
+    service = PortfolioHealthService(decision_audit_service=audit_svc)
+
+    result = service.evaluate()
+
+
+
+    assert result.decision_audit is not None
+
+    assert isinstance(result.decision_audit, DecisionAuditTrail)
+
+    assert result.decision_audit.total_entries == 0
+
+    assert result.decision_audit.entries == []
