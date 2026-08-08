@@ -40,6 +40,7 @@ from services.portfolio_opportunity_service import PortfolioOpportunityResult
 from services.portfolio_risk_intelligence_service import PortfolioRiskResult
 from services.alpha12_mapping_service import Alpha12MappingResult
 from services.alpha12_replacement_governance_service import ReplacementGovernanceResult
+from services.alpha12_stability_service import Alpha12StabilityResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -196,6 +197,7 @@ class PortfolioHealthResult:
     alpha12_mapping: Optional[Alpha12MappingResult] = None
     alpha12_challenger_evaluation: Optional[Any] = None
     alpha12_replacement_governance: Optional[ReplacementGovernanceResult] = None
+    alpha12_stability: Optional[Alpha12StabilityResult] = None
 
 class PortfolioHealthService:
 
@@ -261,6 +263,7 @@ class PortfolioHealthService:
         alpha12_health_integration_service: Optional[Any] = None,
         alpha12_challenger_service: Optional[Any] = None,
         alpha12_replacement_governance_service: Optional[Any] = None,
+        alpha12_stability_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -322,6 +325,7 @@ class PortfolioHealthService:
         self._alpha12_health_integration_service = alpha12_health_integration_service
         self._alpha12_challenger_service = alpha12_challenger_service
         self._alpha12_replacement_governance_service = alpha12_replacement_governance_service
+        self._alpha12_stability_service = alpha12_stability_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1745,6 +1749,36 @@ class PortfolioHealthService:
                     res.alpha12_replacement_governance = None
         except Exception:
             res.alpha12_replacement_governance = None
+
+        # Stage 18: Alpha 12 Long-Term Portfolio Stability Engine (non-blocking: defensive)
+        try:
+            if self._alpha12_stability_service is not None and hasattr(self._alpha12_stability_service, "get_stability"):
+                try:
+                    res.alpha12_stability = self._alpha12_stability_service.get_stability(
+                        alpha12_mapping=res.alpha12_mapping,
+                        governance_result=getattr(res, "alpha12_replacement_governance", None),
+                        health_result=res,
+                    )
+                except Exception:
+                    res.alpha12_stability = None
+            else:
+                try:
+                    from services.alpha12_stability_service import Alpha12StabilityService
+
+                    stab_svc = Alpha12StabilityService(
+                        alpha12_mapping_service=self._alpha12_mapping_service,
+                        alpha12_replacement_governance_service=self._alpha12_replacement_governance_service,
+                        portfolio_health_service=self,
+                    )
+                    res.alpha12_stability = stab_svc.get_stability(
+                        alpha12_mapping=res.alpha12_mapping,
+                        governance_result=getattr(res, "alpha12_replacement_governance", None),
+                        health_result=res,
+                    )
+                except Exception:
+                    res.alpha12_stability = None
+        except Exception:
+            res.alpha12_stability = None
 
         return res
 

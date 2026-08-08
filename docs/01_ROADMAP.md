@@ -58,9 +58,9 @@ AlphaForge is an AI-assisted long-term investment platform for portfolio researc
 
 | **Chapter 17** | Rebalancing Engine | ✅ COMPLETED | 13.7.0 – 13.7.4 |
 
-| **Chapter 18** | Portfolio Intelligence Layer | 🚧 NEXT SPRINT | 13.8.0 – 13.8.4 |
+| **Chapter 18** | Portfolio Intelligence Layer | ✅ COMPLETED | 13.8.0 – 13.8.4 |
 
-| **Chapter 19** | Alpha 12 Integration Layer | 📋 PLANNED | 13.9.0 – 13.9.4 |
+| **Chapter 19** | Alpha 12 Integration Layer | ✅ COMPLETED | 13.9.0 – 13.9.4 |
 
 | **Chapter 20** | Stable Release | 📋 PLANNED | 14.0.0 – 14.0.4 |
 
@@ -132,9 +132,9 @@ AlphaForge is an AI-assisted long-term investment platform for portfolio researc
 
 
 
-### CHAPTER 18 — PORTFOLIO INTELLIGENCE LAYER (🚧 NEXT SPRINT)
+### CHAPTER 18 — PORTFOLIO INTELLIGENCE LAYER (✅ COMPLETED)
 
-- 13.8.0 — Portfolio Intelligence Foundation *(NEXT SPRINT)*
+- 13.8.0 — Portfolio Intelligence Foundation
 
 - 13.8.1 — Holding Quality Engine
 
@@ -146,7 +146,7 @@ AlphaForge is an AI-assisted long-term investment platform for portfolio researc
 
 
 
-### CHAPTER 19 — ALPHA 12 INTEGRATION LAYER (📋 PLANNED)
+### CHAPTER 19 — ALPHA 12 INTEGRATION LAYER (✅ COMPLETED)
 
 - 13.9.0 — Alpha 12 Portfolio Mapping
 

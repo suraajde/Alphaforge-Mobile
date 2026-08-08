@@ -58,9 +58,9 @@ AlphaForge is a desktop investment platform designed for long-term portfolio res
 
 | **Chapter 17** | Rebalancing Engine | ✅ COMPLETED | 13.7.0 – 13.7.4 |
 
-| **Chapter 18** | Portfolio Intelligence Layer | 🚧 NEXT SPRINT | 13.8.0 – 13.8.4 |
+| **Chapter 18** | Portfolio Intelligence Layer | ✅ COMPLETED | 13.8.0 – 13.8.4 |
 
-| **Chapter 19** | Alpha 12 Integration Layer | 📋 PLANNED | 13.9.0 – 13.9.4 |
+| **Chapter 19** | Alpha 12 Integration Layer | ✅ COMPLETED | 13.9.0 – 13.9.4 |
 
 | **Chapter 20** | Stable Release | 📋 PLANNED | 14.0.0 – 14.0.4 |
 
@@ -336,11 +336,11 @@ AlphaForge is a desktop investment platform designed for long-term portfolio res
 
 ### CHAPTER 18 — PORTFOLIO INTELLIGENCE LAYER
 
-**Status:** 🚧 PLANNED / NEXT SPRINT
+**Status:** ✅ COMPLETED
 
 
 
-#### Sprint 13.8.0 — Portfolio Intelligence Foundation *(NEXT SPRINT)*
+#### Sprint 13.8.0 — Portfolio Intelligence Foundation
 
 - Intelligence Service
 
@@ -406,7 +406,7 @@ AlphaForge is a desktop investment platform designed for long-term portfolio res
 
 ### CHAPTER 19 — ALPHA 12 INTEGRATION LAYER
 
-**Status:** 📋 PLANNED
+**Status:** ✅ COMPLETED
 
 
 

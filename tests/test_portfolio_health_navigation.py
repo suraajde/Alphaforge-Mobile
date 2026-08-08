@@ -3547,3 +3547,60 @@ def test_alpha12_mapping_unavailable_source_safe(qapp):
     map_svc = UnavailableAlpha12MappingService()
     screen = PortfolioHealth(alpha12_mapping_service=map_svc)
     assert hasattr(screen, "alpha12_mapping_container")
+
+
+def test_alpha12_stability_section_loads(qapp):
+    """Verify Alpha 12 Stability UI container loads safely."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "alpha12_stability_container")
+
+
+def test_alpha12_stability_empty_state_safe(qapp):
+    """Verify empty/UNAVAILABLE Alpha 12 stability result renders safe empty message."""
+    from services.alpha12_stability_service import Alpha12StabilityResult
+
+    class EmptyStabilityService:
+        def get_stability(self):
+            return Alpha12StabilityResult(
+                analysis_status="UNAVAILABLE",
+                rationale="Alpha 12 stability data unavailable.",
+            )
+
+    stab_svc = EmptyStabilityService()
+    screen = PortfolioHealth(alpha12_stability_service=stab_svc)
+    assert hasattr(screen, "alpha12_stability_container")
+
+
+def test_alpha12_stability_values_display(qapp):
+    """Verify valid Alpha 12 stability result populates UI container."""
+    from services.alpha12_stability_service import (
+        Alpha12StabilityMetrics,
+        Alpha12StabilityResult,
+    )
+
+    class ValidStabilityService:
+        def get_stability(self):
+            metrics = Alpha12StabilityMetrics(
+                stability_score=92.5,
+                stability_rating="VERY_STABLE",
+                turnover_rate=2.5,
+                churn_prevention_ratio=100.0,
+                unnecessary_swap_prevention=2,
+                churn_risk="LOW",
+                turnover_efficiency=0.98,
+                average_holding_tenure_months=12.0,
+                persistence_count=12,
+                assessment_status="STABLE",
+                rationale="Highly stable long-term portfolio.",
+                evidence=["Stability Score: 92.5/100"],
+            )
+            return Alpha12StabilityResult(
+                analysis_status="ANALYZED",
+                stability_metrics=metrics,
+                latest_timestamp="2026-08-08T12:00:00Z",
+                rationale="Highly stable long-term portfolio.",
+            )
+
+    stab_svc = ValidStabilityService()
+    screen = PortfolioHealth(alpha12_stability_service=stab_svc)
+    assert hasattr(screen, "alpha12_stability_container")

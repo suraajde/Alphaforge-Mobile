@@ -51,6 +51,7 @@ from services.sip_optimization_service import SIPOptimizationService
 from services.portfolio_opportunity_service import PortfolioOpportunityService
 from services.portfolio_risk_intelligence_service import PortfolioRiskIntelligenceService
 from services.alpha12_mapping_service import Alpha12MappingService
+from services.alpha12_stability_service import Alpha12StabilityService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -136,6 +137,7 @@ class PortfolioHealth(QWidget):
         portfolio_opportunity_service: Optional[PortfolioOpportunityService] = None,
         portfolio_risk_intelligence_service: Optional[PortfolioRiskIntelligenceService] = None,
         alpha12_mapping_service: Optional[Alpha12MappingService] = None,
+        alpha12_stability_service: Optional[Alpha12StabilityService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -236,6 +238,7 @@ class PortfolioHealth(QWidget):
         self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
         self.portfolio_risk_intelligence_service = portfolio_risk_intelligence_service if portfolio_risk_intelligence_service is not None else PortfolioRiskIntelligenceService()
         self.alpha12_mapping_service = alpha12_mapping_service if alpha12_mapping_service is not None else Alpha12MappingService()
+        self.alpha12_stability_service = alpha12_stability_service if alpha12_stability_service is not None else Alpha12StabilityService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -294,6 +297,7 @@ class PortfolioHealth(QWidget):
             portfolio_risk_intelligence_service=self.portfolio_risk_intelligence_service,
 
             alpha12_mapping_service=self.alpha12_mapping_service,
+            alpha12_stability_service=self.alpha12_stability_service,
 
         )
 
@@ -388,6 +392,7 @@ class PortfolioHealth(QWidget):
         self.load_portfolio_risk_intelligence()
 
         self.load_alpha12_mapping()
+        self.load_alpha12_stability()
 
     def load_decision_prioritization(self) -> None:
 
@@ -1484,6 +1489,73 @@ class PortfolioHealth(QWidget):
                     empty_h_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
 
                     self.alpha12_mapping_container.addWidget(empty_h_lbl)
+
+    def load_alpha12_stability(self) -> None:
+        """Bind live Alpha 12 portfolio stability analysis to UI."""
+        if getattr(self, "alpha12_stability_service", None) is None:
+            return
+        try:
+            res = self.alpha12_stability_service.get_stability()
+            self._update_alpha12_stability_ui(res)
+        except Exception:
+            pass
+
+    def _update_alpha12_stability_ui(self, result: Any) -> None:
+        if hasattr(self, "alpha12_stability_container"):
+            self._clear_layout(self.alpha12_stability_container)
+            if result is None or getattr(result, "analysis_status", "UNAVAILABLE") in ("UNAVAILABLE", "ERROR", "INSUFFICIENT_EVIDENCE"):
+                lbl = QLabel("No Alpha 12 stability data available.")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.alpha12_stability_container.addWidget(lbl)
+            else:
+                metrics = getattr(result, "stability_metrics", None)
+                if metrics is None or getattr(metrics, "assessment_status", "UNAVAILABLE") in ("UNAVAILABLE", "INSUFFICIENT_EVIDENCE"):
+                    lbl = QLabel("No Alpha 12 stability data available.")
+                    lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                    self.alpha12_stability_container.addWidget(lbl)
+                else:
+                    score = getattr(metrics, "stability_score", 0.0)
+                    rating = getattr(metrics, "stability_rating", "MODERATE")
+                    turnover = getattr(metrics, "turnover_rate", 0.0)
+                    prevention = getattr(metrics, "churn_prevention_ratio", 0.0)
+                    swaps_prev = getattr(metrics, "unnecessary_swap_prevention", 0)
+                    risk = getattr(metrics, "churn_risk", "LOW")
+                    eff = getattr(metrics, "turnover_efficiency", 1.0)
+                    tenure = getattr(metrics, "average_holding_tenure_months", 0.0)
+                    pers_cnt = getattr(metrics, "persistence_count", 0)
+                    status = getattr(metrics, "assessment_status", "STABLE")
+                    rat = getattr(metrics, "rationale", "")
+
+                    summary_str = (
+                        f"Stability Status: {status} | Stability Rating: {rating} | Score: {score:.1f}/100\n"
+                        f"Turnover Rate: {turnover:.1f}% | Churn Risk: {risk} | Churn Prevention Ratio: {prevention:.1f}%\n"
+                        f"Unnecessary Swaps Prevented: {swaps_prev} | Turnover Efficiency Ratio: {eff:.2f}\n"
+                        f"Average Holding Tenure: {tenure:.1f} months | Persistent Holdings: {pers_cnt}\n"
+                        f"Rationale: {rat}"
+                    )
+                    summ_lbl = QLabel(summary_str)
+                    summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+                    self.alpha12_stability_container.addWidget(summ_lbl)
+
+                    # Persistence History Section
+                    hist = getattr(result, "persistence_history", None)
+                    entries = getattr(hist, "entries", []) if hist else []
+                    if entries:
+                        hist_title = QLabel("STABILITY PERSISTENCE HISTORY")
+                        hist_title.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155; margin-top: 6px;")
+                        self.alpha12_stability_container.addWidget(hist_title)
+                        for e in entries:
+                            ts = getattr(e, "timestamp", "N/A")
+                            e_score = getattr(e, "stability_score", 0.0)
+                            e_rating = getattr(e, "stability_rating", "MODERATE")
+                            e_turn = getattr(e, "turnover_rate", 0.0)
+                            e_lbl = QLabel(f"• {ts} — Score: {e_score:.1f} ({e_rating}) | Turnover: {e_turn:.1f}%")
+                            e_lbl.setStyleSheet("font-size: 12px; color: #475569; padding-left: 6px;")
+                            self.alpha12_stability_container.addWidget(e_lbl)
+                    else:
+                        hist_lbl = QLabel("No Alpha 12 stability history available.")
+                        hist_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
+                        self.alpha12_stability_container.addWidget(hist_lbl)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -5706,6 +5778,26 @@ class PortfolioHealth(QWidget):
         a12_layout.addLayout(self.alpha12_mapping_container)
 
         root_layout.addWidget(a12_card)
+
+        # Alpha 12 Portfolio Stability Section
+        a12_stab_card = QFrame()
+        a12_stab_card.setObjectName("metricCard")
+        a12_stab_layout = QVBoxLayout(a12_stab_card)
+        a12_stab_layout.setContentsMargins(16, 14, 16, 14)
+        a12_stab_layout.setSpacing(8)
+
+        lbl_a12_stab_title = QLabel("ALPHA 12 PORTFOLIO STABILITY")
+        lbl_a12_stab_title.setObjectName("cardTitle")
+        a12_stab_layout.addWidget(lbl_a12_stab_title)
+
+        lbl_a12_stab_info = QLabel("Alpha 12 Portfolio Stability is an analytical measurement only. It does not generate investment, replacement, rebalancing, or transaction instructions.")
+        lbl_a12_stab_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        a12_stab_layout.addWidget(lbl_a12_stab_info)
+
+        self.alpha12_stability_container = QVBoxLayout()
+        a12_stab_layout.addLayout(self.alpha12_stability_container)
+
+        root_layout.addWidget(a12_stab_card)
 
         root_layout.addStretch()
 

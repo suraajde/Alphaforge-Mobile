@@ -22,11 +22,11 @@
 
 | HEAD Commit | `6b8c96d` |
 
-| Current Status | 🚧 Chapter 18 — Portfolio Intelligence Layer |
+| Current Status | 🚧 Chapter 20 — Stable Release |
 
-| Next Sprint | 13.8.0 — Portfolio Intelligence Foundation |
+| Next Sprint | 14.0.0 — Release Candidate Foundation |
 
-| Completed Chapters | 14, 15, 16, 17 |
+| Completed Chapters | 14, 15, 16, 17, 18, 19 |
 
 | Architecture | PySide6 Desktop Application / Decoupled Service Architecture |
 
@@ -110,6 +110,20 @@ AlphaForge combines quantitative screening, fundamental analysis, portfolio heal
 
 - 13.7.4 — Rebalancing Recommendation Framework (`6b8c96d`)
 
+## ✅ Chapter 18 — Portfolio Intelligence Layer (5 sprints)
+- 13.8.0 — Portfolio Intelligence Foundation
+- 13.8.1 — Holding Quality Engine
+- 13.8.2 — SIP Optimization Engine
+- 13.8.3 — Portfolio Opportunity Engine
+- 13.8.4 — Portfolio Risk Intelligence
+
+## ✅ Chapter 19 — Alpha 12 Integration Layer (5 sprints)
+- 13.9.0 — Alpha 12 Portfolio Mapping
+- 13.9.1 — Alpha 12 Portfolio Health Integration
+- 13.9.2 — Challenger Evaluation Framework
+- 13.9.3 — Replacement Governance Layer
+- 13.9.4 — Long-Term Portfolio Stability Engine
+
 
 
 ---
@@ -120,11 +134,7 @@ AlphaForge combines quantitative screening, fundamental analysis, portfolio heal
 
 
 
-- **Next Sprint:** 13.8.0 — Portfolio Intelligence Foundation (Chapter 18)
-
-- **Chapter 18:** Portfolio Intelligence Layer (5 sprints)
-
-- **Chapter 19:** Alpha 12 Integration Layer (5 sprints)
+- **Next Sprint:** 14.0.0 — Release Candidate Foundation (Chapter 20)
 
 - **Chapter 20:** Stable Release (5 sprints)
 
