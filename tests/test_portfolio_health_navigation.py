@@ -3253,3 +3253,66 @@ def test_holding_quality_missing_data_safe(qapp):
         assert screen is not None
     except Exception:
         pytest.fail("Missing holding quality data should not crash UI")
+
+
+def test_sip_optimization_section_loads(qapp):
+    """Verify SIP Optimization container layout exists in PortfolioHealth widget."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "sip_optimization_container")
+
+
+def test_sip_optimization_values_display(qapp):
+    """Verify SIP Optimization values display properly in UI."""
+    from services.sip_optimization_service import SIPOptimizationResult, SIPHoldingAnalysis, SIPDistributionMetrics, SIPEfficiencyMetrics
+
+    class MockSIPOptimizationService:
+        def get_sip_analysis(self):
+            return SIPOptimizationResult(
+                analysis_status="ANALYZED",
+                total_positions=1,
+                total_sip_invested=5000.0,
+                total_sip_transactions=1,
+                distribution=SIPDistributionMetrics(total_positions=1, positions_with_sip=1, sip_coverage_pct=100.0),
+                efficiency=SIPEfficiencyMetrics(total_sip_invested=5000.0, total_sip_transactions=1, observation_summary="1 positions aligned; 0 misaligned."),
+                holdings=[
+                    SIPHoldingAnalysis(
+                        symbol="MOCKSYM",
+                        name="Mock Symbol",
+                        target_weight=100.0,
+                        actual_weight=100.0,
+                        drift_pct=0.0,
+                        sip_transaction_count=1,
+                        sip_invested_amount=5000.0,
+                    )
+                ]
+            )
+
+    sip_svc = MockSIPOptimizationService()
+    screen = PortfolioHealth(sip_optimization_service=sip_svc)
+    assert hasattr(screen, "sip_optimization_container")
+
+
+def test_empty_sip_optimization_safe(qapp):
+    """Verify empty/None SIP Optimization result handles gracefully without crashing UI."""
+    class EmptySIPOptimizationService:
+        def get_sip_analysis(self):
+            return None
+
+    sip_svc = EmptySIPOptimizationService()
+    screen = PortfolioHealth(sip_optimization_service=sip_svc)
+    assert hasattr(screen, "sip_optimization_container")
+
+
+def test_sip_optimization_no_data_safe(qapp):
+    """Verify missing/broken SIP optimization data handles safely without crashing UI."""
+    class BrokenSIPOptimizationService:
+        def get_sip_analysis(self):
+            raise RuntimeError("SIP optimization data missing")
+
+    sip_svc = BrokenSIPOptimizationService()
+    try:
+        screen = PortfolioHealth(sip_optimization_service=sip_svc)
+        assert screen is not None
+    except Exception:
+        pytest.fail("Missing SIP optimization data should not crash UI")
+

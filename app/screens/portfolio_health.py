@@ -47,6 +47,7 @@ from services.rebalancing_candidate_service import RebalancingCandidateService
 from services.rebalancing_recommendation_service import RebalancingRecommendationService
 from services.portfolio_intelligence_service import PortfolioIntelligenceService
 from services.holding_quality_service import HoldingQualityService
+from services.sip_optimization_service import SIPOptimizationService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -128,6 +129,7 @@ class PortfolioHealth(QWidget):
 
         portfolio_intelligence_service: Optional[PortfolioIntelligenceService] = None,
         holding_quality_service: Optional[HoldingQualityService] = None,
+        sip_optimization_service: Optional[SIPOptimizationService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -224,6 +226,7 @@ class PortfolioHealth(QWidget):
 
         self.portfolio_intelligence_service = portfolio_intelligence_service if portfolio_intelligence_service is not None else PortfolioIntelligenceService()
         self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService()
+        self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -274,6 +277,8 @@ class PortfolioHealth(QWidget):
             portfolio_intelligence_service=self.portfolio_intelligence_service,
 
             holding_quality_service=self.holding_quality_service,
+
+            sip_optimization_service=self.sip_optimization_service,
 
         )
 
@@ -360,6 +365,8 @@ class PortfolioHealth(QWidget):
         self.load_portfolio_intelligence()
 
         self.load_holding_quality()
+
+        self.load_sip_optimization()
 
     def load_decision_prioritization(self) -> None:
 
@@ -792,6 +799,132 @@ class PortfolioHealth(QWidget):
                     scroll_area.setWidget(scroll_widget)
 
                     self.holding_quality_container.addWidget(scroll_area)
+
+    def load_sip_optimization(self) -> None:
+
+        """Bind live SIP optimization analysis data to UI."""
+
+        if getattr(self, "sip_optimization_service", None) is None:
+
+            return
+
+        try:
+
+            res = self.sip_optimization_service.get_sip_analysis()
+
+            self._update_sip_optimization_ui(res)
+
+        except Exception:
+
+            pass
+
+    def _update_sip_optimization_ui(self, result: Any) -> None:
+
+        if hasattr(self, "sip_optimization_container"):
+
+            self._clear_layout(self.sip_optimization_container)
+
+            if result is None or getattr(result, "analysis_status", "UNAVAILABLE") in ("UNAVAILABLE", "NO_DATA", "EMPTY"):
+
+                rat = getattr(result, "rationale", "") if result is not None else ""
+
+                msg = f"No SIP optimization data available. ({rat})" if rat else "No SIP optimization data available."
+
+                lbl = QLabel(msg)
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.sip_optimization_container.addWidget(lbl)
+
+            else:
+
+                tot_pos = getattr(result, "total_positions", 0)
+
+                tot_invested = getattr(result, "total_sip_invested", 0.0)
+
+                tot_txns = getattr(result, "total_sip_transactions", 0)
+
+                dist = getattr(result, "distribution", None)
+
+                eff = getattr(result, "efficiency", None)
+
+                cov_pct = getattr(dist, "sip_coverage_pct", 0.0) if dist else 0.0
+
+                top_conc = getattr(dist, "sip_concentration_top_pct", 0.0) if dist else 0.0
+
+                obs_summary = getattr(eff, "observation_summary", "") if eff else ""
+
+                summary_str = (
+
+                    f"Total Positions: {tot_pos} | SIP Invested Capital: ₹{tot_invested:,.2f} | SIP Transactions: {tot_txns}\n"
+
+                    f"SIP Coverage: {cov_pct:.1f}% | Top Recipient Concentration: {top_conc:.1f}%"
+
+                )
+
+                if obs_summary:
+
+                    summary_str += f"\nObservation: {obs_summary}"
+
+                summ_lbl = QLabel(summary_str)
+
+                summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+
+                self.sip_optimization_container.addWidget(summ_lbl)
+
+                holdings = getattr(result, "holdings", [])
+
+                if holdings:
+
+                    scroll_area = QScrollArea()
+
+                    scroll_area.setWidgetResizable(True)
+
+                    scroll_area.setMaximumHeight(300)
+
+                    scroll_widget = QWidget()
+
+                    list_layout = QVBoxLayout(scroll_widget)
+
+                    list_layout.setSpacing(6)
+
+                    for h in holdings:
+
+                        sym = getattr(h, "symbol", "N/A")
+
+                        nm = getattr(h, "name", "N/A")
+
+                        target_w = getattr(h, "target_weight", 0.0)
+
+                        actual_w = getattr(h, "actual_weight", 0.0)
+
+                        drift = getattr(h, "drift_pct", 0.0)
+
+                        tx_cnt = getattr(h, "sip_transaction_count", 0)
+
+                        tx_amt = getattr(h, "sip_invested_amount", 0.0)
+
+                        sched_amt = getattr(h, "sip_amount_per_schedule", "UNAVAILABLE")
+
+                        freq = getattr(h, "sip_frequency", "UNAVAILABLE")
+
+                        h_text = (
+
+                            f"• {sym} ({nm}) | Target: {target_w:.1f}% | Actual: {actual_w:.1f}% | Drift: {drift:+.1f}%\n"
+
+                            f"  SIP Tx Count: {tx_cnt} | SIP Invested: ₹{tx_amt:,.2f} | Schedule Amount: {sched_amt} | Frequency: {freq}"
+
+                        )
+
+                        h_lbl = QLabel(h_text)
+
+                        h_lbl.setStyleSheet("font-size: 12px; color: #334155; padding: 4px; background-color: #f8fafc; border-radius: 4px;")
+
+                        list_layout.addWidget(h_lbl)
+
+                    scroll_area.setWidget(scroll_widget)
+
+                    self.sip_optimization_container.addWidget(scroll_area)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -4934,6 +5067,26 @@ class PortfolioHealth(QWidget):
         hq_layout.addLayout(self.holding_quality_container)
 
         root_layout.addWidget(hq_card)
+
+        # SIP Optimization Section
+        sip_card = QFrame()
+        sip_card.setObjectName("metricCard")
+        sip_layout = QVBoxLayout(sip_card)
+        sip_layout.setContentsMargins(16, 14, 16, 14)
+        sip_layout.setSpacing(8)
+
+        lbl_sip_title = QLabel("SIP OPTIMIZATION ANALYSIS")
+        lbl_sip_title.setObjectName("cardTitle")
+        sip_layout.addWidget(lbl_sip_title)
+
+        lbl_sip_info = QLabel("Factual SIP configuration & efficiency analysis layer (Informational only — no execution instructions)")
+        lbl_sip_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        sip_layout.addWidget(lbl_sip_info)
+
+        self.sip_optimization_container = QVBoxLayout()
+        sip_layout.addLayout(self.sip_optimization_container)
+
+        root_layout.addWidget(sip_card)
 
         root_layout.addStretch()
 

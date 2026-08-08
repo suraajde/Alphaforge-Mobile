@@ -35,6 +35,7 @@ from services.rebalancing_candidate_service import RebalancingCandidateResult
 from services.rebalancing_recommendation_service import RebalancingRecommendationResult
 from services.portfolio_intelligence_service import PortfolioIntelligenceResult
 from services.holding_quality_service import HoldingQualityResult
+from services.sip_optimization_service import SIPOptimizationResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -185,6 +186,7 @@ class PortfolioHealthResult:
     rebalancing_recommendations: Optional[RebalancingRecommendationResult] = None
     portfolio_intelligence: Optional[PortfolioIntelligenceResult] = None
     holding_quality: Optional[HoldingQualityResult] = None
+    sip_optimization: Optional[SIPOptimizationResult] = None
 
 class PortfolioHealthService:
 
@@ -243,6 +245,7 @@ class PortfolioHealthService:
         rebalancing_recommendation_service: Optional[Any] = None,
         portfolio_intelligence_service: Optional[Any] = None,
         holding_quality_service: Optional[Any] = None,
+        sip_optimization_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -297,6 +300,7 @@ class PortfolioHealthService:
         self._rebalancing_recommendation_service = rebalancing_recommendation_service
         self._portfolio_intelligence_service = portfolio_intelligence_service
         self._holding_quality_service = holding_quality_service
+        self._sip_optimization_service = sip_optimization_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1587,6 +1591,20 @@ class PortfolioHealthService:
                 res.holding_quality = hq_svc.assess_holdings()
             except Exception:
                 res.holding_quality = None
+
+        # SIP Optimization Engine
+        if self._sip_optimization_service is not None and hasattr(self._sip_optimization_service, "analyze_sip"):
+            try:
+                res.sip_optimization = self._sip_optimization_service.analyze_sip()
+            except Exception:
+                res.sip_optimization = None
+        else:
+            try:
+                from services.sip_optimization_service import SIPOptimizationService
+                sip_svc = SIPOptimizationService()
+                res.sip_optimization = sip_svc.analyze_sip()
+            except Exception:
+                res.sip_optimization = None
 
         return res
 

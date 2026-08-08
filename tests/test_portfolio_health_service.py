@@ -1831,3 +1831,29 @@ def test_holding_quality_integration_works():
     assert isinstance(result.holding_quality, HoldingQualityResult)
     assert result.holding_quality.total_holdings == 2
     assert result.holding_quality.assessed_holdings == 1
+
+
+def test_sip_optimization_integration_works():
+    from services.sip_optimization_service import SIPOptimizationResult, SIPDistributionMetrics, SIPEfficiencyMetrics
+
+    class MockSIPOptimizationService:
+        def analyze_sip(self):
+            return SIPOptimizationResult(
+                analysis_status="ANALYZED",
+                total_positions=2,
+                total_sip_invested=10000.0,
+                total_sip_transactions=2,
+                distribution=SIPDistributionMetrics(total_positions=2, positions_with_sip=2, sip_coverage_pct=100.0),
+                efficiency=SIPEfficiencyMetrics(total_sip_invested=10000.0, total_sip_transactions=2),
+                rationale="Mock SIP analysis rationale",
+            )
+
+    sip_svc = MockSIPOptimizationService()
+    service = PortfolioHealthService(sip_optimization_service=sip_svc)
+    result = service.evaluate()
+    assert result.sip_optimization is not None
+    assert isinstance(result.sip_optimization, SIPOptimizationResult)
+    assert result.sip_optimization.total_positions == 2
+    assert result.sip_optimization.total_sip_invested == 10000.0
+    assert result.sip_optimization.analysis_status == "ANALYZED"
+
