@@ -14,7 +14,39 @@ import pytest
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.portfolio_health_service import (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,7 +78,39 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PortfolioHealthResult,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -78,6 +142,22 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PortfolioHealthSnapshot,
 
 
@@ -94,7 +174,39 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PortfolioHealthTrend,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,7 +270,71 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_service_instantiation():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -190,7 +366,39 @@ def test_service_instantiation():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -254,7 +462,71 @@ def test_service_instantiation():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_build_snapshot_return_type():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -286,7 +558,39 @@ def test_build_snapshot_return_type():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -318,7 +622,71 @@ def test_build_snapshot_return_type():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot, PortfolioHealthSnapshot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -382,6 +750,22 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """TEST 3: Verify snapshot contains all required fields."""
 
 
@@ -398,7 +782,39 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -446,7 +862,55 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert hasattr(snapshot, "position_count")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -478,7 +942,39 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert hasattr(snapshot, "invested_value")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -510,7 +1006,39 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert hasattr(snapshot, "largest_position")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -558,7 +1086,55 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot.position_count, int)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -590,7 +1166,39 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot.invested_value, float)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -622,7 +1230,39 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot.largest_position, str)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -686,7 +1326,71 @@ def test_snapshot_contains_required_fields():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_build_snapshot_defensive_empty_unavailable():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -718,7 +1422,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Case 1: None app service with missing file/data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -750,7 +1486,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     snapshot = service_none.build_snapshot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -798,7 +1566,55 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Case 2: App service raising exception
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -830,7 +1646,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_status(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -878,7 +1726,55 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service_faulty = PortfolioHealthService(portfolio_app_service=FaultyAppService())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -910,6 +1806,22 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot_faulty, PortfolioHealthSnapshot)
 
 
@@ -926,7 +1838,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert snapshot_faulty.position_count == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -974,7 +1918,55 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Case 3: Empty state dictionary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1006,7 +1998,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_status(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1054,7 +2078,55 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service_empty = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1086,7 +2158,39 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(snapshot_empty, PortfolioHealthSnapshot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1150,7 +2254,71 @@ def test_build_snapshot_defensive_empty_unavailable():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_build_snapshot_with_mock_portfolio():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1182,7 +2350,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAppService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1214,7 +2414,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1246,7 +2478,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 "state": {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1278,7 +2542,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     "total_portfolio_value": 100000.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1310,7 +2606,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         "KPITTECH": {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1342,7 +2670,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             "quantity": 10,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1374,6 +2734,22 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             "current_value": 60000.0,
 
 
@@ -1390,7 +2766,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1422,7 +2830,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             "symbol": "INFY",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1454,7 +2894,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             "invested_cost": 30000.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1486,7 +2958,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1518,7 +3022,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1566,7 +3102,55 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(portfolio_app_service=MockAppService())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1614,7 +3198,55 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert snapshot.position_count == 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1646,7 +3278,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert snapshot.invested_value == 70000.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1678,7 +3342,39 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert snapshot.largest_position == "KPITTECH"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1742,7 +3438,71 @@ def test_build_snapshot_with_mock_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_evaluate_healthy_portfolio():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1774,7 +3534,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1806,7 +3598,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         position_count=12,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1838,7 +3662,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         invested_value=95000.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1870,7 +3726,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         largest_position="RELIANCE",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1902,7 +3790,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1934,6 +3854,22 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(result, PortfolioHealthResult)
 
 
@@ -1950,7 +3886,39 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.score > 80
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2014,7 +3982,71 @@ def test_evaluate_healthy_portfolio():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_evaluate_high_concentration():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2046,7 +4078,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2078,7 +4142,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         position_count=10,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2110,7 +4206,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         invested_value=95000.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2142,7 +4270,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         largest_position="RELIANCE",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2174,7 +4334,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2206,7 +4398,39 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.largest_position_weight_pct > 20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2270,7 +4494,71 @@ def test_evaluate_high_concentration():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_evaluate_poor_diversification():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2302,7 +4590,39 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2334,7 +4654,39 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         position_count=3,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2366,7 +4718,39 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         invested_value=95000.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2398,7 +4782,39 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         largest_position="RELIANCE",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2430,7 +4846,39 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2462,6 +4910,22 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.position_count < 6
 
 
@@ -2478,7 +4942,71 @@ def test_evaluate_poor_diversification():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.diversification_rating == "POOR"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2542,7 +5070,39 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify grade mapping rules (A, B, C, D)."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2590,7 +5150,55 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Score = 40 (pos) + 40 (conc) + 20 (cash) = 100 -> Grade A
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2622,6 +5230,22 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     res_a = service.evaluate(snap_a)
 
 
@@ -2638,7 +5262,39 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert res_a.score >= 90
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2686,7 +5342,55 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Score = 30 (pos 7) + 30 (conc 12%) + 20 (cash 5%) = 80 -> Grade B
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2718,6 +5422,22 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     res_b = service.evaluate(snap_b)
 
 
@@ -2734,7 +5454,39 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert 80 <= res_b.score <= 89
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2782,7 +5534,55 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Score = 20 (pos 4) + 30 (conc 14%) + 20 (cash 5%) = 70 -> Grade C
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2814,6 +5614,22 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     res_c = service.evaluate(snap_c)
 
 
@@ -2830,7 +5646,39 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert 70 <= res_c.score <= 79
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2878,7 +5726,55 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Score = 10 (pos 2) + 10 (conc 25%) + 20 (cash 5%) = 40 -> Grade D
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2910,6 +5806,22 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     res_d = service.evaluate(snap_d)
 
 
@@ -2926,7 +5838,39 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert res_d.score < 70
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2990,7 +5934,71 @@ def test_evaluate_grade_mapping():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_evaluate_empty_portfolio_safety():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3022,6 +6030,22 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class EmptyAppService:
 
 
@@ -3038,7 +6062,39 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_status(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3086,7 +6142,55 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3118,7 +6222,39 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(result, PortfolioHealthResult)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3150,7 +6286,39 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.diversification_rating == "POOR"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3214,7 +6382,71 @@ def test_evaluate_empty_portfolio_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_analytics_object_exists():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3246,7 +6478,39 @@ def test_analytics_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3278,6 +6542,22 @@ def test_analytics_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.analytics is not None
 
 
@@ -3294,7 +6574,71 @@ def test_analytics_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(result.analytics, PortfolioHealthAnalytics)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3358,7 +6702,39 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """TEST 2: Verify breakdown scores sum to total score."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3390,7 +6766,39 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3422,7 +6830,39 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     analytics = result.analytics
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3454,7 +6894,39 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3486,7 +6958,39 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         + analytics.concentration_score
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3518,6 +7022,22 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         == result.score
 
 
@@ -3534,7 +7054,71 @@ def test_breakdown_sums_correctly():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3598,7 +7182,39 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """TEST 3: Verify healthy portfolio produces strengths."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3630,7 +7246,39 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     snapshot = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3662,7 +7310,39 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.analytics is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3694,6 +7374,22 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert "Good diversification" in result.analytics.strengths
 
 
@@ -3710,7 +7406,39 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert "Low concentration risk" in result.analytics.strengths
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3774,7 +7502,71 @@ def test_healthy_portfolio_produces_strengths():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_weak_portfolio_produces_weaknesses():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3806,7 +7598,39 @@ def test_weak_portfolio_produces_weaknesses():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3838,7 +7662,39 @@ def test_weak_portfolio_produces_weaknesses():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     result = service.evaluate(snapshot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3870,7 +7726,39 @@ def test_weak_portfolio_produces_weaknesses():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert len(result.analytics.weaknesses) > 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3902,7 +7790,39 @@ def test_weak_portfolio_produces_weaknesses():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert "High concentration risk" in result.analytics.weaknesses
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3966,7 +7886,71 @@ def test_weak_portfolio_produces_weaknesses():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_empty_portfolio_safety_analytics():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3998,6 +7982,22 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class EmptyAppService:
 
 
@@ -4014,7 +8014,39 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_status(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4062,7 +8094,55 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(portfolio_app_service=EmptyAppService())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4094,7 +8174,39 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.analytics is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4126,6 +8238,22 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.analytics.diversification_score == 10
 
 
@@ -4142,7 +8270,39 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.analytics.concentration_score == 40
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4206,7 +8366,71 @@ def test_empty_portfolio_safety_analytics():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_trend_object_exists():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4238,7 +8462,39 @@ def test_trend_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4270,6 +8526,22 @@ def test_trend_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend is not None
 
 
@@ -4286,7 +8558,71 @@ def test_trend_object_exists():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(result.trend, PortfolioHealthTrend)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4350,7 +8686,39 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """TEST 2: Verify improving trend direction when score increases by >= 3."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4382,7 +8750,39 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4414,7 +8814,39 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prev_res = service.evaluate(prev_snap)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4462,6 +8894,38 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend is not None
 
 
@@ -4478,7 +8942,39 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend.score_change > 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4542,7 +9038,71 @@ def test_improving_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_deteriorating_trend():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4574,7 +9134,39 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4606,6 +9198,22 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
 
 
@@ -4622,7 +9230,39 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prev_res = service.evaluate(prev_snap)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4670,6 +9310,38 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend is not None
 
 
@@ -4686,7 +9358,39 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend.score_change < 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4750,7 +9454,71 @@ def test_deteriorating_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_stable_trend():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4782,7 +9550,39 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4814,6 +9614,22 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prev_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
 
 
@@ -4830,7 +9646,39 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prev_res = service.evaluate(prev_snap)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4878,6 +9726,38 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend is not None
 
 
@@ -4894,7 +9774,39 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert curr_res.trend.score_change == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4958,7 +9870,71 @@ def test_stable_trend():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_no_previous_result_trend_safety():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4990,7 +9966,39 @@ def test_no_previous_result_trend_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5022,7 +10030,39 @@ def test_no_previous_result_trend_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5054,7 +10094,39 @@ def test_no_previous_result_trend_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend.score_change == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5118,7 +10190,71 @@ def test_no_previous_result_trend_safety():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_trend_uses_history_service_safely():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5150,7 +10286,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockHistoryService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5182,7 +10350,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return PortfolioHealthResult(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5214,7 +10414,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 grade="B",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5246,7 +10478,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 concentration_rating="MODERATE",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5278,6 +10542,22 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 largest_position_weight_pct=12.0,
 
 
@@ -5294,7 +10574,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 cash_allocation_pct=5.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5342,7 +10654,55 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     history_svc = MockHistoryService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5390,7 +10750,55 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     curr_snap = PortfolioHealthSnapshot(12, 100000.0, 95000.0, 5.0, "SYM", 8.0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5438,7 +10846,55 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5470,6 +10926,22 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend.current_score == 100
 
 
@@ -5486,7 +10958,39 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.trend.score_change == 20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5550,6 +11054,54 @@ def test_trend_uses_history_service_safely():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_historical_analytics_integration_works():
 
 
@@ -5566,7 +11118,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.historical_analytics from history_service."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5614,6 +11198,38 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockHistoryService:
 
 
@@ -5630,7 +11246,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_latest(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5678,7 +11326,55 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_historical_analytics(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5710,7 +11406,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 history_count=5,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5742,7 +11470,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 worst_score=71,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5774,6 +11534,22 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 current_score=84,
 
 
@@ -5790,7 +11566,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 overall_trend="IMPROVING",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5838,6 +11646,38 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     history_svc = MockHistoryService()
 
 
@@ -5854,7 +11694,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(history_service=history_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5902,7 +11774,55 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_analytics is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5934,7 +11854,39 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_analytics.best_score == 92
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5998,6 +11950,54 @@ def test_historical_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_dashboard_summary_integration_works():
 
 
@@ -6014,7 +12014,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.dashboard_summary from history_service."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6062,6 +12094,38 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockHistoryService:
 
 
@@ -6078,7 +12142,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_latest(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6126,7 +12222,55 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_dashboard_summary(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6158,7 +12302,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 total_snapshots=4,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6190,7 +12366,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 current_grade="C",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6222,7 +12430,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 best_grade="A",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6254,6 +12494,22 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 worst_grade="C",
 
 
@@ -6270,7 +12526,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 average_score=81.8,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6318,6 +12606,38 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     history_svc = MockHistoryService()
 
 
@@ -6334,7 +12654,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(history_service=history_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6382,7 +12734,55 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.dashboard_summary is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6414,7 +12814,39 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.dashboard_summary.best_score == 92
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6478,6 +12910,54 @@ def test_dashboard_summary_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_historical_metrics_integration_works():
 
 
@@ -6494,7 +12974,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.historical_metrics from history_service."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6542,6 +13054,38 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockHistoryService:
 
 
@@ -6558,7 +13102,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_latest(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6606,7 +13182,55 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_historical_metrics(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6638,7 +13262,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 score_range=21,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6670,7 +13326,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 worst_score=71,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6702,7 +13390,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 improving_periods=2,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6734,7 +13454,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 stability_rating="STABLE",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6782,6 +13534,38 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     history_svc = MockHistoryService()
 
 
@@ -6798,7 +13582,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(history_service=history_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6846,7 +13662,55 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_metrics is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6878,7 +13742,39 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_metrics.volatility_score == 4.7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6942,6 +13838,54 @@ def test_historical_metrics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_historical_insights_integration_works():
 
 
@@ -6958,7 +13902,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.historical_insights from history_service."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7006,6 +13982,38 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockHistoryService:
 
 
@@ -7022,7 +14030,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_latest(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7070,7 +14110,55 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_historical_insights(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7102,7 +14190,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 improvement_percentage=66.7,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7134,7 +14254,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 neutral_percentage=0.0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7166,6 +14318,22 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 quality_rating="FAIR",
 
 
@@ -7182,7 +14350,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 direction_rating="IMPROVING",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7230,6 +14430,38 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     history_svc = MockHistoryService()
 
 
@@ -7246,7 +14478,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(history_service=history_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7294,7 +14558,55 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_insights is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7326,7 +14638,39 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.historical_insights.consistency_score == 33.4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7390,6 +14734,54 @@ def test_historical_insights_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_monitoring_integration_works():
 
 
@@ -7406,7 +14798,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.monitoring_state."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7454,7 +14878,55 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockMonitorService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7486,7 +14958,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return PortfolioHealthMonitoringState(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7518,7 +15022,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 monitoring_status="READY",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7550,7 +15086,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 latest_snapshot_time="2026-08-07 09:15",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7582,7 +15150,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 latest_grade="A",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7630,6 +15230,38 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     mon_svc = MockMonitorService()
 
 
@@ -7646,7 +15278,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(monitor_service=mon_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7694,7 +15358,55 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_state is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7726,7 +15438,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_state.monitoring_enabled is True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7758,6 +15502,22 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_state.snapshot_count == 18
 
 
@@ -7774,7 +15534,39 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_state.latest_score == 91
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7838,7 +15630,71 @@ def test_monitoring_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_change_detection_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7870,7 +15726,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.portfolio_health_change_detection_service import (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7902,7 +15790,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         PortfolioHealthChangeReport,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7950,7 +15870,55 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockChangeDetectionService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7982,7 +15950,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return PortfolioHealthChangeReport(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8014,7 +16014,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 total_changes=3,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8046,7 +16078,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 changes=[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8078,7 +16142,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     PortfolioHealthChange("Grade", "B", "A", "CHANGED"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8110,7 +16206,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8158,6 +16286,38 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     cd_svc = MockChangeDetectionService()
 
 
@@ -8174,7 +16334,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(change_detection_service=cd_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8222,7 +16414,55 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.change_report is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8254,7 +16494,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.change_report.snapshot_count == 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8286,7 +16558,39 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.change_report.has_changes is True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8350,7 +16654,71 @@ def test_change_detection_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_timeline_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8382,7 +16750,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.portfolio_health_timeline_service import (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8414,7 +16814,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         PortfolioHealthTimelineEntry,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8462,7 +16894,55 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockTimelineService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8494,7 +16974,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return PortfolioHealthTimeline(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8526,7 +17038,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 latest_timestamp="2026-08-08",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8558,7 +17102,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 entries=[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8590,7 +17166,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     PortfolioHealthTimelineEntry(2, "2026-07-15", 84, "B", "IMPROVING", 2),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8622,7 +17230,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8670,6 +17310,38 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     tl_svc = MockTimelineService()
 
 
@@ -8686,7 +17358,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(timeline_service=tl_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8734,7 +17438,55 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.timeline is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8766,7 +17518,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.timeline.total_entries == 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8798,7 +17582,39 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.timeline.latest_timestamp == "2026-08-08"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8862,7 +17678,71 @@ def test_timeline_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_monitoring_dashboard_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8894,6 +17774,22 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.portfolio_health_monitor_dashboard_service import (
 
 
@@ -8910,7 +17806,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         PortfolioHealthMonitoringDashboard,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8958,7 +17886,55 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockDashboardService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8990,7 +17966,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return PortfolioHealthMonitoringDashboard(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9022,7 +18030,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 monitoring_enabled=True,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9054,7 +18094,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 latest_grade="A",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9086,7 +18158,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 total_snapshots=18,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9118,6 +18222,22 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 latest_change_count=3,
 
 
@@ -9134,7 +18254,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 timeline_entries=18,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9182,6 +18334,38 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     dash_svc = MockDashboardService()
 
 
@@ -9198,7 +18382,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(monitoring_dashboard_service=dash_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9246,7 +18462,55 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_dashboard is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9278,7 +18542,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_dashboard.monitoring_status == "READY"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9310,7 +18606,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_dashboard.latest_score == 91
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9342,7 +18670,39 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.monitoring_dashboard.total_snapshots == 18
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9406,6 +18766,54 @@ def test_monitoring_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_alert_center_integration_works():
 
 
@@ -9422,7 +18830,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.alert_center."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9470,7 +18910,55 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertCenterService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9502,7 +18990,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return AlertCenterState(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9534,7 +19054,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 active_alerts=2,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9566,7 +19118,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 dismissed_alerts=1,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9598,7 +19182,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     PortfolioAlert("1", "2026-08-08", "TYPE1", "HIGH", "Title 1", "Desc 1", "ACTIVE"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9630,7 +19246,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9678,6 +19326,38 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     ac_svc = MockAlertCenterService()
 
 
@@ -9694,7 +19374,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_center_service=ac_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9742,7 +19454,55 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_center is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9774,7 +19534,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_center.total_alerts == 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9806,6 +19598,22 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_center.acknowledged_alerts == 1
 
 
@@ -9822,7 +19630,39 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_center.dismissed_alerts == 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9886,7 +19726,71 @@ def test_alert_center_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_generated_alert_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9918,7 +19822,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.alert_center_service import PortfolioAlert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9966,7 +19902,55 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertGenerationService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9998,7 +19982,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return AlertGenerationResult(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10030,7 +20046,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 alerts=[
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10062,6 +20110,22 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     PortfolioAlert("2", "2026-08-08 10:00", "CHANGE_DETECTED", "MEDIUM", "Portfolio changes detected", "Desc 2", "ACTIVE"),
 
 
@@ -10078,7 +20142,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10126,6 +20222,38 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     gen_svc = MockAlertGenerationService()
 
 
@@ -10142,7 +20270,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_generation_service=gen_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10190,7 +20350,55 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.generated_alerts is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10222,7 +20430,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.generated_alerts.generated_alerts == 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10254,7 +20494,39 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.generated_alerts.alerts[0].alert_type == "MONITORING_STATUS"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10318,6 +20590,54 @@ def test_generated_alert_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_alert_rules_integration_works():
 
 
@@ -10334,7 +20654,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.alert_rules."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10382,7 +20734,55 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertRulesService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10414,7 +20814,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return AlertRulesResult(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10446,7 +20878,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 triggered_rules=2,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10478,7 +20942,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     AlertRule("Monitoring Ready", True, "INFO", "MONITORING_STATUS", True, "Monitoring ready."),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10510,7 +21006,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     AlertRule("Portfolio Changes Detected", True, "MEDIUM", "CHANGE_DETECTED", True, "Changes detected."),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10542,6 +21070,22 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     AlertRule("Health Score Changed", True, "MEDIUM", "HEALTH_SCORE_CHANGED", False, "Score changed."),
 
 
@@ -10558,7 +21102,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10606,6 +21182,38 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     rules_svc = MockAlertRulesService()
 
 
@@ -10622,7 +21230,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_rules_service=rules_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10670,7 +21310,55 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_rules is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10702,7 +21390,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_rules.total_rules == 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10734,6 +21454,22 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert len(result.alert_rules.rules) == 5
 
 
@@ -10750,7 +21486,39 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_rules.rules[0].rule_name == "Monitoring Ready"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10814,7 +21582,71 @@ def test_alert_rules_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_alert_dashboard_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10846,7 +21678,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.alert_center_service import PortfolioAlert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10894,7 +21758,55 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertDashboardService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10926,7 +21838,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             summary = AlertDashboardSummary(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10958,7 +21902,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 active_alerts=2,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10990,7 +21966,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 dismissed_alerts=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11022,7 +22030,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 low_alerts=1,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11054,7 +22094,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 high_alerts=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11086,7 +22158,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11118,7 +22222,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 PortfolioAlert("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11150,6 +22286,22 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 PortfolioAlert("3", "2026-08-07 10:00", "TIMELINE_UPDATED", "LOW", "Timeline", "Desc", "ACKNOWLEDGED"),
 
 
@@ -11166,7 +22318,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11214,6 +22398,38 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     dash_svc = MockAlertDashboardService()
 
 
@@ -11230,7 +22446,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_dashboard_service=dash_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11278,7 +22526,55 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_dashboard is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11310,7 +22606,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_dashboard.summary.total_alerts == 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11342,6 +22670,22 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_dashboard.summary.acknowledged_alerts == 1
 
 
@@ -11358,7 +22702,39 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_dashboard.summary.info_alerts == 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11422,6 +22798,54 @@ def test_alert_dashboard_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_alert_history_integration_works():
 
 
@@ -11438,7 +22862,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.alert_history."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11486,6 +22942,38 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertHistoryService:
 
 
@@ -11502,7 +22990,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def save_history(self, alerts):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11550,7 +23070,55 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def get_history(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11582,7 +23150,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 AlertHistoryEntry("1", "2026-08-07 10:00", "MONITORING_STATUS", "INFO", "Mon Ready", "Desc", "ACTIVE"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11614,7 +23214,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11646,7 +23278,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 total_entries=2,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11678,6 +23342,22 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 earliest_timestamp="2026-08-07 10:00",
 
 
@@ -11694,7 +23374,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 entries=entries,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11742,6 +23454,38 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     hist_svc = MockAlertHistoryService()
 
 
@@ -11758,7 +23502,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_history_service=hist_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11806,7 +23582,55 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_history is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11838,7 +23662,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_history.total_entries == 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11870,7 +23726,39 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_history.earliest_timestamp == "2026-08-07 10:00"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11934,7 +23822,71 @@ def test_alert_history_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_alert_management_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11966,7 +23918,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.alert_center_service import PortfolioAlert
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12014,7 +23998,55 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockAlertManagementService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12046,7 +24078,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             summary = AlertManagementSummary(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12078,7 +24142,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 active_alerts=1,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12110,7 +24206,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 dismissed_alerts=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12142,7 +24270,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12174,7 +24334,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 PortfolioAlert("1", "2026-08-07 10:00", "TYPE1", "INFO", "Title 1", "Desc 1", "ACTIVE"),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12206,7 +24398,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12254,6 +24478,38 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     mgmt_svc = MockAlertManagementService()
 
 
@@ -12270,7 +24526,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(alert_management_service=mgmt_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12318,7 +24606,55 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_management is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12350,7 +24686,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_management.summary.total_alerts == 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12382,7 +24750,39 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.alert_management.summary.acknowledged_alerts == 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12446,6 +24846,54 @@ def test_alert_management_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_engine_integration_works():
 
 
@@ -12462,7 +24910,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     """Verify evaluate populates result.decision_engine."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12510,7 +24990,55 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockDecisionEngineService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12542,7 +25070,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             summary = DecisionSummary(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12574,7 +25134,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 pending_decisions=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12606,6 +25198,22 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 engine_status="READY",
 
 
@@ -12622,7 +25230,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12670,6 +25310,38 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     dec_svc = MockDecisionEngineService()
 
 
@@ -12686,7 +25358,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(decision_engine_service=dec_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12734,7 +25438,55 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_engine is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12766,6 +25518,22 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_engine.summary.engine_status == "READY"
 
 
@@ -12782,7 +25550,39 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_engine.summary.total_decisions == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12846,7 +25646,71 @@ def test_decision_engine_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_classification_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12878,6 +25742,22 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.decision_classification_service import (
 
 
@@ -12894,7 +25774,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         DecisionClassificationResult,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12942,7 +25854,55 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockDecisionClassificationService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12974,7 +25934,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return DecisionClassificationResult(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13006,7 +25998,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 classified=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13038,7 +26062,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 classifications=[],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13086,6 +26142,38 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     cls_svc = MockDecisionClassificationService()
 
 
@@ -13102,7 +26190,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(decision_classification_service=cls_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13150,7 +26270,55 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_classification is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13182,7 +26350,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_classification.total_classifications == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13214,7 +26414,39 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_classification.unclassified == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13278,7 +26510,71 @@ def test_decision_classification_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_prioritization_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13310,6 +26606,22 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.decision_prioritization_service import (
 
 
@@ -13326,7 +26638,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         DecisionPrioritizationResult,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13374,7 +26718,55 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class MockDecisionPrioritizationService:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13406,7 +26798,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return DecisionPrioritizationResult(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13438,7 +26862,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 critical_count=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13470,7 +26926,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 medium_count=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13502,6 +26990,22 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 info_count=0,
 
 
@@ -13518,7 +27022,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 priorities=[],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13566,6 +27102,38 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     prio_svc = MockDecisionPrioritizationService()
 
 
@@ -13582,7 +27150,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(decision_prioritization_service=prio_svc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13630,7 +27230,55 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_prioritization is not None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13662,7 +27310,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_prioritization.total_prioritized == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13694,7 +27374,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_prioritization.high_count == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13726,6 +27438,22 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_prioritization.low_count == 0
 
 
@@ -13742,7 +27470,39 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_prioritization.info_count == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13806,7 +27566,71 @@ def test_decision_prioritization_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_audit_integration_works():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13838,7 +27662,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from services.decision_audit_service import (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13870,6 +27726,22 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         DecisionAuditTrail,
 
 
@@ -13886,7 +27758,55 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13934,7 +27854,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         def record_decisions(self, **kwargs):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13966,7 +27918,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 total_entries=0,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13998,7 +27982,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 earliest_timestamp=None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14030,7 +28046,55 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14078,7 +28142,55 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return DecisionAuditTrail(0, None, None, [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14126,6 +28238,22 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(decision_audit_service=audit_svc)
 
 
@@ -14142,7 +28270,55 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     result = service.evaluate()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14190,6 +28366,22 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert isinstance(result.decision_audit, DecisionAuditTrail)
 
 
@@ -14206,7 +28398,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     assert result.decision_audit.total_entries == 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14246,7 +28470,39 @@ def test_decision_audit_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_audit_analytics_integration_works():
+
+
+
+
+
+
+
+
 
 
 
@@ -14262,7 +28518,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
     from services.decision_audit_analytics_service import (
+
+
+
+
+
+
+
+
 
 
 
@@ -14278,7 +28550,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
         DecisionAuditAnalyticsService,
+
+
+
+
+
+
+
+
 
 
 
@@ -14294,7 +28582,31 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14318,7 +28630,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
         def analyze(self, audit_trail=None):
+
+
+
+
+
+
+
+
 
 
 
@@ -14334,7 +28662,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
                 summary=DecisionAuditAnalyticsSummary(0, 0, 0, 0, 0, 0, 0, 0, 0),
+
+
+
+
+
+
+
+
 
 
 
@@ -14350,7 +28694,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
                 priority_counts={},
+
+
+
+
+
+
+
+
 
 
 
@@ -14366,6 +28726,14 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
                 source_counts={},
 
 
@@ -14374,7 +28742,31 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14398,6 +28790,14 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
     service = PortfolioHealthService(decision_audit_analytics_service=analytics_svc)
 
 
@@ -14406,7 +28806,31 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
     result = service.evaluate()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14430,7 +28854,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
     assert isinstance(result.decision_audit_analytics, DecisionAuditAnalytics)
+
+
+
+
+
+
+
+
 
 
 
@@ -14450,7 +28890,23 @@ def test_decision_audit_analytics_integration_works():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 def test_decision_audit_trend_integration_works():
+
+
+
+
 
 
 
@@ -14458,7 +28914,15 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
     from services.decision_audit_trend_service import (
+
+
+
+
 
 
 
@@ -14466,11 +28930,27 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
         DecisionAuditTrendService,
 
 
 
+
+
+
+
     )
+
+
+
+
+
+
+
+
 
 
 
@@ -14482,7 +28962,15 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
         def build_trend(self, audit_trail=None):
+
+
+
+
 
 
 
@@ -14490,7 +28978,15 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
                 total_points=0,
+
+
+
+
 
 
 
@@ -14498,7 +28994,15 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
                 latest_timestamp=None,
+
+
+
+
 
 
 
@@ -14506,11 +29010,27 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
                 points=[],
 
 
 
+
+
+
+
             )
+
+
+
+
+
+
+
+
 
 
 
@@ -14522,11 +29042,27 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
     service = PortfolioHealthService(decision_audit_trend_service=trend_svc)
 
 
 
+
+
+
+
     result = service.evaluate()
+
+
+
+
+
+
+
+
 
 
 
@@ -14538,11 +29074,23 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
     assert isinstance(result.decision_audit_trend, DecisionAuditTrend)
 
 
 
+
+
+
+
     assert result.decision_audit_trend.total_points == 0
+
+
+
+
 
 
 
@@ -14552,52 +29100,156 @@ def test_decision_audit_trend_integration_works():
 
 
 
+
+
+
+
+
+
 def test_rebalancing_integration_works():
+
+
 
     """Verify evaluate populates result.rebalancing."""
 
+
+
     from services.rebalancing_service import (
+
+
 
         RebalancingPortfolio,
 
+
+
         RebalancingService,
 
+
+
         RebalancingState,
+
+
 
     )
 
 
 
+
+
+
+
     class MockRebalancingService:
+
+
 
         def get_state(self):
 
+
+
             return RebalancingState(
+
+
 
                 status="EMPTY",
 
+
+
                 portfolio=RebalancingPortfolio(0.0, []),
+
+
 
                 total_positions=0,
 
+
+
                 total_value=0.0,
+
+
 
             )
 
 
 
+
+
+
+
     rebal_svc = MockRebalancingService()
 
+
+
     service = PortfolioHealthService(rebalancing_service=rebal_svc)
+
+
 
     result = service.evaluate()
 
 
 
+
+
+
+
     assert result.rebalancing is not None
+
+
 
     assert isinstance(result.rebalancing, RebalancingState)
 
+
+
     assert result.rebalancing.status == "EMPTY"
 
+
+
     assert result.rebalancing.total_positions == 0
+
+
+
+
+
+def test_allocation_analysis_integration_works():
+
+    """Verify evaluate populates result.allocation_analysis."""
+
+    from services.allocation_analysis_service import (
+
+        AllocationAnalysisResult,
+
+        AllocationAnalysisService,
+
+    )
+
+
+
+    class MockAllocationAnalysisService:
+
+        def analyze(self, rebalancing_state=None):
+
+            return AllocationAnalysisResult(
+
+                total_value=0.0,
+
+                asset_allocations=[],
+
+                fund_allocations=[],
+
+                etf_allocations=[],
+
+            )
+
+
+
+    alloc_svc = MockAllocationAnalysisService()
+
+    service = PortfolioHealthService(allocation_analysis_service=alloc_svc)
+
+    result = service.evaluate()
+
+
+
+    assert result.allocation_analysis is not None
+
+    assert isinstance(result.allocation_analysis, AllocationAnalysisResult)
+
+    assert result.allocation_analysis.total_value == 0.0

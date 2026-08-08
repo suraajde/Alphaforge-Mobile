@@ -30,7 +30,55 @@ from typing import Any, Optional
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from PySide6.QtCore import Qt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -62,7 +110,39 @@ from PySide6.QtWidgets import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     QWidget,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -94,7 +174,39 @@ from PySide6.QtWidgets import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     QGridLayout,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -126,7 +238,39 @@ from PySide6.QtWidgets import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     QFrame,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -158,7 +302,55 @@ from PySide6.QtWidgets import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -206,7 +398,39 @@ from services.alert_center_service import AlertCenterService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.alert_generation_service import AlertGenerationService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -238,7 +462,39 @@ from services.alert_rules_service import AlertRulesService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.alert_dashboard_service import AlertDashboardService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -270,7 +526,39 @@ from services.alert_history_service import AlertHistoryService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.alert_management_service import AlertManagementService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -302,7 +590,39 @@ from services.decision_audit_service import DecisionAuditService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.decision_audit_analytics_service import DecisionAuditAnalyticsService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -334,7 +654,43 @@ from services.decision_audit_trend_service import DecisionAuditTrendService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.rebalancing_service import RebalancingService
+
+
+
+from services.allocation_analysis_service import AllocationAnalysisService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -366,7 +722,39 @@ from services.decision_classification_service import DecisionClassificationServi
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.decision_prioritization_service import DecisionPrioritizationService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -398,7 +786,39 @@ from services.decision_engine_service import DecisionEngineService
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -430,7 +850,39 @@ from services.portfolio_health_history_service import PortfolioHealthHistoryServ
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -462,7 +914,39 @@ from services.portfolio_health_monitor_service import PortfolioHealthMonitorServ
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.portfolio_health_service import (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -494,7 +978,39 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     PortfolioHealthService,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -526,6 +1042,22 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 )
 
 
@@ -542,7 +1074,71 @@ from services.portfolio_health_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -622,7 +1218,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def __init__(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -654,7 +1298,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         service: Optional[PortfolioHealthService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -686,7 +1362,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitor_service: Optional[PortfolioHealthMonitorService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -718,7 +1426,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         timeline_service: Optional[PortfolioHealthTimelineService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -750,7 +1490,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         alert_center_service: Optional[AlertCenterService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -782,7 +1554,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         alert_rules_service: Optional[AlertRulesService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -814,7 +1618,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         alert_history_service: Optional[AlertHistoryService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -846,7 +1682,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         decision_engine_service: Optional[DecisionEngineService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -878,7 +1746,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         decision_prioritization_service: Optional[DecisionPrioritizationService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -910,7 +1810,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         decision_audit_analytics_service: Optional[DecisionAuditAnalyticsService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -942,7 +1874,43 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         rebalancing_service: Optional[RebalancingService] = None,
+
+
+
+        allocation_analysis_service: Optional[AllocationAnalysisService] = None,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -974,7 +1942,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     ) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1006,7 +2006,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1038,7 +2070,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.change_detection_service = change_detection_service if change_detection_service is not None else PortfolioHealthChangeDetectionService(history_service=self.history_service)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1070,7 +2134,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             history_service=self.history_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1102,7 +2198,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1134,7 +2262,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             history_service=self.history_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1166,7 +2326,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             change_detection_service=self.change_detection_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1198,7 +2390,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1230,7 +2454,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_generation_service = alert_generation_service if alert_generation_service is not None else AlertGenerationService(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1262,7 +2518,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             monitor_service=self.monitor_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1294,7 +2582,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             timeline_service=self.timeline_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1326,7 +2646,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1358,7 +2710,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_dashboard_service = alert_dashboard_service if alert_dashboard_service is not None else AlertDashboardService(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1390,7 +2774,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alert_generation_service=self.alert_generation_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1422,7 +2838,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1454,7 +2902,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_management_service = alert_management_service if alert_management_service is not None else AlertManagementService(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1486,7 +2966,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alert_history_service=self.alert_history_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1518,7 +3030,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1550,7 +3094,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_classification_service = decision_classification_service if decision_classification_service is not None else DecisionClassificationService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1582,7 +3158,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_audit_service = decision_audit_service if decision_audit_service is not None else DecisionAuditService()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1614,6 +3222,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_audit_trend_service = decision_audit_trend_service if decision_audit_trend_service is not None else DecisionAuditTrendService(audit_service=self.decision_audit_service)
 
 
@@ -1630,7 +3254,43 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.rebalancing_service = rebalancing_service if rebalancing_service is not None else RebalancingService()
+
+
+
+        self.allocation_analysis_service = allocation_analysis_service if allocation_analysis_service is not None else AllocationAnalysisService(rebalancing_service=self.rebalancing_service)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1662,7 +3322,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             history_service=self.history_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1694,7 +3386,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             change_detection_service=self.change_detection_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1726,7 +3450,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             monitoring_dashboard_service=self.monitoring_dashboard_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1758,7 +3514,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alert_generation_service=self.alert_generation_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1790,7 +3578,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alert_dashboard_service=self.alert_dashboard_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1822,7 +3642,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alert_management_service=self.alert_management_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1854,7 +3706,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             decision_classification_service=self.decision_classification_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1886,7 +3770,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             decision_audit_service=self.decision_audit_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1918,6 +3834,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             decision_audit_trend_service=self.decision_audit_trend_service,
 
 
@@ -1934,7 +3866,43 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             rebalancing_service=self.rebalancing_service,
+
+
+
+            allocation_analysis_service=self.allocation_analysis_service,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1966,7 +3934,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self._build_ui()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2014,7 +4014,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def refresh_data(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2046,7 +4094,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if self.service is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2078,7 +4158,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self.service, "build_snapshot"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2110,7 +4222,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     snapshot = self.service.build_snapshot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2142,6 +4286,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 except Exception:
 
 
@@ -2158,7 +4318,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2206,7 +4414,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2238,6 +4478,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.load_result(result)
 
 
@@ -2254,7 +4510,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 except Exception:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2302,7 +4590,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_history()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2334,7 +4670,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_change_detection()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2366,7 +4734,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_monitoring_dashboard()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2398,7 +4798,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_generated_alerts()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2430,7 +4862,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_alert_dashboard()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2462,7 +4926,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_alert_management()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2494,7 +4990,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_decision_classification()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2526,7 +5054,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.load_decision_audit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2550,11 +5110,59 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.load_decision_audit_trend()
 
 
 
+
+
+
+
         self.load_rebalancing()
+
+
+
+        self.load_allocation_analysis()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2602,7 +5210,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         """Bind live decision prioritization result to UI."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2634,7 +5274,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2666,7 +5338,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             res = self.decision_prioritization_service.prioritize()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2698,6 +5402,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         except Exception:
 
 
@@ -2714,7 +5434,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2762,7 +5530,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2794,7 +5594,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2826,7 +5658,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_critical"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2858,7 +5722,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_high"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2890,7 +5786,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_medium"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2922,7 +5850,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_low"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2954,7 +5914,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dp_info"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3002,7 +5994,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_prioritization_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3034,7 +6074,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             priorities = getattr(result, "priorities", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3066,7 +6138,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for item in priorities:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3098,7 +6202,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3130,7 +6266,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3178,6 +6362,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     cat = getattr(item, "category", "")
 
 
@@ -3194,7 +6394,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     prio = getattr(item, "priority", "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3242,7 +6474,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     id_lbl = QLabel(f"Decision ID: {d_id}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3274,7 +6554,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     cat_lbl = QLabel(f"Category: {cat}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3306,7 +6618,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     prio_color = "#dc2626" if prio in ["CRITICAL", "HIGH"] else "#d97706" if prio == "MEDIUM" else "#16a34a" if prio == "LOW" else "#2563eb"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3338,6 +6682,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     prio_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {prio_color};")
 
 
@@ -3354,7 +6714,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     desc_lbl = QLabel(f"Description: {desc}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3402,7 +6794,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(id_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3434,7 +6874,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(prio_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3466,7 +6938,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.decision_prioritization_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3498,6 +7002,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No prioritized decisions available.")
 
 
@@ -3514,7 +7034,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3562,19 +7114,51 @@ class PortfolioHealth(QWidget):
 
 
 
-    def load_rebalancing(self) -> None:
 
-        """Bind live rebalancing state to UI."""
 
-        if getattr(self, "rebalancing_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def load_allocation_analysis(self) -> None:
+
+        """Bind live allocation analysis to UI."""
+
+        if getattr(self, "allocation_analysis_service", None) is None:
 
             return
 
         try:
 
-            res = self.rebalancing_service.get_state()
+            res = self.allocation_analysis_service.get_analysis()
 
-            self._update_rebalancing_ui(res)
+            self._update_allocation_analysis_ui(res)
 
         except Exception:
 
@@ -3582,105 +7166,365 @@ class PortfolioHealth(QWidget):
 
 
 
-    def _update_rebalancing_ui(self, result: Any) -> None:
+    def _update_allocation_analysis_ui(self, result: Any) -> None:
 
         if result is None:
 
             return
 
+        total_val = getattr(result, "total_value", 0.0) or 0.0
+
+
+
+        if hasattr(self, "lbl_aa_total_val"):
+
+            self.lbl_aa_total_val.setText(f"Total Portfolio Value: ${total_val:,.2f}")
+
+
+
+        if hasattr(self, "allocation_analysis_container"):
+
+            self._clear_layout(self.allocation_analysis_container)
+
+            asset_allocs = getattr(result, "asset_allocations", []) or []
+
+            fund_allocs = getattr(result, "fund_allocations", []) or []
+
+            etf_allocs = getattr(result, "etf_allocations", []) or []
+
+
+
+            if not asset_allocs and not fund_allocs and not etf_allocs:
+
+                lbl = QLabel("No allocation analysis available.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.allocation_analysis_container.addWidget(lbl)
+
+                return
+
+
+
+            if asset_allocs:
+
+                hdr = QLabel("ASSET ALLOCATION")
+
+                hdr.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67; padding-top: 6px;")
+
+                self.allocation_analysis_container.addWidget(hdr)
+
+                for cat in asset_allocs:
+
+                    nm = getattr(cat, "name", "")
+
+                    val = getattr(cat, "current_value", 0.0)
+
+                    wt = getattr(cat, "current_weight", 0.0)
+
+                    cnt = getattr(cat, "position_count", 0)
+
+                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+
+                    lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
+
+                    self.allocation_analysis_container.addWidget(lbl)
+
+
+
+            if fund_allocs:
+
+                hdr = QLabel("FUND ALLOCATION")
+
+                hdr.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67; padding-top: 6px;")
+
+                self.allocation_analysis_container.addWidget(hdr)
+
+                for cat in fund_allocs:
+
+                    nm = getattr(cat, "name", "")
+
+                    val = getattr(cat, "current_value", 0.0)
+
+                    wt = getattr(cat, "current_weight", 0.0)
+
+                    cnt = getattr(cat, "position_count", 0)
+
+                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+
+                    lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
+
+                    self.allocation_analysis_container.addWidget(lbl)
+
+
+
+            if etf_allocs:
+
+                hdr = QLabel("ETF ALLOCATION")
+
+                hdr.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67; padding-top: 6px;")
+
+                self.allocation_analysis_container.addWidget(hdr)
+
+                for cat in etf_allocs:
+
+                    nm = getattr(cat, "name", "")
+
+                    val = getattr(cat, "current_value", 0.0)
+
+                    wt = getattr(cat, "current_weight", 0.0)
+
+                    cnt = getattr(cat, "position_count", 0)
+
+                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+
+                    lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
+
+                    self.allocation_analysis_container.addWidget(lbl)
+
+
+
+    def load_rebalancing(self) -> None:
+
+
+
+        """Bind live rebalancing state to UI."""
+
+
+
+        if getattr(self, "rebalancing_service", None) is None:
+
+
+
+            return
+
+
+
+        try:
+
+
+
+            res = self.rebalancing_service.get_state()
+
+
+
+            self._update_rebalancing_ui(res)
+
+
+
+        except Exception:
+
+
+
+            pass
+
+
+
+
+
+
+
+    def _update_rebalancing_ui(self, result: Any) -> None:
+
+
+
+        if result is None:
+
+
+
+            return
+
+
+
         status = getattr(result, "status", "EMPTY") or "EMPTY"
 
+
+
         total_val = getattr(result, "total_value", 0.0) or 0.0
+
+
 
         total_pos = getattr(result, "total_positions", 0) or 0
 
 
 
+
+
+
+
         if hasattr(self, "lbl_reb_status"):
+
+
 
             self.lbl_reb_status.setText(f"Rebalancing Status: {status}")
 
+
+
         if hasattr(self, "lbl_reb_total_val"):
+
+
 
             self.lbl_reb_total_val.setText(f"Total Portfolio Value: ${total_val:,.2f}")
 
+
+
         if hasattr(self, "lbl_reb_total_pos"):
+
+
 
             self.lbl_reb_total_pos.setText(f"Total Positions: {total_pos}")
 
 
 
+
+
+
+
         if hasattr(self, "rebalancing_positions_container"):
+
+
 
             self._clear_layout(self.rebalancing_positions_container)
 
+
+
             portfolio = getattr(result, "portfolio", None)
+
+
 
             positions = getattr(portfolio, "positions", []) if portfolio else []
 
 
 
+
+
+
+
             if positions:
+
+
 
                 for pos in positions:
 
+
+
                     card = QFrame()
+
+
 
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
 
+
+
                     lyt = QVBoxLayout(card)
+
+
 
                     lyt.setSpacing(4)
 
 
 
+
+
+
+
                     sym = getattr(pos, "symbol", "")
+
+
 
                     name = getattr(pos, "name", "")
 
+
+
                     atype = getattr(pos, "asset_type", "")
 
+
+
                     c_val = getattr(pos, "current_value", 0.0)
+
+
 
                     c_wt = getattr(pos, "current_weight", 0.0)
 
 
 
+
+
+
+
                     sym_lbl = QLabel(f"{sym} - {name}")
+
+
 
                     sym_lbl.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
 
+
+
                     type_lbl = QLabel(f"Asset Type: {atype}")
+
+
 
                     type_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: 600;")
 
+
+
                     val_lbl = QLabel(f"Current Value: ${c_val:,.2f} | Current Weight: {c_wt:.2f}%")
+
+
 
                     val_lbl.setStyleSheet("font-size: 13px; color: #1f2937;")
 
+
+
                     tgt_lbl = QLabel("Target Weight: Not configured")
+
+
 
                     tgt_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
 
 
 
+
+
+
+
                     lyt.addWidget(sym_lbl)
+
+
 
                     lyt.addWidget(type_lbl)
 
+
+
                     lyt.addWidget(val_lbl)
+
+
 
                     lyt.addWidget(tgt_lbl)
 
+
+
                     self.rebalancing_positions_container.addWidget(card)
+
+
 
             else:
 
+
+
                 lbl = QLabel("No rebalancing portfolio data available.")
+
+
 
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
 
+
+
                 self.rebalancing_positions_container.addWidget(lbl)
+
+
+
+
 
 
 
@@ -3688,7 +7532,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         """Bind live decision audit trend to UI."""
+
+
+
+
 
 
 
@@ -3696,7 +7548,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
             return
+
+
+
+
 
 
 
@@ -3704,7 +7564,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
             res = self.decision_audit_trend_service.get_trend()
+
+
+
+
 
 
 
@@ -3712,11 +7580,27 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         except Exception:
 
 
 
+
+
+
+
             pass
+
+
+
+
+
+
+
+
 
 
 
@@ -3728,7 +7612,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         if result is None:
+
+
+
+
 
 
 
@@ -3736,7 +7628,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         total_points = getattr(result, "total_points", 0)
+
+
+
+
 
 
 
@@ -3744,7 +7644,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         latest_ts = getattr(result, "latest_timestamp", None) or "N/A"
+
+
+
+
 
 
 
@@ -3756,7 +7664,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dat_total_points"):
+
+
+
+
 
 
 
@@ -3764,7 +7684,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         if hasattr(self, "lbl_dat_earliest"):
+
+
+
+
 
 
 
@@ -3772,7 +7700,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         if hasattr(self, "lbl_dat_latest"):
+
+
+
+
 
 
 
@@ -3780,7 +7716,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         if hasattr(self, "lbl_dat_direction"):
+
+
+
+
 
 
 
@@ -3792,7 +7736,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_audit_trend_container"):
+
+
+
+
 
 
 
@@ -3800,7 +7756,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
             points = getattr(result, "points", [])
+
+
+
+
 
 
 
@@ -3808,7 +7772,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                 for pt in points:
+
+
+
+
 
 
 
@@ -3816,11 +7788,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
 
 
 
+
+
+
+
                     lyt = QVBoxLayout(card)
+
+
+
+
 
 
 
@@ -3832,7 +7816,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     ts = getattr(pt, "timestamp", "")
+
+
+
+
 
 
 
@@ -3840,7 +7836,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     cls = getattr(pt, "classified_entries", 0)
+
+
+
+
 
 
 
@@ -3848,7 +7852,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     crit = getattr(pt, "critical_priority_entries", 0)
+
+
+
+
 
 
 
@@ -3856,11 +7868,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     med = getattr(pt, "medium_priority_entries", 0)
 
 
 
+
+
+
+
                     low = getattr(pt, "low_priority_entries", 0)
+
+
+
+
 
 
 
@@ -3872,7 +7896,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     ts_lbl = QLabel(f"Timestamp: {ts}")
+
+
+
+
 
 
 
@@ -3880,7 +7916,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     total_lbl = QLabel(f"Total Entries: {total}")
+
+
+
+
 
 
 
@@ -3888,7 +7932,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     cls_lbl = QLabel(f"Classified: {cls} | Unclassified: {uncls}")
+
+
+
+
 
 
 
@@ -3896,7 +7948,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     prio_lbl = QLabel(f"Critical: {crit} | High: {high} | Medium: {med} | Low: {low} | Info: {info}")
+
+
+
+
 
 
 
@@ -3908,7 +7968,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     lyt.addWidget(ts_lbl)
+
+
+
+
 
 
 
@@ -3916,7 +7988,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     lyt.addWidget(cls_lbl)
+
+
+
+
 
 
 
@@ -3924,7 +8004,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                     self.decision_audit_trend_container.addWidget(card)
+
+
+
+
 
 
 
@@ -3932,7 +8020,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                 lbl = QLabel("No decision audit trend available.")
+
+
+
+
 
 
 
@@ -3940,7 +8036,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
                 self.decision_audit_trend_container.addWidget(lbl)
+
+
+
+
+
+
+
+
 
 
 
@@ -3956,7 +8064,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         """Bind live decision audit analytics to UI."""
+
+
+
+
+
+
+
+
 
 
 
@@ -3972,7 +8096,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
             return
+
+
+
+
+
+
+
+
 
 
 
@@ -3988,7 +8128,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
             res = self.decision_audit_analytics_service.get_analytics()
+
+
+
+
+
+
+
+
 
 
 
@@ -4004,6 +8160,14 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         except Exception:
 
 
@@ -4012,7 +8176,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4036,7 +8224,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
 
 
 
@@ -4052,7 +8256,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         summary = getattr(result, "summary", None)
+
+
+
+
+
+
+
+
 
 
 
@@ -4076,7 +8296,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_total"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4092,7 +8336,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_unique"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4108,7 +8368,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_classified"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4124,7 +8400,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_unclassified"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4140,7 +8432,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_critical"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4156,7 +8464,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_high"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4172,7 +8496,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_medium"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4188,7 +8528,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_low"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4204,7 +8560,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_daa_info"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4228,7 +8600,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_audit_analytics_container"):
+
+
+
+
+
+
+
+
 
 
 
@@ -4252,7 +8648,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if not summary or total_entries == 0:
+
+
+
+
+
+
+
+
 
 
 
@@ -4268,6 +8688,14 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
 
 
@@ -4276,7 +8704,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 self.decision_audit_analytics_container.addWidget(lbl)
+
+
+
+
+
+
+
+
 
 
 
@@ -4300,6 +8744,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             cat_counts = getattr(result, "category_counts", {}) or {}
 
 
@@ -4308,7 +8768,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
             prio_counts = getattr(result, "priority_counts", {}) or {}
+
+
+
+
+
+
+
+
 
 
 
@@ -4332,7 +8808,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if cat_counts:
+
+
+
+
+
+
+
+
 
 
 
@@ -4348,7 +8848,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 cat_hdr.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67; padding-top: 6px;")
+
+
+
+
+
+
+
+
 
 
 
@@ -4364,7 +8880,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 for cat_name, count in cat_counts.items():
+
+
+
+
+
+
+
+
 
 
 
@@ -4380,6 +8912,14 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
 
 
@@ -4388,7 +8928,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     self.decision_audit_analytics_container.addWidget(lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4412,7 +8976,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 prio_hdr = QLabel("PRIORITY DISTRIBUTION")
+
+
+
+
+
+
+
+
 
 
 
@@ -4428,7 +9008,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 self.decision_audit_analytics_container.addWidget(prio_hdr)
+
+
+
+
+
+
+
+
 
 
 
@@ -4444,7 +9040,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 displayed_prio = []
+
+
+
+
+
+
+
+
 
 
 
@@ -4460,7 +9072,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     if p in prio_counts:
+
+
+
+
+
+
+
+
 
 
 
@@ -4476,7 +9104,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 for p, count in prio_counts.items():
+
+
+
+
+
+
+
+
 
 
 
@@ -4492,7 +9136,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                         displayed_prio.append((p, count))
+
+
+
+
+
+
+
+
 
 
 
@@ -4508,7 +9168,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     lbl = QLabel(f"{p_name}: {count}")
+
+
+
+
+
+
+
+
 
 
 
@@ -4524,7 +9200,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     self.decision_audit_analytics_container.addWidget(lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4548,7 +9248,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 cls_hdr = QLabel("CLASSIFICATION DISTRIBUTION")
+
+
+
+
+
+
+
+
 
 
 
@@ -4564,7 +9280,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 self.decision_audit_analytics_container.addWidget(cls_hdr)
+
+
+
+
+
+
+
+
 
 
 
@@ -4580,7 +9312,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 displayed_cls = []
+
+
+
+
+
+
+
+
 
 
 
@@ -4596,7 +9344,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     if c in cls_counts:
+
+
+
+
+
+
+
+
 
 
 
@@ -4612,7 +9376,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                 for c, count in cls_counts.items():
+
+
+
+
+
+
+
+
 
 
 
@@ -4628,7 +9408,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                         displayed_cls.append((c, count))
+
+
+
+
+
+
+
+
 
 
 
@@ -4644,7 +9440,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     lbl = QLabel(f"{c_name}: {count}")
+
+
+
+
+
+
+
+
 
 
 
@@ -4660,7 +9472,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
                     self.decision_audit_analytics_container.addWidget(lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4692,7 +9528,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         """Bind live decision audit trail to UI."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4724,7 +9592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4756,7 +9656,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             res = self.decision_audit_service.get_audit_trail()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4788,6 +9720,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         except Exception:
 
 
@@ -4804,7 +9752,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4852,7 +9848,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4884,7 +9912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_da_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4916,7 +9976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_da_earliest"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4948,7 +10040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_da_earliest.setText(f"Earliest Entry: {val}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4980,7 +10104,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             val = getattr(result, "latest_timestamp", None) or "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5028,7 +10184,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_audit_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5060,7 +10264,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             entries = getattr(result, "entries", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5092,7 +10328,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for entry in entries:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5124,7 +10392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5156,7 +10456,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5204,7 +10552,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     d_id = getattr(entry, "decision_id", "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5236,7 +10616,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     cls_status = getattr(entry, "classification_status", "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5268,7 +10680,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     desc = getattr(entry, "description", "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5316,7 +10760,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl = QLabel(f"Timestamp: {ts}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5348,7 +10840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     id_lbl = QLabel(f"Decision ID: {d_id}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5380,7 +10904,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     cat_lbl = QLabel(f"Category: {cat}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5412,7 +10968,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     cls_lbl = QLabel(f"Classification Status: {cls_status}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5444,7 +11032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     prio_color = "#dc2626" if prio in ["CRITICAL", "HIGH"] else "#d97706" if prio == "MEDIUM" else "#16a34a" if prio == "LOW" else "#2563eb"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5476,7 +11096,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     prio_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {prio_color};")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5508,6 +11160,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     desc_lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
 
 
@@ -5524,7 +11192,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     src_lbl = QLabel(f"Source: {src}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5572,7 +11272,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(ts_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5604,7 +11352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(cat_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5636,7 +11416,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(prio_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5668,7 +11480,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(src_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5700,7 +11544,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             else:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5732,7 +11608,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5780,7 +11688,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_decision_classification(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5812,7 +11768,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "decision_classification_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5844,7 +11832,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5876,7 +11896,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_decision_classification_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5908,7 +11960,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5956,7 +12056,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5988,7 +12120,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dc_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6020,7 +12184,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dc_classified"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6052,7 +12248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_dc_unclassified"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6100,7 +12328,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_classification_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6132,7 +12408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             classifications = getattr(result, "classifications", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6164,7 +12472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for item in classifications:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6196,7 +12536,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6228,7 +12600,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6260,7 +12664,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6292,7 +12728,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.decision_classification_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6324,6 +12792,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No classifications available.")
 
 
@@ -6340,7 +12824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6388,7 +12904,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_decision_engine(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6420,7 +12984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "decision_engine_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6452,7 +13048,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6484,7 +13112,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_decision_engine_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6516,7 +13176,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6564,7 +13272,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6596,7 +13336,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         summary = getattr(result, "summary", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6628,7 +13400,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_de_status"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6660,7 +13464,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_de_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6692,7 +13528,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_de_pending"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6724,7 +13592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_de_informational"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6772,7 +13672,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "decision_engine_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6804,7 +13752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             decisions = getattr(result, "decisions", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6836,7 +13816,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for decision in decisions:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6868,7 +13880,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6900,7 +13944,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6932,7 +14008,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6964,7 +14072,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.decision_engine_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6996,6 +14136,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No decisions available.")
 
 
@@ -7012,7 +14168,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7060,7 +14248,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_alert_management(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7092,7 +14328,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_management_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7124,7 +14392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7156,7 +14456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_alert_management_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7188,7 +14520,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7236,7 +14616,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if mgmt_result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7268,7 +14680,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         summary = getattr(mgmt_result, "summary", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7300,7 +14744,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_am_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7332,7 +14808,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_am_active"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7364,7 +14872,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_am_acknowledged"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7396,7 +14936,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_am_dismissed"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7428,6 +15000,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_am_last_updated"):
 
 
@@ -7444,7 +15032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 updated = getattr(summary, "last_updated", "N/A") or "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7492,7 +15112,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "alert_management_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7524,7 +15192,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alerts = getattr(mgmt_result, "alerts", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7556,7 +15256,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for alert in alerts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7588,7 +15320,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7620,7 +15384,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7668,7 +15480,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     id_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: 600;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7716,6 +15576,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
 
 
@@ -7732,7 +15608,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl = QLabel(f"[{sev}]")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7780,6 +15688,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl = QLabel(getattr(alert, 'title', ''))
 
 
@@ -7796,7 +15736,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7844,7 +15832,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7892,7 +15928,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7940,7 +16024,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(sev_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7972,7 +16088,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(status_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8004,7 +16152,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.alert_management_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8036,6 +16216,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No managed alerts")
 
 
@@ -8052,7 +16248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8100,7 +16328,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_alert_history(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8132,7 +16408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_history_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8164,7 +16472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8196,7 +16536,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_alert_history_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8228,7 +16600,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8276,7 +16696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if history is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8308,7 +16760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ah_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8340,7 +16824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ah_latest"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8372,7 +16888,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_ah_latest.setText(f"Latest: {latest}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8404,7 +16952,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             earliest = getattr(history, "earliest_timestamp", "N/A") or "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8452,7 +17032,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "alert_history_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8484,7 +17112,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             entries = getattr(history, "entries", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8516,7 +17176,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for entry in entries:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8548,7 +17240,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8580,7 +17304,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8628,7 +17400,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8676,7 +17496,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8708,7 +17560,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8756,7 +17656,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     type_lbl.setStyleSheet("font-size: 13px; color: #475569; font-weight: 600;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8804,7 +17752,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8852,7 +17848,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8900,7 +17944,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(sev_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8932,7 +18008,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(title_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8964,7 +18072,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.alert_history_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8996,6 +18136,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No alert history")
 
 
@@ -9012,7 +18168,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9060,7 +18248,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_alert_dashboard(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9092,7 +18328,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_dashboard_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9124,7 +18392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9156,7 +18456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_alert_dashboard_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9188,7 +18520,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9236,7 +18616,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if dashboard is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9268,7 +18680,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         summary = getattr(dashboard, "summary", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9300,7 +18744,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9332,7 +18808,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_active"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9364,7 +18872,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_acknowledged"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9396,7 +18936,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_dismissed"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9428,7 +19000,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_info"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9460,7 +19064,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_low"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9492,7 +19128,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_medium"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9524,7 +19192,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_high"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9556,7 +19256,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_ad_critical"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9604,7 +19336,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "alert_dashboard_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9636,7 +19416,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alerts = getattr(dashboard, "alerts", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9668,7 +19480,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for alert in alerts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9700,6 +19544,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
 
 
@@ -9716,7 +19576,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt = QVBoxLayout(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9764,7 +19656,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev = getattr(alert, 'severity', 'INFO')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9796,7 +19736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl = QLabel(f"[{sev}]")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9844,7 +19816,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     type_lbl = QLabel(f"Type: {getattr(alert, 'alert_type', '')}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9892,6 +19912,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl = QLabel(getattr(alert, 'title', ''))
 
 
@@ -9908,7 +19960,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9956,7 +20056,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10004,7 +20152,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10052,7 +20248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(type_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10084,7 +20312,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(status_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10116,7 +20376,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.alert_dashboard_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10148,6 +20440,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No dashboard alerts")
 
 
@@ -10164,7 +20472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10212,7 +20552,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_alert_rules(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10244,7 +20632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_rules_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10276,7 +20696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10308,7 +20760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_alert_rules_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10340,7 +20824,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10388,7 +20920,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if rules_result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10420,7 +20984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_alert_rules_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10452,7 +21048,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_alert_rules_triggered"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10500,7 +21128,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "alert_rules_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10532,7 +21208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             rules = getattr(rules_result, "rules", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10564,7 +21272,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for rule in rules:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10596,7 +21336,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10628,7 +21400,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10676,7 +21496,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     name_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10724,7 +21592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#16a34a" if sev == "LOW" else "#2563eb"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10756,7 +21656,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10804,7 +21752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     triggered_text = "YES" if triggered else "NO"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10836,7 +21816,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     triggered_lbl = QLabel(f"Triggered: {triggered_text}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10884,7 +21896,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     desc_lbl = QLabel(getattr(rule, 'description', ''))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10932,7 +21992,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(name_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10964,7 +22072,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(triggered_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10996,7 +22136,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.alert_rules_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11028,6 +22200,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No alert rules evaluated")
 
 
@@ -11044,7 +22232,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11092,7 +22312,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_generated_alerts(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11124,7 +22392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_generation_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11156,7 +22456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11188,7 +22520,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_generated_alerts_ui(res)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11220,7 +22584,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11268,7 +22680,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if gen_result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11300,7 +22744,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_gen_alerts_count"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11348,7 +22824,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "generated_alerts_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11380,7 +22904,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alerts = getattr(gen_result, "alerts", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11412,7 +22968,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for alert in alerts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11444,6 +23032,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
 
 
@@ -11460,7 +23064,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt = QVBoxLayout(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11508,7 +23144,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev = getattr(alert, 'severity', 'INFO')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11540,6 +23224,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl = QLabel(f"[{sev}]")
 
 
@@ -11556,7 +23256,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {sev_color};")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11604,7 +23352,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     type_lbl.setStyleSheet("font-size: 13px; color: #475569; font-weight: 600;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11652,7 +23448,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl.setStyleSheet("font-size: 13px; color: #64748b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11700,7 +23544,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl.setStyleSheet("font-size: 14px; font-weight: 600; color: #1e293b;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11748,7 +23640,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     status_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11796,7 +23736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(type_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11828,7 +23800,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(title_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11860,7 +23864,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.generated_alerts_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11892,6 +23928,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No generated alerts")
 
 
@@ -11908,7 +23960,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11956,7 +24040,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_alert_center(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11988,7 +24120,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "alert_center_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12020,7 +24184,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12052,7 +24248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_alert_center_ui(state)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12084,7 +24312,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12132,7 +24408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if state is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12164,7 +24472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ac_total"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12196,7 +24536,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ac_active"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12228,7 +24600,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ac_acknowledged"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12260,7 +24664,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_ac_dismissed"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12308,7 +24744,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "alerts_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12340,7 +24824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             alerts = getattr(state, "alerts", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12372,7 +24888,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for alert in alerts:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12404,7 +24952,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12436,7 +25016,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12484,6 +25112,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_color = "#dc2626" if sev in ["HIGH", "CRITICAL"] else "#d97706" if sev == "MEDIUM" else "#2563eb"
 
 
@@ -12500,7 +25144,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     sev_lbl = QLabel(f"[{sev}]")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12548,7 +25224,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl = QLabel(getattr(alert, 'timestamp', ''))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12596,7 +25320,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     title_lbl = QLabel(getattr(alert, 'title', ''))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12644,7 +25416,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     status_lbl = QLabel(getattr(alert, 'status', 'ACTIVE'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12692,7 +25512,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(sev_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12724,7 +25592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(title_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12756,7 +25656,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.alerts_list_container.addWidget(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12788,6 +25720,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl = QLabel("No alerts recorded")
 
 
@@ -12804,7 +25752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12852,7 +25832,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_monitoring_dashboard(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12884,7 +25912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "monitoring_dashboard_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12916,7 +25976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12948,7 +26040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_monitoring_dashboard_ui(dashboard)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12980,7 +26104,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13028,7 +26200,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if dashboard is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13060,7 +26264,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_status"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13092,7 +26328,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_enabled"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13124,7 +26392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_mon_dash_enabled.setText(f"Monitoring Enabled: {'YES' if enabled else 'NO'}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13156,7 +26456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_mon_dash_latest_score.setText(f"Latest Score: {getattr(dashboard, 'latest_score', 0)}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13188,7 +26520,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_mon_dash_latest_grade.setText(f"Latest Grade: {getattr(dashboard, 'latest_grade', '-')}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13220,7 +26584,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             snap_time = getattr(dashboard, 'latest_snapshot_time', "N/A") or "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13252,7 +26648,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_total_snapshots"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13284,7 +26712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_timeline_entries"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13316,7 +26776,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_latest_change_count"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13348,7 +26840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_mon_dash_total_detected_changes"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13396,7 +26920,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_timeline(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13428,7 +27000,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "timeline_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13460,7 +27064,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13492,7 +27128,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_timeline_ui(timeline)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13524,7 +27192,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13572,7 +27288,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if timeline is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13604,7 +27352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_tl_entries"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13636,7 +27416,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_tl_earliest"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13668,7 +27480,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_tl_earliest.setText(f"Earliest: {earliest}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13700,7 +27544,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             latest = getattr(timeline, "latest_timestamp", "N/A") or "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13748,7 +27624,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "timeline_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13780,7 +27704,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             entries = getattr(timeline, "entries", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13812,7 +27768,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 for entry in entries:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13844,7 +27832,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13876,7 +27896,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.setSpacing(4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13924,7 +27992,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ts_lbl.setStyleSheet("font-size: 14px; font-weight: 700; color: #173b67;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13972,7 +28088,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     score_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14020,7 +28184,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     grade_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #334155;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14068,6 +28280,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     t_color = "#16a34a" if trend == "IMPROVING" else "#dc2626" if trend == "DETERIORATING" else "#64748b"
 
 
@@ -14084,7 +28312,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     trend_lbl = QLabel(f"Trend: {trend}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14132,7 +28392,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     changes_lbl = QLabel(f"Changes: {getattr(entry, 'change_count', 0)}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14180,7 +28488,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(ts_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14212,7 +28568,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(grade_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14244,7 +28632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(changes_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14276,7 +28696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             else:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14308,7 +28760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14356,7 +28840,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_change_detection(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14388,7 +28920,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "change_detection_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14420,7 +28984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14452,7 +29048,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self._update_change_detection_ui(report)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14484,7 +29112,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14532,7 +29208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if report is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14564,7 +29272,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_cd_snapshots_compared"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14596,7 +29336,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_cd_changes_detected"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14628,6 +29400,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.lbl_cd_changes_detected.setText(f"Changes Detected: {'YES' if has_chg else 'NO'}")
 
 
@@ -14644,7 +29432,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "lbl_cd_total_changes"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14692,7 +29512,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if hasattr(self, "changes_list_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14724,7 +29592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             changes = getattr(report, "changes", [])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14756,7 +29656,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if changed_items:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14788,7 +29720,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     card = QFrame()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14820,7 +29784,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt = QVBoxLayout(card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14852,7 +29848,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     fname_lbl = QLabel(getattr(item, "field_name", ""))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14884,7 +29912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     val_lbl = QLabel(f"{getattr(item, 'previous_value', '')} → {getattr(item, 'current_value', '')}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14916,7 +29976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     ctype = getattr(item, "change_type", "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14948,7 +30040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     type_lbl = QLabel(ctype)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14980,7 +30104,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(fname_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15012,7 +30168,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lyt.addWidget(type_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15044,7 +30232,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             else:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15076,7 +30296,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15124,7 +30376,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_monitoring(self) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15156,7 +30456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if getattr(self, "monitor_service", None) is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15188,7 +30520,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15220,7 +30584,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if state is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15252,7 +30648,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     enabled_str = "YES" if state.monitoring_enabled else "NO"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15284,7 +30712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if hasattr(self, "lbl_mon_status"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15316,7 +30776,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if hasattr(self, "lbl_mon_snapshots"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15348,7 +30840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if hasattr(self, "lbl_mon_latest_snapshot"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15380,7 +30904,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.lbl_mon_latest_snapshot.setText(f"Latest Snapshot: {time_str}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15412,7 +30968,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.lbl_mon_latest_score.setText(f"Latest Score: {state.latest_score}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15444,7 +31032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     self.lbl_mon_latest_grade.setText(f"Latest Grade: {state.latest_grade}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15476,7 +31096,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15524,7 +31192,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         """Bind live portfolio health history metrics to UI."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15556,7 +31256,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15588,6 +31320,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             history = self.history_service.get_history()
 
 
@@ -15604,7 +31352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             count = len(history) if history else 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15652,7 +31432,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_history_entries"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15684,7 +31512,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_history_latest_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15716,7 +31576,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 self.lbl_history_latest_score.setText(f"Latest Score: {score_str}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15748,7 +31640,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 grade_str = str(latest.grade) if latest else "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15780,7 +31704,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         except Exception:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15828,7 +31784,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15860,6 +31864,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if snapshot is None:
 
 
@@ -15876,7 +31896,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15924,7 +31992,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.cards["Position Count"].setText(str(snapshot.position_count))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15972,6 +32088,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             val = snapshot.cash_allocation_pct
 
 
@@ -15988,7 +32120,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16036,7 +32200,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if "Largest Position" in self.cards:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16084,7 +32296,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def load_result(self, result: Optional[PortfolioHealthResult] = None) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16116,7 +32376,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if result is None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16164,6 +32456,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if "Overall Health Score" in self.cards:
 
 
@@ -16180,7 +32504,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             grade_suffix = f" ({result.grade})" if getattr(result, "grade", None) else ""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16228,7 +32584,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if "Diversification" in self.cards:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16276,7 +32680,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if "Concentration" in self.cards:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16324,7 +32776,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         analytics = getattr(result, "analytics", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16356,7 +32856,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_breakdown_div"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16388,7 +32920,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_breakdown_conc"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16420,7 +32984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_breakdown_cash"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16468,7 +33064,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "strengths_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16500,7 +33144,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if analytics.strengths:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16532,7 +33208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         lbl = QLabel(f"• {item}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16564,7 +33272,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         self.strengths_container.addWidget(lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16596,6 +33336,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl = QLabel("None identified")
 
 
@@ -16612,7 +33368,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16660,7 +33448,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "weaknesses_container"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16692,7 +33528,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if analytics.weaknesses:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16724,7 +33592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         lbl = QLabel(f"• {item}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16756,7 +33656,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         self.weaknesses_container.addWidget(lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16788,6 +33720,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl = QLabel("None identified")
 
 
@@ -16804,7 +33752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16852,7 +33832,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend = getattr(result, "trend", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16884,7 +33912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_trend_current"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16916,7 +33976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_trend_previous"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16948,7 +34040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_trend_change"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16980,6 +34104,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 self.lbl_trend_change.setText(f"Score Change: {change_str}")
 
 
@@ -16996,7 +34136,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_trend_direction"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17044,7 +34216,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_analytics = getattr(result, "historical_analytics", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17076,7 +34296,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_entries"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17108,7 +34360,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_best"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17140,7 +34424,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_worst"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17172,7 +34488,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_avg"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17204,7 +34552,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_curr"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17236,7 +34616,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_hist_trend"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17284,7 +34696,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         summary = getattr(result, "dashboard_summary", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17316,7 +34776,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_curr_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17348,7 +34840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_curr_grade"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17380,7 +34904,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_best_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17412,7 +34968,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_best_grade"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17444,7 +35032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_worst_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17476,7 +35096,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_worst_grade"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17508,7 +35160,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_avg_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17540,7 +35224,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_dash_total_snapshots"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17588,7 +35304,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_highlight_highest"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17620,7 +35384,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_highlight_lowest"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17652,7 +35448,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_highlight_vs_avg"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17684,7 +35512,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 diff_str = f"+{diff}" if diff > 0 else str(diff)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17732,7 +35592,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics = getattr(result, "historical_metrics", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17764,7 +35672,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_metrics_range"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17796,7 +35736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_metrics_volatility"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17828,7 +35800,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_metrics_improving"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17860,7 +35864,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_metrics_deteriorating"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17892,7 +35928,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_metrics_stability"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17940,7 +36008,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights = getattr(result, "historical_insights", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17972,7 +36088,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_improvement"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18004,7 +36152,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_deterioration"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18036,7 +36216,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_neutral"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18068,7 +36280,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_consistency"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18100,7 +36344,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_quality"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18132,7 +36408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_insights_direction"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18180,7 +36488,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_state = getattr(result, "monitoring_state", None)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18212,7 +36568,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_mon_enabled"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18244,7 +36632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 self.lbl_mon_enabled.setText(f"Monitoring Enabled: {enabled_str}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18276,7 +36696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 self.lbl_mon_status.setText(f"Monitoring Status: {mon_state.monitoring_status}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18308,7 +36760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 self.lbl_mon_snapshots.setText(f"Snapshots Available: {mon_state.snapshot_count}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18340,7 +36824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 time_str = mon_state.latest_snapshot_time if mon_state.latest_snapshot_time else "N/A"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18372,7 +36888,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_mon_latest_score"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18404,7 +36952,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if hasattr(self, "lbl_mon_latest_grade"):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18452,6 +37032,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_report = getattr(result, "change_report", None)
 
 
@@ -18468,7 +37080,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if cd_report is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18516,6 +37160,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         timeline = getattr(result, "timeline", None)
 
 
@@ -18532,7 +37208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if timeline is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18580,6 +37288,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash = getattr(result, "monitoring_dashboard", None)
 
 
@@ -18596,7 +37336,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if mon_dash is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18644,6 +37416,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_state = getattr(result, "alert_center", None)
 
 
@@ -18660,7 +37464,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if ac_state is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18708,6 +37544,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         gen_res = getattr(result, "generated_alerts", None)
 
 
@@ -18724,7 +37592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if gen_res is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18772,6 +37672,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_res = getattr(result, "decision_prioritization", None)
 
 
@@ -18788,7 +37720,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if dp_res is not None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18836,7 +37800,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18868,6 +37880,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             child = layout.takeAt(0)
 
 
@@ -18884,7 +37912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if child.widget():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18932,7 +37992,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def _build_ui(self):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18964,7 +38072,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             QWidget {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18996,7 +38136,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 color: #1f2937;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19028,7 +38200,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19076,7 +38296,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 font-size: 28px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19108,6 +38360,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 color: #173b67;
 
 
@@ -19124,7 +38392,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19172,7 +38488,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 font-size: 14px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19204,7 +38552,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19252,7 +38648,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 background-color: white;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19284,6 +38712,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 border-radius: 10px;
 
 
@@ -19300,7 +38744,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19348,7 +38840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 font-size: 12px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19380,6 +38904,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 color: #64748b;
 
 
@@ -19396,7 +38936,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19444,7 +39032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 font-size: 22px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19476,6 +39096,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 color: #173b67;
 
 
@@ -19492,7 +39128,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19540,7 +39224,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 font-size: 16px;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19572,6 +39288,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 color: #173b67;
 
 
@@ -19588,7 +39320,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19636,6 +39400,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         outer_layout = QVBoxLayout(self)
 
 
@@ -19652,7 +39448,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         outer_layout.setContentsMargins(0, 0, 0, 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19700,7 +39528,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         scroll = QScrollArea(self)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19732,6 +39608,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
 
@@ -19748,7 +39640,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         scroll.setFrameShape(QFrame.NoFrame)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19796,7 +39720,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         content_widget = QWidget()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19828,7 +39800,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         root_layout.setContentsMargins(24, 20, 24, 20)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19876,7 +39880,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Header Title
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19908,7 +39960,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         header_title = QLabel("Portfolio Health")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19956,7 +40040,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         header_subtitle = QLabel("Overview of key health and risk metrics for your portfolio")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20004,6 +40136,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         title_box.addWidget(header_title)
 
 
@@ -20020,7 +40184,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         title_box.addWidget(header_subtitle)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20068,6 +40264,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Metric Cards Grid Layout
 
 
@@ -20084,7 +40312,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cards_grid = QGridLayout()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20132,7 +40392,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cards_spec = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20164,7 +40472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ("Diversification", "GOOD", 0, 1),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20196,7 +40536,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ("Position Count", "12", 1, 0),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20228,7 +40600,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ("Largest Position", "KPITTECH", 1, 2),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20276,7 +40680,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.cards = {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20308,7 +40760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             card_frame, val_lbl = self._create_metric_card(title, value)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20340,7 +40824,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             self.cards[title] = val_lbl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20404,7 +40936,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Analytics Sections: Health Score Breakdown
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20436,7 +41016,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         breakdown_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20468,7 +41080,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         breakdown_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20516,6 +41160,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_breakdown_header = QLabel("Health Score Breakdown")
 
 
@@ -20532,7 +41208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_breakdown_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20580,7 +41288,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_breakdown_div = QLabel("Diversification: - / 40")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20612,7 +41368,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_breakdown_conc = QLabel("Concentration: - / 40")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20644,7 +41432,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_breakdown_cash = QLabel("Cash Allocation: - / 20")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20692,7 +41512,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         breakdown_layout.addWidget(self.lbl_breakdown_div)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20724,7 +41592,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         breakdown_layout.addWidget(self.lbl_breakdown_cash)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20788,7 +41704,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Strengths Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20820,7 +41784,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         strengths_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20852,7 +41848,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         strengths_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20900,6 +41928,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_strengths_header = QLabel("Strengths")
 
 
@@ -20916,7 +41976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_strengths_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20964,6 +42056,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.strengths_container = QVBoxLayout()
 
 
@@ -20980,7 +42104,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         strengths_layout.addLayout(self.strengths_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21044,7 +42216,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Weaknesses Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21076,7 +42296,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         weaknesses_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21108,7 +42360,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         weaknesses_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21156,6 +42440,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_weaknesses_header = QLabel("Weaknesses")
 
 
@@ -21172,7 +42488,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_weaknesses_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21220,6 +42568,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.weaknesses_container = QVBoxLayout()
 
 
@@ -21236,7 +42616,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         weaknesses_layout.addLayout(self.weaknesses_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21300,7 +42728,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Trend Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21332,7 +42808,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21364,7 +42872,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21412,6 +42952,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_trend_header = QLabel("Portfolio Health Trend")
 
 
@@ -21428,7 +43000,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_trend_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21476,7 +43080,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_trend_current = QLabel("Current Score: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21508,7 +43160,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_trend_previous = QLabel("Previous Score: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21540,7 +43224,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_trend_change = QLabel("Score Change: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21572,7 +43288,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_trend_direction = QLabel("Trend: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21620,7 +43368,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend_layout.addWidget(self.lbl_trend_current)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21652,6 +43448,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend_layout.addWidget(self.lbl_trend_change)
 
 
@@ -21668,7 +43480,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         trend_layout.addWidget(self.lbl_trend_direction)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21732,7 +43592,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health History Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21764,7 +43672,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         history_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21796,7 +43736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         history_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21844,6 +43816,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_history_header = QLabel("Portfolio Health History")
 
 
@@ -21860,7 +43864,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_history_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21908,7 +43944,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_history_entries = QLabel("History Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21940,7 +44024,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_history_latest_score = QLabel("Latest Score: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21972,7 +44088,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_history_latest_grade = QLabel("Latest Grade: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22020,7 +44168,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         history_layout.addWidget(self.lbl_history_entries)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22052,7 +44248,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         history_layout.addWidget(self.lbl_history_latest_grade)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22116,7 +44360,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Historical Analytics Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22148,7 +44440,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22180,7 +44504,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22228,6 +44584,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_hist_header = QLabel("Portfolio Health Historical Analytics")
 
 
@@ -22244,7 +44632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_hist_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22292,7 +44712,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_entries = QLabel("History Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22324,7 +44792,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_best = QLabel("Best Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22356,7 +44856,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_worst = QLabel("Worst Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22388,7 +44920,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_avg = QLabel("Average Score: 0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22420,7 +44984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_curr = QLabel("Current Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22452,7 +45048,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_hist_trend = QLabel("Overall Trend: STABLE")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22500,7 +45128,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_layout.addWidget(self.lbl_hist_entries)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22532,7 +45208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_layout.addWidget(self.lbl_hist_worst)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22564,6 +45272,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_layout.addWidget(self.lbl_hist_curr)
 
 
@@ -22580,7 +45304,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         hist_layout.addWidget(self.lbl_hist_trend)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22644,7 +45416,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Dashboard Summary Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22676,7 +45496,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22708,7 +45560,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22756,6 +45640,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dash_header = QLabel("Portfolio Health Dashboard Summary")
 
 
@@ -22772,7 +45688,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dash_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22820,7 +45768,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_curr_score = QLabel("Current Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22852,7 +45848,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_curr_grade = QLabel("Current Grade: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22884,7 +45912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_best_score = QLabel("Best Historical Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22916,7 +45976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_best_grade = QLabel("Best Historical Grade: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22948,7 +46040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_worst_score = QLabel("Worst Historical Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22980,7 +46104,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_worst_grade = QLabel("Worst Historical Grade: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23012,7 +46168,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_avg_score = QLabel("Average Historical Score: 0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23044,7 +46232,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dash_total_snapshots = QLabel("Total Snapshots: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23092,7 +46312,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_dash_curr_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23124,7 +46392,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_dash_best_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23156,7 +46456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_dash_worst_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23188,7 +46520,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_dash_avg_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23236,7 +46600,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Historical Highlights Subsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23268,6 +46680,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_highlights_header.setObjectName("sectionHeader")
 
 
@@ -23284,7 +46712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_highlights_header.setStyleSheet("font-size: 15px; font-weight: 700; color: #173b67; margin-top: 6px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23332,7 +46792,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_highlight_highest = QLabel("Highest Score Achieved: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23364,7 +46872,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_highlight_lowest = QLabel("Lowest Score Achieved: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23396,7 +46936,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_highlight_vs_avg = QLabel("Current Score vs Average: 0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23444,7 +47016,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_highlight_highest)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23476,7 +47096,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dash_layout.addWidget(self.lbl_highlight_vs_avg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23540,7 +47208,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Historical Metrics Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23572,7 +47288,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23604,7 +47352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23652,6 +47432,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_metrics_header = QLabel("Portfolio Health Historical Metrics")
 
 
@@ -23668,7 +47480,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_metrics_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23716,7 +47560,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_metrics_range = QLabel("Score Range: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23748,7 +47640,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_metrics_volatility = QLabel("Volatility Score: 0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23780,7 +47704,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_metrics_improving = QLabel("Improving Periods: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23812,7 +47768,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_metrics_deteriorating = QLabel("Deteriorating Periods: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23844,7 +47832,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_metrics_stability = QLabel("Stability Rating: VERY_STABLE")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23892,7 +47912,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics_layout.addWidget(self.lbl_metrics_range)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23924,7 +47992,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics_layout.addWidget(self.lbl_metrics_improving)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23956,7 +48056,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         metrics_layout.addWidget(self.lbl_metrics_stability)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24020,7 +48168,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Historical Insights Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24052,7 +48248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24084,7 +48312,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24132,6 +48392,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_insights_header = QLabel("Portfolio Health Historical Insights")
 
 
@@ -24148,7 +48440,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_insights_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24196,7 +48520,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_improvement = QLabel("Improvement Percentage: 0.0%")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24228,7 +48600,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_deterioration = QLabel("Deterioration Percentage: 0.0%")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24260,7 +48664,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_neutral = QLabel("Neutral Percentage: 0.0%")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24292,7 +48728,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_consistency = QLabel("Consistency Score: 0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24324,7 +48792,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_quality = QLabel("Quality Rating: MIXED")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24356,7 +48856,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_insights_direction = QLabel("Direction Rating: STABLE")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24404,7 +48936,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_layout.addWidget(self.lbl_insights_improvement)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24436,7 +49016,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_layout.addWidget(self.lbl_insights_neutral)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24468,6 +49080,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_layout.addWidget(self.lbl_insights_quality)
 
 
@@ -24484,7 +49112,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         insights_layout.addWidget(self.lbl_insights_direction)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24548,7 +49224,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Monitoring Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24580,7 +49304,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24612,7 +49368,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24660,6 +49448,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_monitoring_header = QLabel("Portfolio Health Monitoring")
 
 
@@ -24676,7 +49496,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_monitoring_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24724,7 +49576,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_enabled = QLabel("Monitoring Enabled: NO")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24756,7 +49656,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_status = QLabel("Monitoring Status: UNAVAILABLE")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24788,7 +49720,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_snapshots = QLabel("Snapshots Available: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24820,7 +49784,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_latest_snapshot = QLabel("Latest Snapshot: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24852,7 +49848,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_latest_score = QLabel("Latest Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24884,7 +49912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_latest_grade = QLabel("Latest Grade: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24932,7 +49992,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_layout.addWidget(self.lbl_mon_enabled)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24964,7 +50072,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_layout.addWidget(self.lbl_mon_snapshots)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24996,6 +50136,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_layout.addWidget(self.lbl_mon_latest_score)
 
 
@@ -25012,7 +50168,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         monitoring_layout.addWidget(self.lbl_mon_latest_grade)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25076,7 +50280,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Change Detection Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25108,7 +50360,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25140,7 +50424,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25188,6 +50504,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_cd_header = QLabel("Portfolio Health Change Detection")
 
 
@@ -25204,7 +50552,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_cd_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25252,7 +50632,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_cd_snapshots_compared = QLabel("Snapshots Compared: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25284,7 +50712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_cd_changes_detected = QLabel("Changes Detected: NO")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25316,7 +50776,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_cd_total_changes = QLabel("Total Changes: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25364,6 +50856,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_layout.addWidget(self.lbl_cd_snapshots_compared)
 
 
@@ -25380,7 +50904,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_layout.addWidget(self.lbl_cd_changes_detected)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25428,6 +50984,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_changes_subheader = QLabel("Changes")
 
 
@@ -25444,7 +51032,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_changes_subheader.setStyleSheet("font-size: 15px; font-weight: 700; color: #173b67; margin-top: 6px;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25492,6 +51112,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.changes_list_container = QVBoxLayout()
 
 
@@ -25508,7 +51160,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         cd_layout.addLayout(self.changes_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25572,7 +51272,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Timeline Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25604,7 +51352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tl_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25636,7 +51416,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tl_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25684,6 +51496,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_tl_header = QLabel("Portfolio Health Timeline")
 
 
@@ -25700,7 +51544,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_tl_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25748,7 +51624,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_tl_entries = QLabel("Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25780,7 +51704,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_tl_earliest = QLabel("Earliest: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25812,7 +51768,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_tl_latest = QLabel("Latest: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25860,6 +51848,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tl_layout.addWidget(self.lbl_tl_entries)
 
 
@@ -25876,7 +51896,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tl_layout.addWidget(self.lbl_tl_earliest)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25924,6 +51976,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.timeline_list_container = QVBoxLayout()
 
 
@@ -25940,7 +52024,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tl_layout.addLayout(self.timeline_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26004,7 +52136,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Portfolio Health Monitoring Dashboard Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26036,7 +52216,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26068,7 +52280,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26116,6 +52360,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_mon_dash_header = QLabel("Portfolio Health Monitoring Dashboard")
 
 
@@ -26132,7 +52408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_mon_dash_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26180,7 +52488,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_status = QLabel("Monitoring Status: UNAVAILABLE")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26212,7 +52568,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_enabled = QLabel("Monitoring Enabled: NO")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26244,7 +52632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_latest_score = QLabel("Latest Score: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26276,7 +52696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_latest_grade = QLabel("Latest Grade: -")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26308,7 +52760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_latest_snapshot = QLabel("Latest Snapshot: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26340,7 +52824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_total_snapshots = QLabel("Total Snapshots: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26372,7 +52888,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_timeline_entries = QLabel("Timeline Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26404,7 +52952,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_latest_change_count = QLabel("Latest Change Count: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26436,7 +53016,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_mon_dash_total_detected_changes = QLabel("Total Detected Changes: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26484,7 +53096,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.addWidget(self.lbl_mon_dash_status)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26516,7 +53176,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.addWidget(self.lbl_mon_dash_latest_score)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26548,7 +53240,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.addWidget(self.lbl_mon_dash_latest_snapshot)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26580,7 +53304,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.addWidget(self.lbl_mon_dash_timeline_entries)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26612,7 +53368,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         mon_dash_layout.addWidget(self.lbl_mon_dash_total_detected_changes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26676,7 +53480,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Alert Center Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26708,7 +53560,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26740,7 +53624,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26788,6 +53704,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ac_header = QLabel("Alert Center")
 
 
@@ -26804,7 +53752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ac_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26852,7 +53832,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ac_total = QLabel("Total Alerts: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26884,7 +53912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ac_active = QLabel("Active: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26916,7 +53976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ac_acknowledged = QLabel("Acknowledged: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26948,7 +54040,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ac_dismissed = QLabel("Dismissed: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -26996,7 +54120,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_layout.addWidget(self.lbl_ac_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27028,7 +54200,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_layout.addWidget(self.lbl_ac_acknowledged)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27076,6 +54280,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alerts_list_container = QVBoxLayout()
 
 
@@ -27092,7 +54328,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ac_layout.addLayout(self.alerts_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27156,7 +54440,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Generated Alerts Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27188,7 +54520,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         gen_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27220,7 +54584,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         gen_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27268,6 +54664,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_gen_header = QLabel("Generated Alerts")
 
 
@@ -27284,7 +54712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_gen_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27332,6 +54792,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_gen_alerts_count = QLabel("Generated Alerts: 0")
 
 
@@ -27348,7 +54840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_gen_alerts_count.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27396,6 +54920,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.generated_alerts_container = QVBoxLayout()
 
 
@@ -27412,7 +54968,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         gen_layout.addLayout(self.generated_alerts_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27476,7 +55080,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Alert Rules Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27508,7 +55160,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ar_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27540,7 +55224,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ar_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27588,6 +55304,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ar_header = QLabel("Alert Rules")
 
 
@@ -27604,7 +55352,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ar_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27652,7 +55432,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_alert_rules_total = QLabel("Total Rules: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27684,7 +55512,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_alert_rules_triggered = QLabel("Triggered Rules: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27732,7 +55592,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ar_layout.addWidget(self.lbl_alert_rules_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27780,6 +55688,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_rules_list_container = QVBoxLayout()
 
 
@@ -27796,7 +55736,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ar_layout.addLayout(self.alert_rules_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27860,7 +55848,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Alert Dashboard Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27892,7 +55928,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27924,7 +55992,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27972,6 +56072,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ad_header = QLabel("Alert Dashboard")
 
 
@@ -27988,7 +56120,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ad_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28036,7 +56200,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_total = QLabel("Total Alerts: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28068,7 +56280,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_active = QLabel("Active: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28100,7 +56344,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_acknowledged = QLabel("Acknowledged: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28132,7 +56408,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_dismissed = QLabel("Dismissed: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28180,7 +56488,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_info = QLabel("INFO: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28212,7 +56568,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_low = QLabel("LOW: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28244,7 +56632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_medium = QLabel("MEDIUM: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28276,7 +56696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_high = QLabel("HIGH: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28308,7 +56760,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ad_critical = QLabel("CRITICAL: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28356,7 +56840,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addWidget(self.lbl_ad_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28388,7 +56920,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addWidget(self.lbl_ad_acknowledged)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28420,7 +56984,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addWidget(self.lbl_ad_info)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28452,6 +57048,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addWidget(self.lbl_ad_medium)
 
 
@@ -28468,7 +57080,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addWidget(self.lbl_ad_high)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28516,6 +57160,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_dashboard_list_container = QVBoxLayout()
 
 
@@ -28532,7 +57208,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ad_layout.addLayout(self.alert_dashboard_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28596,7 +57320,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Alert History Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28628,7 +57400,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ah_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28660,7 +57464,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ah_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28708,6 +57544,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ah_header = QLabel("Alert History")
 
 
@@ -28724,7 +57592,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_ah_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28772,7 +57672,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ah_total = QLabel("Total Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28804,7 +57752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ah_latest = QLabel("Latest: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28836,7 +57816,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_ah_earliest = QLabel("Earliest: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28884,6 +57896,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ah_layout.addWidget(self.lbl_ah_total)
 
 
@@ -28900,7 +57944,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ah_layout.addWidget(self.lbl_ah_latest)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28948,6 +58024,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_history_list_container = QVBoxLayout()
 
 
@@ -28964,7 +58072,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ah_layout.addLayout(self.alert_history_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29028,7 +58184,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Alert Management Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29060,7 +58264,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29092,7 +58328,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29140,6 +58408,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_am_header = QLabel("Alert Management")
 
 
@@ -29156,7 +58456,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_am_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29204,7 +58536,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_am_total = QLabel("Total Alerts: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29236,7 +58616,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_am_active = QLabel("Active: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29268,7 +58680,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_am_acknowledged = QLabel("Acknowledged: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29300,7 +58744,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_am_dismissed = QLabel("Dismissed: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29332,7 +58808,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_am_last_updated = QLabel("Last Updated: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29380,7 +58888,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_layout.addWidget(self.lbl_am_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29412,6 +58968,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_layout.addWidget(self.lbl_am_acknowledged)
 
 
@@ -29428,7 +59000,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_layout.addWidget(self.lbl_am_dismissed)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29476,6 +59080,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.alert_management_list_container = QVBoxLayout()
 
 
@@ -29492,7 +59128,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         am_layout.addLayout(self.alert_management_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29556,7 +59240,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Decision Engine Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29588,7 +59320,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         de_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29620,7 +59384,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         de_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29668,6 +59464,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_de_header = QLabel("Decision Engine")
 
 
@@ -29684,7 +59512,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_de_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29732,7 +59592,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_de_status = QLabel("Engine Status: READY")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29764,7 +59672,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_de_total = QLabel("Total Decisions: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29796,7 +59736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_de_pending = QLabel("Pending Decisions: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29828,7 +59800,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_de_informational = QLabel("Informational Decisions: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29876,7 +59880,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         de_layout.addWidget(self.lbl_de_status)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29908,7 +59960,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         de_layout.addWidget(self.lbl_de_pending)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -29956,6 +60040,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_engine_list_container = QVBoxLayout()
 
 
@@ -29972,7 +60088,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         de_layout.addLayout(self.decision_engine_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30036,7 +60200,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Decision Classification Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30068,7 +60280,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dc_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30100,7 +60344,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dc_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30148,6 +60424,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dc_header = QLabel("Decision Classification")
 
 
@@ -30164,7 +60472,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dc_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30212,7 +60552,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dc_total = QLabel("Total Classifications: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30244,7 +60632,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dc_classified = QLabel("Classified: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30276,7 +60696,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dc_unclassified = QLabel("Unclassified: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30324,6 +60776,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dc_layout.addWidget(self.lbl_dc_total)
 
 
@@ -30340,7 +60824,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dc_layout.addWidget(self.lbl_dc_classified)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30388,6 +60904,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_classification_list_container = QVBoxLayout()
 
 
@@ -30404,7 +60952,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dc_layout.addLayout(self.decision_classification_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30468,7 +61064,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Decision Prioritization Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30500,7 +61144,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30532,7 +61208,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30580,6 +61288,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dp_header = QLabel("Decision Prioritization")
 
 
@@ -30596,7 +61336,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dp_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30644,7 +61416,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_total = QLabel("Total Prioritized: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30676,7 +61496,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_critical = QLabel("Critical: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30708,7 +61560,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_high = QLabel("High: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30740,7 +61624,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_medium = QLabel("Medium: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30772,7 +61688,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_low = QLabel("Low: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30804,7 +61752,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dp_info = QLabel("Info: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30852,7 +61832,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_layout.addWidget(self.lbl_dp_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30884,7 +61912,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_layout.addWidget(self.lbl_dp_high)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30916,7 +61976,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_layout.addWidget(self.lbl_dp_low)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30964,6 +62056,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_prioritization_list_container = QVBoxLayout()
 
 
@@ -30980,7 +62104,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dp_layout.addLayout(self.decision_prioritization_list_container)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31044,7 +62216,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # ── Decision Audit Trail ──
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31076,7 +62296,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         da_card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31108,7 +62360,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         da_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31156,6 +62440,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_da_header = QLabel("Decision Audit Trail")
 
 
@@ -31172,7 +62488,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_da_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31220,7 +62568,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_da_total = QLabel("Total Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31252,7 +62648,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_da_earliest = QLabel("Earliest Entry: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31284,7 +62712,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_da_latest = QLabel("Latest Entry: N/A")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31332,6 +62792,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         da_layout.addWidget(self.lbl_da_total)
 
 
@@ -31348,7 +62840,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         da_layout.addWidget(self.lbl_da_earliest)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31396,7 +62920,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_audit_list_container = QVBoxLayout()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31444,7 +63016,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         root_layout.addWidget(da_card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31476,7 +63096,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_card = QFrame()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31508,6 +63160,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout = QVBoxLayout(daa_card)
 
 
@@ -31524,7 +63192,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31572,6 +63272,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_daa_header = QLabel("Decision Audit Analytics")
 
 
@@ -31588,7 +63320,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_daa_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31636,7 +63400,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_total = QLabel("Total Entries: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31668,7 +63480,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_unique = QLabel("Unique Decisions: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31700,7 +63544,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_classified = QLabel("Classified: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31732,7 +63608,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_unclassified = QLabel("Unclassified: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31764,7 +63672,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_critical = QLabel("Critical: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31796,7 +63736,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_high = QLabel("High: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31828,7 +63800,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_medium = QLabel("Medium: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31860,7 +63864,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_low = QLabel("Low: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31892,7 +63928,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_daa_info = QLabel("Info: 0")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31940,7 +64008,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.addWidget(self.lbl_daa_total)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -31972,7 +64088,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.addWidget(self.lbl_daa_classified)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32004,7 +64152,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.addWidget(self.lbl_daa_critical)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32036,6 +64216,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.addWidget(self.lbl_daa_medium)
 
 
@@ -32052,7 +64248,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         daa_layout.addWidget(self.lbl_daa_low)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32100,7 +64328,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_audit_analytics_container = QVBoxLayout()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32148,7 +64424,47 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         root_layout.addWidget(daa_card)
+
+
+
+
+
+
+
+
 
 
 
@@ -32164,7 +64480,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         dat_card = QFrame()
+
+
+
+
+
+
+
+
 
 
 
@@ -32180,6 +64512,14 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         dat_layout = QVBoxLayout(dat_card)
 
 
@@ -32188,7 +64528,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         dat_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
 
 
 
@@ -32212,6 +64568,22 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         lbl_dat_header = QLabel("Decision Audit Trend")
 
 
@@ -32220,7 +64592,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         lbl_dat_header.setObjectName("sectionHeader")
+
+
+
+
+
+
+
+
 
 
 
@@ -32244,7 +64632,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.lbl_dat_total_points = QLabel("Total Points: 0")
+
+
+
+
+
+
+
+
 
 
 
@@ -32260,7 +64672,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.lbl_dat_earliest = QLabel("Earliest Timestamp: N/A")
+
+
+
+
+
+
+
+
 
 
 
@@ -32276,7 +64704,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.lbl_dat_latest = QLabel("Latest Timestamp: N/A")
+
+
+
+
+
+
+
+
 
 
 
@@ -32292,7 +64736,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.lbl_dat_direction = QLabel("Direction: STABLE")
+
+
+
+
+
+
+
+
 
 
 
@@ -32316,7 +64776,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         dat_layout.addWidget(self.lbl_dat_total_points)
+
+
+
+
+
+
+
+
 
 
 
@@ -32332,7 +64816,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         dat_layout.addWidget(self.lbl_dat_latest)
+
+
+
+
+
+
+
+
 
 
 
@@ -32356,7 +64856,31 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         self.decision_audit_trend_container = QVBoxLayout()
+
+
+
+
+
+
+
+
 
 
 
@@ -32380,7 +64904,27 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         root_layout.addWidget(dat_card)
+
+
+
+
 
 
 
@@ -32388,7 +64932,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         reb_card = QFrame()
+
+
+
+
 
 
 
@@ -32396,11 +64948,23 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         reb_layout = QVBoxLayout(reb_card)
 
 
 
+
+
+
+
         reb_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
 
 
 
@@ -32412,11 +64976,27 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         lbl_reb_header = QLabel("Rebalancing")
 
 
 
+
+
+
+
         lbl_reb_header.setObjectName("sectionHeader")
+
+
+
+
 
 
 
@@ -32428,7 +65008,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.lbl_reb_status = QLabel("Rebalancing Status: EMPTY")
+
+
+
+
 
 
 
@@ -32436,7 +65028,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         self.lbl_reb_total_val = QLabel("Total Portfolio Value: $0.00")
+
+
+
+
 
 
 
@@ -32444,7 +65044,15 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
         self.lbl_reb_total_pos = QLabel("Total Positions: 0")
+
+
+
+
 
 
 
@@ -32456,11 +65064,27 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         reb_layout.addWidget(self.lbl_reb_status)
 
 
 
+
+
+
+
         reb_layout.addWidget(self.lbl_reb_total_val)
+
+
+
+
 
 
 
@@ -32472,11 +65096,27 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         lbl_reb_safety = QLabel("Rebalancing foundation displays current portfolio structure only. No rebalancing action is generated.")
 
 
 
+
+
+
+
         lbl_reb_safety.setStyleSheet("font-size: 13px; color: #475569; font-style: italic; padding-top: 4px; padding-bottom: 4px;")
+
+
+
+
 
 
 
@@ -32488,7 +65128,19 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         self.rebalancing_positions_container = QVBoxLayout()
+
+
+
+
 
 
 
@@ -32500,7 +65152,139 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
         root_layout.addWidget(reb_card)
+
+
+
+        # ── Allocation Analysis Engine ──
+
+
+
+        aa_card = QFrame()
+
+
+
+        aa_card.setObjectName("metricCard")
+
+
+
+        aa_layout = QVBoxLayout(aa_card)
+
+
+
+        aa_layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+        aa_layout.setSpacing(8)
+
+
+
+
+
+
+
+        lbl_aa_header = QLabel("Allocation Analysis")
+
+
+
+        lbl_aa_header.setObjectName("sectionHeader")
+
+
+
+        aa_layout.addWidget(lbl_aa_header)
+
+
+
+
+
+
+
+        self.lbl_aa_total_val = QLabel("Total Portfolio Value: $0.00")
+
+
+
+        self.lbl_aa_total_val.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+
+
+        aa_layout.addWidget(self.lbl_aa_total_val)
+
+
+
+
+
+
+
+        lbl_aa_safety = QLabel("Allocation analysis describes current portfolio composition. Target allocation and drift analysis are handled separately.")
+
+
+
+        lbl_aa_safety.setStyleSheet("font-size: 13px; color: #475569; font-style: italic; padding-top: 4px; padding-bottom: 4px;")
+
+
+
+        aa_layout.addWidget(lbl_aa_safety)
+
+
+
+
+
+
+
+        self.allocation_analysis_container = QVBoxLayout()
+
+
+
+        aa_layout.addLayout(self.allocation_analysis_container)
+
+
+
+
+
+
+
+        root_layout.addWidget(aa_card)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32564,7 +65348,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         scroll.setWidget(content_widget)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32612,7 +65444,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def _create_metric_card(self, title: str, value: str):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32644,7 +65524,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         card.setObjectName("metricCard")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32676,7 +65588,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         layout.setContentsMargins(16, 14, 16, 14)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32724,7 +65668,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         t_lbl = QLabel(title.upper())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32772,7 +65764,55 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         val_lbl = QLabel(value)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32820,6 +65860,38 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         layout.addWidget(t_lbl)
 
 
@@ -32836,7 +65908,39 @@ class PortfolioHealth(QWidget):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         layout.addWidget(val_lbl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
