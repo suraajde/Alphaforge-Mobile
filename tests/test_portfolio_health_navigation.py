@@ -1278,3 +1278,65 @@ def test_empty_decision_classification_safe(qapp):
     assert "Total Classifications: 0" in screen.lbl_dc_total.text()
     assert "Classified: 0" in screen.lbl_dc_classified.text()
     assert "Unclassified: 0" in screen.lbl_dc_unclassified.text()
+
+
+def test_decision_prioritization_section_loads(qapp):
+    """Verify Decision Prioritization section loads on screen."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "lbl_dp_total")
+    assert hasattr(screen, "lbl_dp_critical")
+    assert hasattr(screen, "lbl_dp_high")
+    assert hasattr(screen, "lbl_dp_medium")
+    assert hasattr(screen, "lbl_dp_low")
+    assert hasattr(screen, "lbl_dp_info")
+    assert hasattr(screen, "decision_prioritization_list_container")
+
+
+def test_decision_prioritization_values_display(qapp):
+    """Verify Decision Prioritization values display correctly."""
+    from services.decision_prioritization_service import (
+        DecisionPrioritizationResult,
+    )
+
+    class MockDecisionPrioritizationService:
+        def prioritize(self, **kwargs):
+            return DecisionPrioritizationResult(
+                total_prioritized=0,
+                critical_count=0,
+                high_count=0,
+                medium_count=0,
+                low_count=0,
+                info_count=0,
+                priorities=[],
+            )
+
+    prio_svc = MockDecisionPrioritizationService()
+    screen = PortfolioHealth(decision_prioritization_service=prio_svc)
+
+    assert "Total Prioritized: 0" in screen.lbl_dp_total.text()
+    assert "Critical: 0" in screen.lbl_dp_critical.text()
+    assert "High: 0" in screen.lbl_dp_high.text()
+    assert "Medium: 0" in screen.lbl_dp_medium.text()
+    assert "Low: 0" in screen.lbl_dp_low.text()
+    assert "Info: 0" in screen.lbl_dp_info.text()
+
+
+def test_empty_decision_prioritization_safe(qapp):
+    """Verify empty Decision Prioritization displays safely."""
+    from services.decision_prioritization_service import (
+        DecisionPrioritizationResult,
+    )
+
+    class MockEmptyPrioService:
+        def prioritize(self, **kwargs):
+            return DecisionPrioritizationResult(0, 0, 0, 0, 0, 0, [])
+
+    prio_svc = MockEmptyPrioService()
+    screen = PortfolioHealth(decision_prioritization_service=prio_svc)
+
+    assert "Total Prioritized: 0" in screen.lbl_dp_total.text()
+    assert "Critical: 0" in screen.lbl_dp_critical.text()
+    assert "High: 0" in screen.lbl_dp_high.text()
+    assert "Medium: 0" in screen.lbl_dp_medium.text()
+    assert "Low: 0" in screen.lbl_dp_low.text()
+    assert "Info: 0" in screen.lbl_dp_info.text()

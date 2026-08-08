@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 from services.decision_classification_service import DecisionClassificationResult
+from services.decision_prioritization_service import DecisionPrioritizationResult
 from services.decision_engine_service import DecisionEngineResult
 from services.portfolio_analytics_service import (
     PortfolioAnalytics,
@@ -84,6 +85,7 @@ class PortfolioHealthResult:
     alert_management: Optional[Any] = None
     decision_engine: Optional[DecisionEngineResult] = None
     decision_classification: Optional[DecisionClassificationResult] = None
+    decision_prioritization: Optional[DecisionPrioritizationResult] = None
 
 
 class PortfolioHealthService:
@@ -105,6 +107,7 @@ class PortfolioHealthService:
         alert_management_service: Optional[Any] = None,
         decision_engine_service: Optional[Any] = None,
         decision_classification_service: Optional[Any] = None,
+        decision_prioritization_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService."""
         self._portfolio_app_service = portfolio_app_service
@@ -121,6 +124,7 @@ class PortfolioHealthService:
         self._alert_management_service = alert_management_service
         self._decision_engine_service = decision_engine_service
         self._decision_classification_service = decision_classification_service
+        self._decision_prioritization_service = decision_prioritization_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -688,6 +692,29 @@ class PortfolioHealthService:
                 )
             except Exception:
                 res.decision_classification = None
+
+        # Phase: Decision Prioritization
+        if self._decision_prioritization_service is not None and hasattr(self._decision_prioritization_service, "prioritize"):
+            try:
+                cls_items = getattr(res.decision_classification, "classifications", None) if res.decision_classification else None
+                res.decision_prioritization = self._decision_prioritization_service.prioritize(
+                    classifications=cls_items,
+                )
+            except Exception:
+                res.decision_prioritization = None
+        else:
+            try:
+                from services.decision_prioritization_service import DecisionPrioritizationService
+                prio_svc = DecisionPrioritizationService(
+                    decision_classification_service=self._decision_classification_service,
+                    decision_engine_service=self._decision_engine_service,
+                )
+                cls_items = getattr(res.decision_classification, "classifications", None) if res.decision_classification else None
+                res.decision_prioritization = prio_svc.prioritize(
+                    classifications=cls_items,
+                )
+            except Exception:
+                res.decision_prioritization = None
 
         return res
 

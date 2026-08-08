@@ -17,6 +17,7 @@ from services.alert_dashboard_service import AlertDashboardService
 from services.alert_history_service import AlertHistoryService
 from services.alert_management_service import AlertManagementService
 from services.decision_classification_service import DecisionClassificationService
+from services.decision_prioritization_service import DecisionPrioritizationService
 from services.decision_engine_service import DecisionEngineService
 from services.portfolio_health_change_detection_service import PortfolioHealthChangeDetectionService
 from services.portfolio_health_history_service import PortfolioHealthHistoryService
@@ -48,6 +49,7 @@ class PortfolioHealth(QWidget):
         alert_management_service: Optional[AlertManagementService] = None,
         decision_engine_service: Optional[DecisionEngineService] = None,
         decision_classification_service: Optional[DecisionClassificationService] = None,
+        decision_prioritization_service: Optional[DecisionPrioritizationService] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -86,6 +88,7 @@ class PortfolioHealth(QWidget):
         )
         self.decision_engine_service = decision_engine_service if decision_engine_service is not None else DecisionEngineService()
         self.decision_classification_service = decision_classification_service if decision_classification_service is not None else DecisionClassificationService()
+        self.decision_prioritization_service = decision_prioritization_service if decision_prioritization_service is not None else DecisionPrioritizationService()
         self.service = service if service is not None else PortfolioHealthService(
             history_service=self.history_service,
             monitor_service=self.monitor_service,
@@ -100,6 +103,7 @@ class PortfolioHealth(QWidget):
             alert_management_service=self.alert_management_service,
             decision_engine_service=self.decision_engine_service,
             decision_classification_service=self.decision_classification_service,
+            decision_prioritization_service=self.decision_prioritization_service,
         )
         self._build_ui()
         self.refresh_data()
@@ -135,6 +139,68 @@ class PortfolioHealth(QWidget):
         self.load_alert_management()
         self.load_decision_engine()
         self.load_decision_classification()
+        self.load_decision_prioritization()
+
+    def load_decision_prioritization(self) -> None:
+        """Bind live decision prioritization result to UI."""
+        if getattr(self, "decision_prioritization_service", None) is None:
+            return
+        try:
+            res = self.decision_prioritization_service.prioritize()
+            self._update_decision_prioritization_ui(res)
+        except Exception:
+            pass
+
+    def _update_decision_prioritization_ui(self, result: Any) -> None:
+        if result is None:
+            return
+        if hasattr(self, "lbl_dp_total"):
+            self.lbl_dp_total.setText(f"Total Prioritized: {getattr(result, 'total_prioritized', 0)}")
+        if hasattr(self, "lbl_dp_critical"):
+            self.lbl_dp_critical.setText(f"Critical: {getattr(result, 'critical_count', 0)}")
+        if hasattr(self, "lbl_dp_high"):
+            self.lbl_dp_high.setText(f"High: {getattr(result, 'high_count', 0)}")
+        if hasattr(self, "lbl_dp_medium"):
+            self.lbl_dp_medium.setText(f"Medium: {getattr(result, 'medium_count', 0)}")
+        if hasattr(self, "lbl_dp_low"):
+            self.lbl_dp_low.setText(f"Low: {getattr(result, 'low_count', 0)}")
+        if hasattr(self, "lbl_dp_info"):
+            self.lbl_dp_info.setText(f"Info: {getattr(result, 'info_count', 0)}")
+
+        if hasattr(self, "decision_prioritization_list_container"):
+            self._clear_layout(self.decision_prioritization_list_container)
+            priorities = getattr(result, "priorities", [])
+            if priorities:
+                for item in priorities:
+                    card = QFrame()
+                    card.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px;")
+                    lyt = QVBoxLayout(card)
+                    lyt.setSpacing(4)
+
+                    d_id = getattr(item, "decision_id", "")
+                    cat = getattr(item, "category", "")
+                    prio = getattr(item, "priority", "")
+                    desc = getattr(item, "description", "")
+
+                    id_lbl = QLabel(f"Decision ID: {d_id}")
+                    id_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: 600;")
+                    cat_lbl = QLabel(f"Category: {cat}")
+                    cat_lbl.setStyleSheet("font-size: 13px; color: #475569; font-weight: 600;")
+                    prio_color = "#dc2626" if prio in ["CRITICAL", "HIGH"] else "#d97706" if prio == "MEDIUM" else "#16a34a" if prio == "LOW" else "#2563eb"
+                    prio_lbl = QLabel(f"Priority: {prio}")
+                    prio_lbl.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {prio_color};")
+                    desc_lbl = QLabel(f"Description: {desc}")
+                    desc_lbl.setStyleSheet("font-size: 14px; color: #1e293b;")
+
+                    lyt.addWidget(id_lbl)
+                    lyt.addWidget(cat_lbl)
+                    lyt.addWidget(prio_lbl)
+                    lyt.addWidget(desc_lbl)
+                    self.decision_prioritization_list_container.addWidget(card)
+            else:
+                lbl = QLabel("No prioritized decisions available.")
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+                self.decision_prioritization_list_container.addWidget(lbl)
 
     def load_decision_classification(self) -> None:
         """Bind live decision classification result to UI."""
@@ -948,6 +1014,10 @@ class PortfolioHealth(QWidget):
         if gen_res is not None:
             self._update_generated_alerts_ui(gen_res)
 
+        dp_res = getattr(result, "decision_prioritization", None)
+        if dp_res is not None:
+            self._update_decision_prioritization_ui(dp_res)
+
     def _clear_layout(self, layout: QVBoxLayout) -> None:
         while layout.count():
             child = layout.takeAt(0)
@@ -1674,6 +1744,42 @@ class PortfolioHealth(QWidget):
         dc_layout.addLayout(self.decision_classification_list_container)
 
         root_layout.addWidget(dc_card)
+
+        # Decision Prioritization Section
+        dp_card = QFrame()
+        dp_card.setObjectName("metricCard")
+        dp_layout = QVBoxLayout(dp_card)
+        dp_layout.setContentsMargins(16, 14, 16, 14)
+        dp_layout.setSpacing(8)
+
+        lbl_dp_header = QLabel("Decision Prioritization")
+        lbl_dp_header.setObjectName("sectionHeader")
+        dp_layout.addWidget(lbl_dp_header)
+
+        self.lbl_dp_total = QLabel("Total Prioritized: 0")
+        self.lbl_dp_total.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dp_critical = QLabel("Critical: 0")
+        self.lbl_dp_critical.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dp_high = QLabel("High: 0")
+        self.lbl_dp_high.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dp_medium = QLabel("Medium: 0")
+        self.lbl_dp_medium.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dp_low = QLabel("Low: 0")
+        self.lbl_dp_low.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+        self.lbl_dp_info = QLabel("Info: 0")
+        self.lbl_dp_info.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
+
+        dp_layout.addWidget(self.lbl_dp_total)
+        dp_layout.addWidget(self.lbl_dp_critical)
+        dp_layout.addWidget(self.lbl_dp_high)
+        dp_layout.addWidget(self.lbl_dp_medium)
+        dp_layout.addWidget(self.lbl_dp_low)
+        dp_layout.addWidget(self.lbl_dp_info)
+
+        self.decision_prioritization_list_container = QVBoxLayout()
+        dp_layout.addLayout(self.decision_prioritization_list_container)
+
+        root_layout.addWidget(dp_card)
 
         root_layout.addStretch()
 

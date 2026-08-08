@@ -826,3 +826,36 @@ def test_decision_classification_integration_works():
     assert result.decision_classification.classified == 0
     assert result.decision_classification.unclassified == 0
     assert result.decision_classification.classifications == []
+
+
+def test_decision_prioritization_integration_works():
+    """Verify evaluate populates result.decision_prioritization."""
+    from services.decision_prioritization_service import (
+        DecisionPrioritizationResult,
+    )
+
+    class MockDecisionPrioritizationService:
+        def prioritize(self, **kwargs):
+            return DecisionPrioritizationResult(
+                total_prioritized=0,
+                critical_count=0,
+                high_count=0,
+                medium_count=0,
+                low_count=0,
+                info_count=0,
+                priorities=[],
+            )
+
+    prio_svc = MockDecisionPrioritizationService()
+    service = PortfolioHealthService(decision_prioritization_service=prio_svc)
+    result = service.evaluate()
+
+    assert result.decision_prioritization is not None
+    assert isinstance(result.decision_prioritization, DecisionPrioritizationResult)
+    assert result.decision_prioritization.total_prioritized == 0
+    assert result.decision_prioritization.critical_count == 0
+    assert result.decision_prioritization.high_count == 0
+    assert result.decision_prioritization.medium_count == 0
+    assert result.decision_prioritization.low_count == 0
+    assert result.decision_prioritization.info_count == 0
+    assert result.decision_prioritization.priorities == []
