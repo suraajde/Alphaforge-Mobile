@@ -255,6 +255,7 @@ class PortfolioHealthService:
         portfolio_opportunity_service: Optional[Any] = None,
         portfolio_risk_intelligence_service: Optional[Any] = None,
         alpha12_mapping_service: Optional[Any] = None,
+        alpha12_health_integration_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -313,6 +314,7 @@ class PortfolioHealthService:
         self._portfolio_opportunity_service = portfolio_opportunity_service
         self._portfolio_risk_intelligence_service = portfolio_risk_intelligence_service
         self._alpha12_mapping_service = alpha12_mapping_service
+        self._alpha12_health_integration_service = alpha12_health_integration_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1659,6 +1661,39 @@ class PortfolioHealthService:
                 res.alpha12_mapping = map_svc.get_mapping()
             except Exception:
                 res.alpha12_mapping = None
+
+        # Alpha12 Health Integration (non-blocking: defensive)
+        try:
+            if self._alpha12_health_integration_service is not None and hasattr(self._alpha12_health_integration_service, "get_health_integration"):
+                try:
+                    res.alpha12_health_integration = self._alpha12_health_integration_service.get_health_integration(
+                        res.alpha12_mapping,
+                        res,
+                        getattr(res, "holding_quality", None),
+                        getattr(res, "portfolio_risk_intelligence", None),
+                    )
+                except Exception:
+                    res.alpha12_health_integration = None
+            else:
+                try:
+                    from services.alpha12_health_integration_service import Alpha12HealthIntegrationService
+                    int_svc = Alpha12HealthIntegrationService(
+                        alpha12_mapping_service=self._alpha12_mapping_service,
+                        portfolio_health_service=self,
+                        portfolio_intelligence_service=self._portfolio_intelligence_service,
+                        holding_quality_service=self._holding_quality_service,
+                        portfolio_risk_intelligence_service=self._portfolio_risk_intelligence_service,
+                    )
+                    res.alpha12_health_integration = int_svc.get_health_integration(
+                        res.alpha12_mapping,
+                        res,
+                        getattr(res, "holding_quality", None),
+                        getattr(res, "portfolio_risk_intelligence", None),
+                    )
+                except Exception:
+                    res.alpha12_health_integration = None
+        except Exception:
+            res.alpha12_health_integration = None
 
         return res
 
