@@ -1,179 +1,161 @@
-﻿# AlphaForge - Project Status
+# AlphaForge - Project Status
+
+
 
 ---
+
+
 
 ## Project Information
 
+
+
 | Item | Value |
+
 |------|-------|
+
 | Project | AlphaForge |
+
 | Type | AI-assisted Long-Term Investment Platform |
-| Version | Alpha 12 |
-| Current Sprint | 12.0.0 |
-| Status | 🚧 Documentation Foundation |
-| Last Stable Sprint | 11.4G |
-| Last Git Commit | 437ca30 |
-| Architecture | PySide6 Desktop Application |
-| Language | Python 3 |
+
+| Branch | sprint-13.2.1 |
+
+| HEAD Commit | `6b8c96d` |
+
+| Current Status | 🚧 Chapter 18 — Portfolio Intelligence Layer |
+
+| Next Sprint | 13.8.0 — Portfolio Intelligence Foundation |
+
+| Completed Chapters | 14, 15, 16, 17 |
+
+| Architecture | PySide6 Desktop Application / Decoupled Service Architecture |
+
+| Language | Python 3.14 |
+
+
 
 ---
 
-# Project Vision
 
-AlphaForge is a desktop investment platform designed to discover, evaluate, construct and monitor high-quality long-term investment portfolios.
 
-The objective is to combine quantitative screening, fundamental analysis, portfolio construction, portfolio monitoring and AI-assisted recommendations into a single application.
+# Project Summary
 
----
 
-# Completed Milestones
 
-## ✅ Milestone 1
+AlphaForge combines quantitative screening, fundamental analysis, portfolio health monitoring, decision auditing, rebalancing analytics, and AI-assisted portfolio intelligence into a unified desktop application.
 
-Research Platform
 
-Completed
-
-Includes
-
-- Research Universe
-- Research Radar
-- Screening Engine
-- Ranking Engine
-- Alpha Selection
-- Top 30
-- Alpha 12
 
 ---
 
-## ✅ Milestone 2
 
-Portfolio Platform
 
-Completed
+# Completed Chapters
 
-Includes
 
-- Portfolio Engine
-- Portfolio Analytics
-- Smart SIP
-- Portfolio Builder
-- Purchase Correction
-- Rebalancer
-- Portfolio Application Service
-- Desktop Portfolio UI
+
+## ✅ Chapter 14 — Portfolio Health Monitoring
+
+- 13.4.0 — Portfolio Health Monitoring Foundation
+
+- 13.4.1 — Change Detection Engine Foundation
+
+- 13.4.2 — Portfolio Health Timeline Foundation
+
+- 13.4.3 — Monitoring Dashboard Foundation
+
+
+
+## ✅ Chapter 15 — Alert Center
+
+- 13.5.0 — Alert Center Foundation
+
+- 13.5.1 — Health Score Change Alerts
+
+- 13.5.2 — Diversification Alerts
+
+- 13.5.3 — Concentration Alerts
+
+- 13.5.4 — Alert History Foundation
+
+
+
+## ✅ Chapter 16 — Decision Audit Trail
+
+- 16.0.0 — Decision Engine Foundation (`212190d`)
+
+- 16.0.1 — Decision Classification Engine (`01e1ff4`)
+
+- 16.0.2 — Decision Prioritization Engine (`3dc5af2`)
+
+- 16.0.3 — Decision Dashboard (`723056e`)
+
+- 16.0.4 — Decision Audit Trail Foundation (`2c63173`)
+
+- 16.0.5 — Decision Audit Analytics Foundation (`45b7574`)
+
+- 16.0.6 — Decision Audit Trend Foundation (`c3e0383`)
+
+
+
+## ✅ Chapter 17 — Rebalancing Engine
+
+- 13.7.0 — Rebalancing Foundation (`975bd37`)
+
+- 13.7.1 — Allocation Analysis Engine (`38822d0`)
+
+- 13.7.2 — Drift Detection Engine (`45feb3c`)
+
+- 13.7.3 — Rebalancing Candidate Engine (`a603db3`)
+
+- 13.7.4 — Rebalancing Recommendation Framework (`6b8c96d`)
+
+
 
 ---
 
-# Current Milestone
 
-## 🚧 Milestone 3
 
-Adaptive Portfolio Engine
+# Upcoming Chapters & Next Sprint
 
-Current Sprint
 
-12.0.0
 
-Documentation Foundation
+- **Next Sprint:** 13.8.0 — Portfolio Intelligence Foundation (Chapter 18)
 
----
+- **Chapter 18:** Portfolio Intelligence Layer (5 sprints)
 
-# Current Priorities
+- **Chapter 19:** Alpha 12 Integration Layer (5 sprints)
 
-1. Documentation Foundation
-2. Flexible Portfolio Capacity
-3. Dynamic Weight Engine
-4. Portfolio Quality Engine
-5. Watchtower Platform
+- **Chapter 20:** Stable Release (5 sprints)
+
+- **Target:** AlphaForge Version 1.0 Stable Release (14.0.4)
+
+
 
 ---
 
-# Planned Milestones
 
-- Milestone 3 - Adaptive Portfolio Engine
-- Milestone 4 - Multi Portfolio Platform
-- Milestone 5 - Watchtower Intelligence Platform
-- Milestone 6 - Portfolio Intelligence
-- Milestone 7 - Strategy Factory
-- Milestone 8 - AI Investment Platform
 
----
+# Active Design & Governance Principles
 
-# Active Design Decisions
+
 
 - Repository is the source of truth.
+
 - Documentation is mandatory.
-- Portfolio size is configurable.
-- Equal weighting is not mandatory.
-- Strong incumbents should not be replaced without clear justification.
-- Watchtower is a standalone engine.
-- Unified Status & Color Coding Framework.
-- No hard-coded colours.
-- No hard-coded portfolio size.
+
+- Long-term investing with low turnover.
+
+- Incumbent protection: strong incumbents are not removed without clear deterioration and a materially superior challenger.
+
+- User-review boundary: analytical recommendations require human review; zero automatic execution or broker integration.
+
+- Regression-first development with clean pytest verification.
+
+
 
 ---
 
-# Unified Status Framework
 
-🔴 Critical
 
-🟠 High
-
-🟡 Monitor
-
-🟢 Healthy
-
-🔵 Information
-
-⚪ Neutral
-
----
-
-# Current Architecture
-
-Research Engine
-
-Portfolio Engine
-
-Watchtower Engine (Planned)
-
-Shared Design System (Planned)
-
-Desktop UI
-
-SQLite
-
----
-
-# Next Sprint
-
-12.1.0
-
-Flexible Portfolio Capacity
-
-Objectives
-
-- Configurable portfolio size
-- Support 10-17 holdings
-- Remove Alpha 12 assumptions
-- Prepare Multi Portfolio Platform
-
----
-
-# Documentation Index
-
-- 00_PROJECT_STATUS.md
-- 01_ROADMAP.md
-- 02_CHANGELOG.md
-- 03_ARCHITECTURE.md
-- 04_DESIGN_GUIDE.md
-- 05_DEVELOPMENT_RULES.md
-- 06_DECISIONS.md
-- 07_BACKLOG.md
-
----
-
-Last Updated
-
-Sprint 12.0.0
+Last Updated: August 8, 2026 (HEAD `6b8c96d`)

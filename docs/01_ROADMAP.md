@@ -1,194 +1,173 @@
-﻿# AlphaForge Roadmap
+# AlphaForge Roadmap
+
+
+
+> **Authoritative Roadmap through Version 1.0 Stable Release**
+
+> **Branch:** `sprint-13.2.1`
+
+> **HEAD Commit:** `6b8c96d` — *Sprint 13.7.4 - Rebalancing Recommendation Framework*
+
+> **Last Updated:** August 8, 2026
+
+
 
 ---
 
-# Vision
 
-Build the world's best AI-assisted long-term investment platform.
 
-AlphaForge combines:
+## Executive Summary
 
-- Research
-- Portfolio Construction
-- Portfolio Monitoring
-- Portfolio Intelligence
-- Artificial Intelligence
 
-into one integrated desktop application.
 
----
+AlphaForge is an AI-assisted long-term investment platform for portfolio research, analytics, portfolio health monitoring, decision auditing, rebalancing analytics, and intelligent portfolio management.
 
-# Milestone 1
 
-## Research Platform
 
-Status
+### Project Progress Summary
 
-✅ Completed
 
-Features
 
-- Research Universe
-- Research Radar
-- Screening Engine
-- Ranking Engine
-- Alpha Selection
-- Top 30
-- Alpha 12
+- **COMPLETED:** Chapters 14–17 (Portfolio Health Monitoring, Alert Center, Decision Audit Trail, Rebalancing Engine)
+
+- **CURRENT / NEXT:** Chapter 18 — Portfolio Intelligence Layer (Sprint 13.8.0 — Portfolio Intelligence Foundation)
+
+- **REMAINING SCOPE:** 15 planned sprints through Version 1.0 Stable Release (Chapter 18: 5 sprints, Chapter 19: 5 sprints, Chapter 20: 5 sprints)
+
+- **FINAL TARGET:** AlphaForge Version 1.0 Stable Release (Sprint 14.0.4)
+
+
 
 ---
 
-# Milestone 2
 
-## Portfolio Platform
 
-Status
+## Roadmap Overview
 
-✅ Completed
 
-Features
 
-- Portfolio Builder
-- Portfolio Analytics
-- Smart SIP
-- Purchase Correction
-- Rebalancer
-- Portfolio Application Service
-- Desktop Portfolio
+| Chapter | Phase / Engine | Status | Sprints / Range |
 
----
+| :--- | :--- | :--- | :--- |
 
-# Milestone 3
+| **Chapter 14** | Portfolio Health Monitoring | ✅ COMPLETED | 13.4.0 – 13.4.3 |
 
-## Adaptive Portfolio Engine
+| **Chapter 15** | Alert Center | ✅ COMPLETED | 13.5.0 – 13.5.4 |
 
-Status
+| **Chapter 16** | Decision Audit Trail | ✅ COMPLETED | 16.0.0 – 16.0.6 |
 
-🚧 Current
+| **Chapter 17** | Rebalancing Engine | ✅ COMPLETED | 13.7.0 – 13.7.4 |
 
-### Sprint 12.0.0
+| **Chapter 18** | Portfolio Intelligence Layer | 🚧 NEXT SPRINT | 13.8.0 – 13.8.4 |
 
-Documentation Foundation
+| **Chapter 19** | Alpha 12 Integration Layer | 📋 PLANNED | 13.9.0 – 13.9.4 |
 
-### Sprint 12.1.0
+| **Chapter 20** | Stable Release | 📋 PLANNED | 14.0.0 – 14.0.4 |
 
-Flexible Portfolio Capacity
 
-### Sprint 12.2.0
-
-Dynamic Weight Engine
-
-### Sprint 12.3.0
-
-Portfolio Quality Engine
-
-### Sprint 12.4.0
-
-Incumbent Protection Engine
-
-### Sprint 12.5.0
-
-Replacement Decision Engine
-
-### Sprint 12.6.0
-
-Opportunity Expansion Engine
 
 ---
 
-# Milestone 4
 
-## Multi Portfolio Platform
 
-Planned
+## Detailed Roadmap
 
-Portfolios
 
-- Alpha Core
-- Alpha SmallCap
-- Alpha MidCap
 
----
+### CHAPTER 14 — PORTFOLIO HEALTH MONITORING (✅ COMPLETED)
 
-# Milestone 5
+- 13.4.0 — Portfolio Health Monitoring Foundation
 
-## Watchtower Intelligence Platform
+- 13.4.1 — Change Detection Engine Foundation
 
-Planned
+- 13.4.2 — Portfolio Health Timeline Foundation
 
-Modules
+- 13.4.3 — Monitoring Dashboard Foundation
 
-- Portfolio Health
-- Company Health
-- Market Health
-- Opportunity Watch
-- Risk Watch
-- Alerts
-- Dashboard
 
----
 
-# Milestone 6
+### CHAPTER 15 — ALERT CENTER (✅ COMPLETED)
 
-## Portfolio Intelligence
+- 13.5.0 — Alert Center Foundation
 
-Planned
+- 13.5.1 — Health Score Change Alerts
 
-Modules
+- 13.5.2 — Diversification Alerts
 
-- Smart SIP
-- Sector Optimizer
-- Tax Optimizer
-- Capital Allocation
-- Risk Engine
-- Performance Attribution
+- 13.5.3 — Concentration Alerts
 
----
+- 13.5.4 — Alert History Foundation
 
-# Milestone 7
 
-## Strategy Factory
 
-Planned
+### CHAPTER 16 — DECISION AUDIT TRAIL (✅ COMPLETED)
 
-Strategies
+- Sprint 16.0.0 — Decision Engine Foundation (`212190d`)
 
-- Alpha Core
-- Alpha SmallCap
-- Alpha MidCap
-- Dividend
-- Quality
-- Growth
-- Value
-- Momentum
-- ETF
-- Global
+- Sprint 16.0.1 — Decision Classification Engine (`01e1ff4`)
 
----
+- Sprint 16.0.2 — Decision Prioritization Engine (`3dc5af2`)
 
-# Milestone 8
+- Sprint 16.0.3 — Decision Dashboard (`723056e`)
 
-## AI Investment Platform
+- Sprint 16.0.4 — Decision Audit Trail Foundation (`2c63173`)
 
-Planned
+- Sprint 16.0.5 — Decision Audit Analytics Foundation (`45b7574`)
 
-Modules
+- Sprint 16.0.6 — Decision Audit Trend Foundation (`c3e0383`)
 
-- AI Advisor
-- Explainable Recommendations
-- Portfolio Coach
-- Scenario Analysis
-- Predictive Analytics
 
----
 
-# Long-Term Principles
+### CHAPTER 17 — REBALANCING ENGINE (✅ COMPLETED)
 
-- Long-term investing
-- Low portfolio churn
-- Dynamic weighting
-- Explainable AI
-- Unified Design System
-- Shared Status Framework
-- Configurable Architecture
-- Documentation First
+- 13.7.0 — Rebalancing Foundation (`975bd37`)
+
+- 13.7.1 — Allocation Analysis Engine (`38822d0`)
+
+- 13.7.2 — Drift Detection Engine (`45feb3c`)
+
+- 13.7.3 — Rebalancing Candidate Engine (`a603db3`)
+
+- 13.7.4 — Rebalancing Recommendation Framework (`6b8c96d`)
+
+
+
+### CHAPTER 18 — PORTFOLIO INTELLIGENCE LAYER (🚧 NEXT SPRINT)
+
+- 13.8.0 — Portfolio Intelligence Foundation *(NEXT SPRINT)*
+
+- 13.8.1 — Holding Quality Engine
+
+- 13.8.2 — SIP Optimization Engine
+
+- 13.8.3 — Portfolio Opportunity Engine
+
+- 13.8.4 — Portfolio Risk Intelligence
+
+
+
+### CHAPTER 19 — ALPHA 12 INTEGRATION LAYER (📋 PLANNED)
+
+- 13.9.0 — Alpha 12 Portfolio Mapping
+
+- 13.9.1 — Alpha 12 Portfolio Health Integration
+
+- 13.9.2 — Challenger Evaluation Framework
+
+- 13.9.3 — Replacement Governance Layer
+
+- 13.9.4 — Long-Term Portfolio Stability Engine
+
+
+
+### CHAPTER 20 — STABLE RELEASE (📋 PLANNED)
+
+- 14.0.0 — Release Candidate Foundation
+
+- 14.0.1 — Performance Optimization
+
+- 14.0.2 — Data Integrity Verification
+
+- 14.0.3 — Production Hardening
+
+- 14.0.4 — Stable Release (AlphaForge Version 1.0)

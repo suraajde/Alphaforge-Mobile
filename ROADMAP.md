@@ -1,162 +1,565 @@
 # AlphaForge Development Roadmap
 
-> **Version 2.0**
+
+
+> **Authoritative Roadmap through Version 1.0 Stable Release**
+
+> **Branch:** `sprint-13.2.1`
+
+> **HEAD Commit:** `6b8c96d` — *Sprint 13.7.4 - Rebalancing Recommendation Framework*
+
+> **Last Updated:** August 8, 2026
+
+
 
 ---
 
-# Vision
 
-AlphaForge aims to become a professional desktop platform for long-term portfolio research, analytics, portfolio health monitoring and intelligent investment decision support.
 
----
+## Executive Summary
 
-# Current Status
 
-Current Branch
 
-```
-sprint-12.1.0
-```
+AlphaForge is a desktop investment platform designed for long-term portfolio research, health monitoring, decision auditing, rebalancing analytics, and intelligent portfolio management.
 
-Current Development Phase
 
-```
-Decision Intelligence
-```
 
-Current Sprint
+### Project Progress Summary
 
-```
-Sprint 12.5B
-```
+
+
+- **COMPLETED:** Chapters 14–17 (Portfolio Health Monitoring, Alert Center, Decision Audit Trail, Rebalancing Engine)
+
+- **CURRENT / NEXT:** Chapter 18 — Portfolio Intelligence Layer (Sprint 13.8.0 — Portfolio Intelligence Foundation)
+
+- **REMAINING SCOPE:** 15 planned sprints through Version 1.0 Stable Release (Chapter 18: 5 sprints, Chapter 19: 5 sprints, Chapter 20: 5 sprints)
+
+- **FINAL TARGET:** AlphaForge Version 1.0 Stable Release (Sprint 14.0.4)
+
+
 
 ---
 
-# Development Progress
 
-| Phase | Status |
-|--------|--------|
-| Foundation | ✅ Complete |
-| Research Layer | ✅ Complete |
-| Portfolio Analytics | ✅ Complete |
-| Recommendation Intelligence | ✅ Complete |
-| Decision Intelligence | 🚧 In Progress |
-| Alpha Engine | Planned |
-| Portfolio Management | Planned |
-| Production Release | Planned |
 
----
+## Roadmap Overview
 
-# Completed Milestones
 
-## Foundation
 
-- Desktop application
-- Database
-- Configuration
-- Modular architecture
+| Chapter | Phase / Engine | Status | Sprints / Range |
 
----
+| :--- | :--- | :--- | :--- |
 
-## Research Layer
+| **Chapter 14** | Portfolio Health Monitoring | ✅ COMPLETED | 13.4.0 – 13.4.3 |
 
-- Research Radar
-- Universe Management
-- Fundamental Analysis
+| **Chapter 15** | Alert Center | ✅ COMPLETED | 13.5.0 – 13.5.4 |
+
+| **Chapter 16** | Decision Audit Trail | ✅ COMPLETED | 16.0.0 – 16.0.6 |
+
+| **Chapter 17** | Rebalancing Engine | ✅ COMPLETED | 13.7.0 – 13.7.4 |
+
+| **Chapter 18** | Portfolio Intelligence Layer | 🚧 NEXT SPRINT | 13.8.0 – 13.8.4 |
+
+| **Chapter 19** | Alpha 12 Integration Layer | 📋 PLANNED | 13.9.0 – 13.9.4 |
+
+| **Chapter 20** | Stable Release | 📋 PLANNED | 14.0.0 – 14.0.4 |
+
+
 
 ---
 
-## Portfolio Analytics
 
-- Portfolio Analytics Engine
-- Portfolio Health Engine
-- Diversification Analysis
-- Concentration Analysis
-- Position Size Analysis
+
+## Detailed Roadmap
+
+
 
 ---
 
-## Recommendation Intelligence
 
-Completed Rules
 
-- Portfolio Health
-- Diversification
-- Position Sizing
-- Portfolio Structure
-- Concentration
+### CHAPTER 14 — PORTFOLIO HEALTH MONITORING
 
----
+**Status:** ✅ COMPLETED
 
-# Current Phase
 
-## Decision Intelligence
 
-Upcoming Sprints
+#### Sprint 13.4.0 — Portfolio Health Monitoring Foundation
 
-### Sprint 12.6
+- Monitoring Service Foundation
 
-- Cash Deployment Recommendation Engine
+- Monitoring Configuration Model
 
-### Sprint 12.7
+- Monitoring State Tracking
 
-- Portfolio Rebalancing Engine
+- Monitoring History Foundation
 
-### Sprint 12.8
+- Monitoring UI Foundation
 
-- Opportunity Ranking Engine
 
-### Sprint 12.9
 
-- Explainable Decision Engine
+#### Sprint 13.4.1 — Change Detection Engine Foundation
 
----
+- Health Score Change Detection
 
-# Future Phases
+- Grade Change Detection
 
-## Alpha Engine
+- Diversification Change Detection
 
-- Alpha Score
-- Conviction Score
-- Growth Score
-- Risk Score
-- Alpha 12 Builder
+- Concentration Change Detection
 
----
+- Cash Allocation Change Detection
 
-## Portfolio Management
+- Position Count Change Detection
 
-- Portfolio Simulator
-- What-if Analysis
-- Goal Planning
-- SIP Optimisation
-- Tax-aware Rebalancing
 
----
 
-## Production
+#### Sprint 13.4.2 — Portfolio Health Timeline Foundation
 
-- Performance Optimisation
-- Reporting
-- Export Engine
-- Installer
-- Documentation
-- Version 1.0
+- Historical Timeline Model
 
----
+- Timeline Data Service
 
-# Design Principles
+- Snapshot Sequencing
 
-- Modular Architecture
-- Explainable Recommendations
-- Regression-first Development
-- Small Sprint Delivery
-- Long-term Investor Focus
+- Timeline UI Foundation
+
+- Historical Navigation
+
+
+
+#### Sprint 13.4.3 — Monitoring Dashboard Foundation
+
+- Current Monitoring State
+
+- Recent Changes View
+
+- Historical Direction View
+
+- Monitoring Summary Cards
+
+- Dashboard Integration
+
+
 
 ---
 
-# Road Ahead
 
-AlphaForge is transitioning from portfolio analytics into intelligent portfolio decision support.
 
-The next milestone is the Cash Deployment Recommendation Engine, which begins the Decision Intelligence phase.
+### CHAPTER 15 — ALERT CENTER
+
+**Status:** ✅ COMPLETED
+
+
+
+#### Sprint 13.5.0 — Alert Center Foundation
+
+- Alert Model
+
+- Alert Service
+
+- Alert Storage
+
+- Alert Dashboard Foundation
+
+- Alert History Foundation
+
+
+
+#### Sprint 13.5.1 — Health Score Change Alerts
+
+- Score Increase Detection
+
+- Score Decrease Detection
+
+- Threshold Rules
+
+- Alert Classification
+
+
+
+#### Sprint 13.5.2 — Diversification Alerts
+
+- Diversification Deterioration Detection
+
+- Diversification Improvement Detection
+
+- Threshold Monitoring
+
+
+
+#### Sprint 13.5.3 — Concentration Alerts
+
+- Position Concentration Detection
+
+- Largest Position Monitoring
+
+- Concentration Threshold Rules
+
+
+
+#### Sprint 13.5.4 — Alert History Foundation
+
+- Alert Archive
+
+- Alert Timeline
+
+- Alert Statistics
+
+- Historical Alert Review
+
+
+
+---
+
+
+
+### CHAPTER 16 — DECISION AUDIT TRAIL
+
+**Status:** ✅ COMPLETED
+
+
+
+> **Architecture Overview:** Implemented the complete 7-stage analytical pipeline:
+
+> `Decision Engine` → `Classification` → `Prioritization` → `Dashboard` → `Audit Trail` → `Analytics` → `Trend`
+
+
+
+#### Implemented Sprint History
+
+- **Sprint 16.0.0 — Decision Engine Foundation** (`212190d`)
+
+- **Sprint 16.0.1 — Decision Classification Engine** (`01e1ff4`)
+
+- **Sprint 16.0.2 — Decision Prioritization Engine** (`3dc5af2`)
+
+- **Sprint 16.0.3 — Decision Dashboard** (`723056e`)
+
+- **Sprint 16.0.4 — Decision Audit Trail Foundation** (`2c63173`)
+
+- **Sprint 16.0.5 — Decision Audit Analytics Foundation** (`45b7574`)
+
+- **Sprint 16.0.6 — Decision Audit Trend Foundation** (`c3e0383`)
+
+
+
+#### Sub-area Coverage
+
+- **Audit Data Model & Storage:** Audit Data Model, Audit Service, Audit Storage, Audit UI Foundation
+
+- **Recommendation Audit Trail:** Recommendation Audit Trail, Recommendation History, Recommendation Traceability
+
+- **Portfolio Change Logging:** Portfolio Change Logging, Holding Changes, SIP Changes, Allocation Changes, Change History
+
+- **Historical Decision Tracking:** Historical Decision Tracking, Decision Timeline, Decision Statistics, Decision Review Interface
+
+
+
+---
+
+
+
+### CHAPTER 17 — REBALANCING ENGINE
+
+**Status:** ✅ COMPLETED
+
+
+
+> **Architectural Boundary:** The Rebalancing Engine operates purely as an analytical measurement and user-review framework.
+
+> **No Broker Integration | No Trade Execution | No Automatic Rebalancing | No Automatic Portfolio Mutation**
+
+
+
+#### Sprint 13.7.0 — Rebalancing Foundation (`975bd37`)
+
+- Rebalancing Data Model
+
+- Rebalancing Service
+
+- Rebalancing UI Foundation
+
+
+
+#### Sprint 13.7.1 — Allocation Analysis Engine (`38822d0`)
+
+- Asset Allocation Analysis
+
+- Fund Allocation Analysis
+
+- ETF Allocation Analysis
+
+- Allocation Reporting
+
+
+
+#### Sprint 13.7.2 — Drift Detection Engine (`45feb3c`)
+
+- Allocation Drift Detection
+
+- Target vs Actual Analysis
+
+- Drift Metrics
+
+- Drift History
+
+
+
+#### Sprint 13.7.3 — Rebalancing Candidate Engine (`a603db3`)
+
+- Candidate Identification
+
+- Impact Analysis
+
+- Scenario Evaluation
+
+- Candidate Ranking
+
+
+
+#### Sprint 13.7.4 — Rebalancing Recommendation Framework (`6b8c96d`)
+
+- Rebalancing Recommendation Model
+
+- Recommendation Generation
+
+- Recommendation Presentation
+
+- Recommendation Audit Integration
+
+
+
+---
+
+
+
+### CHAPTER 18 — PORTFOLIO INTELLIGENCE LAYER
+
+**Status:** 🚧 PLANNED / NEXT SPRINT
+
+
+
+#### Sprint 13.8.0 — Portfolio Intelligence Foundation *(NEXT SPRINT)*
+
+- Intelligence Service
+
+- Intelligence Data Model
+
+- Intelligence Dashboard
+
+- Intelligence History
+
+
+
+#### Sprint 13.8.1 — Holding Quality Engine
+
+- Fund Quality Assessment
+
+- ETF Quality Assessment
+
+- Holding Scoring
+
+- Quality Dashboard
+
+
+
+#### Sprint 13.8.2 — SIP Optimization Engine
+
+- SIP Analysis
+
+- SIP Efficiency Evaluation
+
+- SIP Distribution Analysis
+
+- SIP Optimization Metrics
+
+
+
+#### Sprint 13.8.3 — Portfolio Opportunity Engine
+
+- Opportunity Identification
+
+- Opportunity Scoring
+
+- Opportunity Dashboard
+
+- Opportunity Tracking
+
+
+
+#### Sprint 13.8.4 — Portfolio Risk Intelligence
+
+- Risk Assessment
+
+- Risk Scoring
+
+- Risk Dashboard
+
+- Risk History
+
+
+
+---
+
+
+
+### CHAPTER 19 — ALPHA 12 INTEGRATION LAYER
+
+**Status:** 📋 PLANNED
+
+
+
+> **Core Alpha 12 Principles:**
+
+> - Long-term investing with low turnover
+
+> - Incumbent protection (meaningful deterioration required before replacement)
+
+> - Materially superior challenger required
+
+> - No ranking-based churn
+
+> - Strong incumbents are never removed merely due to portfolio weight expansion
+
+> - Avoid unnecessary turnover
+
+
+
+#### Sprint 13.9.0 — Alpha 12 Portfolio Mapping
+
+- Alpha 12 Mapping Model
+
+- Portfolio Mapping Service
+
+- Mapping Dashboard
+
+
+
+#### Sprint 13.9.1 — Alpha 12 Portfolio Health Integration
+
+- Health Overlay
+
+- Portfolio Comparison
+
+- Health Synchronization
+
+
+
+#### Sprint 13.9.2 — Challenger Evaluation Framework
+
+- Challenger Identification
+
+- Challenger Scoring
+
+- Challenger Comparison
+
+- Challenger Dashboard
+
+
+
+#### Sprint 13.9.3 — Replacement Governance Layer
+
+- Replacement Rules
+
+- Governance Rules
+
+- Audit Integration
+
+- Replacement Validation
+
+
+
+#### Sprint 13.9.4 — Long-Term Portfolio Stability Engine
+
+- Churn Reduction Framework
+
+- Incumbent Protection Rules
+
+- Stability Metrics
+
+- Portfolio Persistence Logic
+
+
+
+---
+
+
+
+### CHAPTER 20 — STABLE RELEASE
+
+**Status:** 📋 PLANNED
+
+
+
+#### Sprint 14.0.0 — Release Candidate Foundation
+
+- Release Validation
+
+- Feature Freeze
+
+- Final Architecture Review
+
+
+
+#### Sprint 14.0.1 — Performance Optimization
+
+- UI Optimization
+
+- Database Optimization
+
+- Service Optimization
+
+
+
+#### Sprint 14.0.2 — Data Integrity Verification
+
+- Database Validation
+
+- Import Validation
+
+- Historical Data Validation
+
+
+
+#### Sprint 14.0.3 — Production Hardening
+
+- Error Handling Review
+
+- Defensive Logic Review
+
+- Stability Testing
+
+- Recovery Testing
+
+
+
+#### Sprint 14.0.4 — Stable Release
+
+- Final Release Build
+
+- Release Documentation
+
+- Version Tagging
+
+- Production Deployment Preparation
+
+
+
+---
+
+
+
+## Long-Term Design Principles
+
+
+
+1. **Modular Architecture:** Decoupled service layers with strict dependency flow.
+
+2. **Explainable Recommendations:** Transparent, factual, review-only recommendations without hidden black-box logic.
+
+3. **Regression-First Development:** Full test coverage maintained across all pipeline additions.
+
+4. **User-Review Boundaries:** Analytical recommendations require explicit human review; zero unauthorized execution.
+
+5. **Alpha 12 Stability:** Protection of strong incumbents, low portfolio turnover, and high-conviction long-term investing.
