@@ -150,23 +150,9 @@ class AllocationAnalysisService:
 
     def _get_rebalancing_service(self) -> Optional[Any]:
 
-        """Safely retrieve or instantiate the RebalancingService."""
+        """Safely retrieve the RebalancingService dependency if explicitly provided."""
 
-        if self._rebalancing_service is not None:
-
-            return self._rebalancing_service
-
-        try:
-
-            from services.rebalancing_service import RebalancingService
-
-
-
-            return RebalancingService()
-
-        except Exception:
-
-            return None
+        return self._rebalancing_service
 
 
 
@@ -175,16 +161,6 @@ class AllocationAnalysisService:
         """Perform descriptive allocation analysis on the given RebalancingState."""
 
         try:
-
-            if rebalancing_state is None:
-
-                svc = self._get_rebalancing_service()
-
-                if svc is not None and hasattr(svc, "get_state"):
-
-                    rebalancing_state = svc.get_state()
-
-
 
             if rebalancing_state is None:
 

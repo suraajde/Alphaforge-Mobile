@@ -39,6 +39,7 @@ from services.sip_optimization_service import SIPOptimizationResult
 from services.portfolio_opportunity_service import PortfolioOpportunityResult
 from services.portfolio_risk_intelligence_service import PortfolioRiskResult
 from services.alpha12_mapping_service import Alpha12MappingResult
+from services.alpha12_replacement_governance_service import ReplacementGovernanceResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -194,6 +195,7 @@ class PortfolioHealthResult:
     portfolio_risk_intelligence: Optional[PortfolioRiskResult] = None
     alpha12_mapping: Optional[Alpha12MappingResult] = None
     alpha12_challenger_evaluation: Optional[Any] = None
+    alpha12_replacement_governance: Optional[ReplacementGovernanceResult] = None
 
 class PortfolioHealthService:
 
@@ -258,6 +260,7 @@ class PortfolioHealthService:
         alpha12_mapping_service: Optional[Any] = None,
         alpha12_health_integration_service: Optional[Any] = None,
         alpha12_challenger_service: Optional[Any] = None,
+        alpha12_replacement_governance_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -318,6 +321,7 @@ class PortfolioHealthService:
         self._alpha12_mapping_service = alpha12_mapping_service
         self._alpha12_health_integration_service = alpha12_health_integration_service
         self._alpha12_challenger_service = alpha12_challenger_service
+        self._alpha12_replacement_governance_service = alpha12_replacement_governance_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1502,27 +1506,17 @@ class PortfolioHealthService:
         # Rebalancing Foundation
 
         if self._rebalancing_service is not None and hasattr(self._rebalancing_service, "get_state"):
-
             try:
-
                 res.rebalancing = self._rebalancing_service.get_state()
-
             except Exception:
-
                 res.rebalancing = None
-
         else:
-
             try:
-
                 from services.rebalancing_service import RebalancingService
 
-                rebal_svc = RebalancingService()
-
+                rebal_svc = RebalancingService(portfolio_service=self._get_app_service())
                 res.rebalancing = rebal_svc.get_state()
-
             except Exception:
-
                 res.rebalancing = None
 
         # Allocation Analysis Engine
@@ -1729,6 +1723,28 @@ class PortfolioHealthService:
                     res.alpha12_challenger_evaluation = None
         except Exception:
             res.alpha12_challenger_evaluation = None
+
+        # Alpha 12 Replacement Governance (non-blocking: defensive)
+        try:
+            if self._alpha12_replacement_governance_service is not None and hasattr(self._alpha12_replacement_governance_service, "evaluate_replacements"):
+                try:
+                    res.alpha12_replacement_governance = self._alpha12_replacement_governance_service.evaluate_replacements()
+                except Exception:
+                    res.alpha12_replacement_governance = None
+            else:
+                try:
+                    from services.alpha12_replacement_governance_service import Alpha12ReplacementGovernanceService
+                    gov_svc = Alpha12ReplacementGovernanceService(
+                        alpha12_mapping_service=self._alpha12_mapping_service,
+                        alpha12_challenger_service=self._alpha12_challenger_service,
+                        alpha12_health_integration_service=self._alpha12_health_integration_service,
+                        portfolio_health_service=self,
+                    )
+                    res.alpha12_replacement_governance = gov_svc.evaluate_replacements()
+                except Exception:
+                    res.alpha12_replacement_governance = None
+        except Exception:
+            res.alpha12_replacement_governance = None
 
         return res
 

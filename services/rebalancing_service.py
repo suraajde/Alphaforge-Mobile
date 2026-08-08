@@ -158,41 +158,9 @@ class RebalancingService:
 
     def _get_portfolio_service(self) -> Optional[Any]:
 
-        """Safely retrieve or instantiate the application portfolio service."""
+        """Safely retrieve the application portfolio service if explicitly provided."""
 
-        if self._portfolio_service is not None:
-
-            return self._portfolio_service
-
-        try:
-
-            from services.portfolio_application_service import (
-
-                create_portfolio_application_service,
-
-            )
-
-
-
-            return create_portfolio_application_service()
-
-        except Exception:
-
-            try:
-
-                from services.portfolio_application_service import (
-
-                    PortfolioApplicationService,
-
-                )
-
-
-
-                return PortfolioApplicationService()
-
-            except Exception:
-
-                return None
+        return self._portfolio_service
 
 
 
