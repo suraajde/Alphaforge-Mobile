@@ -1797,3 +1797,37 @@ def test_portfolio_intelligence_integration_works():
     assert result.portfolio_intelligence is not None
     assert isinstance(result.portfolio_intelligence, PortfolioIntelligenceResult)
     assert result.portfolio_intelligence.summary.total_holdings == 10
+
+
+def test_holding_quality_integration_works():
+    from services.holding_quality_service import HoldingQualityResult, HoldingQuality
+
+    class MockHoldingQualityService:
+        def assess_holdings(self):
+            return HoldingQualityResult(
+                total_holdings=2,
+                assessed_holdings=1,
+                unassessed_holdings=1,
+                average_quality_score=80.0,
+                highest_quality_score=80.0,
+                lowest_quality_score=80.0,
+                holdings=[
+                    HoldingQuality(
+                        symbol="TESTFUND",
+                        name="Test Fund",
+                        asset_type="MUTUAL_FUND",
+                        quality_score=80.0,
+                        quality_grade="B",
+                        assessment_status="ASSESSED",
+                        rationale="Tested rationale",
+                    )
+                ]
+            )
+
+    hq_svc = MockHoldingQualityService()
+    service = PortfolioHealthService(holding_quality_service=hq_svc)
+    result = service.evaluate()
+    assert result.holding_quality is not None
+    assert isinstance(result.holding_quality, HoldingQualityResult)
+    assert result.holding_quality.total_holdings == 2
+    assert result.holding_quality.assessed_holdings == 1

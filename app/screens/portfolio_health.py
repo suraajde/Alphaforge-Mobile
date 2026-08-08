@@ -46,6 +46,7 @@ from services.rebalancing_candidate_service import RebalancingCandidateService
 
 from services.rebalancing_recommendation_service import RebalancingRecommendationService
 from services.portfolio_intelligence_service import PortfolioIntelligenceService
+from services.holding_quality_service import HoldingQualityService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -126,7 +127,7 @@ class PortfolioHealth(QWidget):
         rebalancing_recommendation_service: Optional[RebalancingRecommendationService] = None,
 
         portfolio_intelligence_service: Optional[PortfolioIntelligenceService] = None,
-
+        holding_quality_service: Optional[HoldingQualityService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -222,6 +223,7 @@ class PortfolioHealth(QWidget):
         self.rebalancing_recommendation_service = rebalancing_recommendation_service if rebalancing_recommendation_service is not None else RebalancingRecommendationService(rebalancing_service=self.rebalancing_service, allocation_analysis_service=self.allocation_analysis_service, drift_detection_service=self.drift_detection_service, rebalancing_candidate_service=self.rebalancing_candidate_service, audit_service=decision_audit_service)
 
         self.portfolio_intelligence_service = portfolio_intelligence_service if portfolio_intelligence_service is not None else PortfolioIntelligenceService()
+        self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -270,6 +272,8 @@ class PortfolioHealth(QWidget):
             rebalancing_recommendation_service=self.rebalancing_recommendation_service,
 
             portfolio_intelligence_service=self.portfolio_intelligence_service,
+
+            holding_quality_service=self.holding_quality_service,
 
         )
 
@@ -354,6 +358,8 @@ class PortfolioHealth(QWidget):
         self.load_rebalancing_recommendations()
 
         self.load_portfolio_intelligence()
+
+        self.load_holding_quality()
 
     def load_decision_prioritization(self) -> None:
 
@@ -678,6 +684,114 @@ class PortfolioHealth(QWidget):
                     empty_hist.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic; margin-top: 4px;")
 
                     self.portfolio_intelligence_container.addWidget(empty_hist)
+
+    def load_holding_quality(self) -> None:
+
+        """Bind live holding quality assessment data to UI."""
+
+        if getattr(self, "holding_quality_service", None) is None:
+
+            return
+
+        try:
+
+            res = self.holding_quality_service.get_quality()
+
+            self._update_holding_quality_ui(res)
+
+        except Exception:
+
+            pass
+
+    def _update_holding_quality_ui(self, result: Any) -> None:
+
+        if hasattr(self, "holding_quality_container"):
+
+            self._clear_layout(self.holding_quality_container)
+
+            if result is None or getattr(result, "total_holdings", 0) == 0:
+
+                lbl = QLabel("No holding quality data available.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.holding_quality_container.addWidget(lbl)
+
+            else:
+
+                tot = getattr(result, "total_holdings", 0)
+
+                assessed = getattr(result, "assessed_holdings", 0)
+
+                unassessed = getattr(result, "unassessed_holdings", 0)
+
+                avg_score = getattr(result, "average_quality_score", 0.0)
+
+                hi_score = getattr(result, "highest_quality_score", 0.0)
+
+                lo_score = getattr(result, "lowest_quality_score", 0.0)
+
+                summary_str = (
+
+                    f"Total Holdings: {tot} | Assessed Holdings: {assessed} | Unassessed Holdings: {unassessed}\n"
+
+                    f"Average Quality Score: {avg_score:.1f} | Highest Quality Score: {hi_score:.1f} | Lowest Quality Score: {lo_score:.1f}"
+
+                )
+
+                summ_lbl = QLabel(summary_str)
+
+                summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+
+                self.holding_quality_container.addWidget(summ_lbl)
+
+                holdings = getattr(result, "holdings", [])
+
+                if holdings:
+
+                    scroll_area = QScrollArea()
+
+                    scroll_area.setWidgetResizable(True)
+
+                    scroll_area.setMaximumHeight(300)
+
+                    scroll_widget = QWidget()
+
+                    list_layout = QVBoxLayout(scroll_widget)
+
+                    list_layout.setSpacing(6)
+
+                    for h in holdings:
+
+                        sym = getattr(h, "symbol", "N/A")
+
+                        nm = getattr(h, "name", "N/A")
+
+                        atype = getattr(h, "asset_type", "N/A")
+
+                        score = getattr(h, "quality_score", 0.0)
+
+                        grade = getattr(h, "quality_grade", "N/A")
+
+                        status = getattr(h, "assessment_status", "UNAVAILABLE")
+
+                        rationale = getattr(h, "rationale", "")
+
+                        h_text = f"• {sym} ({nm}) | Type: {atype} | Score: {score:.1f} | Grade: {grade} | Status: {status}"
+
+                        if rationale:
+
+                            h_text += f"\n  Rationale: {rationale}"
+
+                        h_lbl = QLabel(h_text)
+
+                        h_lbl.setStyleSheet("font-size: 12px; color: #334155; padding: 4px; background-color: #f8fafc; border-radius: 4px;")
+
+                        list_layout.addWidget(h_lbl)
+
+                    scroll_area.setWidget(scroll_widget)
+
+                    self.holding_quality_container.addWidget(scroll_area)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -4800,6 +4914,26 @@ class PortfolioHealth(QWidget):
         pi_layout.addLayout(self.portfolio_intelligence_container)
 
         root_layout.addWidget(pi_card)
+
+        # Holding Quality Section
+        hq_card = QFrame()
+        hq_card.setObjectName("metricCard")
+        hq_layout = QVBoxLayout(hq_card)
+        hq_layout.setContentsMargins(16, 14, 16, 14)
+        hq_layout.setSpacing(8)
+
+        lbl_hq_title = QLabel("HOLDING QUALITY")
+        lbl_hq_title.setObjectName("cardTitle")
+        hq_layout.addWidget(lbl_hq_title)
+
+        lbl_hq_info = QLabel("Factual holding quality assessment layer (Informational only — does not imply buy/sell/replace actions)")
+        lbl_hq_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        hq_layout.addWidget(lbl_hq_info)
+
+        self.holding_quality_container = QVBoxLayout()
+        hq_layout.addLayout(self.holding_quality_container)
+
+        root_layout.addWidget(hq_card)
 
         root_layout.addStretch()
 

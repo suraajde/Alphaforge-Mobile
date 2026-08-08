@@ -34,6 +34,7 @@ from services.rebalancing_candidate_service import RebalancingCandidateResult
 
 from services.rebalancing_recommendation_service import RebalancingRecommendationResult
 from services.portfolio_intelligence_service import PortfolioIntelligenceResult
+from services.holding_quality_service import HoldingQualityResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -183,6 +184,7 @@ class PortfolioHealthResult:
 
     rebalancing_recommendations: Optional[RebalancingRecommendationResult] = None
     portfolio_intelligence: Optional[PortfolioIntelligenceResult] = None
+    holding_quality: Optional[HoldingQualityResult] = None
 
 class PortfolioHealthService:
 
@@ -240,6 +242,7 @@ class PortfolioHealthService:
 
         rebalancing_recommendation_service: Optional[Any] = None,
         portfolio_intelligence_service: Optional[Any] = None,
+        holding_quality_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -293,6 +296,7 @@ class PortfolioHealthService:
 
         self._rebalancing_recommendation_service = rebalancing_recommendation_service
         self._portfolio_intelligence_service = portfolio_intelligence_service
+        self._holding_quality_service = holding_quality_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1569,6 +1573,20 @@ class PortfolioHealthService:
                 res.portfolio_intelligence = intel_svc.get_intelligence()
             except Exception:
                 res.portfolio_intelligence = None
+
+        # Holding Quality Engine
+        if self._holding_quality_service is not None and hasattr(self._holding_quality_service, "assess_holdings"):
+            try:
+                res.holding_quality = self._holding_quality_service.assess_holdings()
+            except Exception:
+                res.holding_quality = None
+        else:
+            try:
+                from services.holding_quality_service import HoldingQualityService
+                hq_svc = HoldingQualityService()
+                res.holding_quality = hq_svc.assess_holdings()
+            except Exception:
+                res.holding_quality = None
 
         return res
 

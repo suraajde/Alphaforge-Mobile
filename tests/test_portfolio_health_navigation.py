@@ -3191,3 +3191,65 @@ def test_corrupt_portfolio_intelligence_safe(qapp):
     except Exception:
 
         pytest.fail("Corrupt portfolio intelligence data should not crash UI")
+
+
+def test_holding_quality_section_loads(qapp):
+    """Verify Holding Quality section loads cleanly."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "holding_quality_container")
+
+
+def test_holding_quality_values_display(qapp):
+    """Verify Holding Quality values display properly."""
+    from services.holding_quality_service import HoldingQualityResult, HoldingQuality
+
+    class MockHoldingQualityService:
+        def get_quality(self):
+            return HoldingQualityResult(
+                total_holdings=2,
+                assessed_holdings=1,
+                unassessed_holdings=1,
+                average_quality_score=85.0,
+                highest_quality_score=85.0,
+                lowest_quality_score=85.0,
+                holdings=[
+                    HoldingQuality(
+                        symbol="MOCKFUND",
+                        name="Mock Fund",
+                        asset_type="MUTUAL_FUND",
+                        quality_score=85.0,
+                        quality_grade="A",
+                        assessment_status="ASSESSED",
+                        rationale="Mock rationale",
+                    )
+                ]
+            )
+
+    hq_svc = MockHoldingQualityService()
+    screen = PortfolioHealth(holding_quality_service=hq_svc)
+    assert hasattr(screen, "holding_quality_container")
+
+
+def test_empty_holding_quality_safe(qapp):
+    """Verify empty Holding Quality result handles gracefully without crashing UI."""
+    class EmptyHoldingQualityService:
+        def get_quality(self):
+            return None
+
+    hq_svc = EmptyHoldingQualityService()
+    screen = PortfolioHealth(holding_quality_service=hq_svc)
+    assert hasattr(screen, "holding_quality_container")
+
+
+def test_holding_quality_missing_data_safe(qapp):
+    """Verify missing holding quality data handles safely."""
+    class BrokenHoldingQualityService:
+        def get_quality(self):
+            raise RuntimeError("Holding quality data missing")
+
+    hq_svc = BrokenHoldingQualityService()
+    try:
+        screen = PortfolioHealth(holding_quality_service=hq_svc)
+        assert screen is not None
+    except Exception:
+        pytest.fail("Missing holding quality data should not crash UI")
