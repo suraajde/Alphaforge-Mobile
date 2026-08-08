@@ -193,6 +193,7 @@ class PortfolioHealthResult:
     portfolio_opportunities: Optional[PortfolioOpportunityResult] = None
     portfolio_risk_intelligence: Optional[PortfolioRiskResult] = None
     alpha12_mapping: Optional[Alpha12MappingResult] = None
+    alpha12_challenger_evaluation: Optional[Any] = None
 
 class PortfolioHealthService:
 
@@ -256,6 +257,7 @@ class PortfolioHealthService:
         portfolio_risk_intelligence_service: Optional[Any] = None,
         alpha12_mapping_service: Optional[Any] = None,
         alpha12_health_integration_service: Optional[Any] = None,
+        alpha12_challenger_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -315,6 +317,7 @@ class PortfolioHealthService:
         self._portfolio_risk_intelligence_service = portfolio_risk_intelligence_service
         self._alpha12_mapping_service = alpha12_mapping_service
         self._alpha12_health_integration_service = alpha12_health_integration_service
+        self._alpha12_challenger_service = alpha12_challenger_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1694,6 +1697,38 @@ class PortfolioHealthService:
                     res.alpha12_health_integration = None
         except Exception:
             res.alpha12_health_integration = None
+
+        # Alpha12 Challenger Evaluation (non-blocking: defensive)
+        try:
+            if self._alpha12_challenger_service is not None and hasattr(self._alpha12_challenger_service, "evaluate"):
+                try:
+                    res.alpha12_challenger_evaluation = self._alpha12_challenger_service.evaluate(
+                        res.alpha12_mapping,
+                        res,
+                        getattr(res, "holding_quality", None),
+                        getattr(res, "portfolio_risk_intelligence", None),
+                    )
+                except Exception:
+                    res.alpha12_challenger_evaluation = None
+            else:
+                try:
+                    from services.alpha12_challenger_service import Alpha12ChallengerService
+                    ch_svc = Alpha12ChallengerService(
+                        alpha12_mapping_service=self._alpha12_mapping_service,
+                        alpha12_health_integration_service=self._alpha12_health_integration_service,
+                        holding_quality_service=self._holding_quality_service,
+                        portfolio_risk_intelligence_service=self._portfolio_risk_intelligence_service,
+                    )
+                    res.alpha12_challenger_evaluation = ch_svc.evaluate(
+                        res.alpha12_mapping,
+                        res,
+                        getattr(res, "holding_quality", None),
+                        getattr(res, "portfolio_risk_intelligence", None),
+                    )
+                except Exception:
+                    res.alpha12_challenger_evaluation = None
+        except Exception:
+            res.alpha12_challenger_evaluation = None
 
         return res
 
