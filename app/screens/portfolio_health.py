@@ -49,6 +49,7 @@ from services.portfolio_intelligence_service import PortfolioIntelligenceService
 from services.holding_quality_service import HoldingQualityService
 from services.sip_optimization_service import SIPOptimizationService
 from services.portfolio_opportunity_service import PortfolioOpportunityService
+from services.portfolio_risk_intelligence_service import PortfolioRiskIntelligenceService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -132,6 +133,7 @@ class PortfolioHealth(QWidget):
         holding_quality_service: Optional[HoldingQualityService] = None,
         sip_optimization_service: Optional[SIPOptimizationService] = None,
         portfolio_opportunity_service: Optional[PortfolioOpportunityService] = None,
+        portfolio_risk_intelligence_service: Optional[PortfolioRiskIntelligenceService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -230,6 +232,7 @@ class PortfolioHealth(QWidget):
         self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService()
         self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
         self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
+        self.portfolio_risk_intelligence_service = portfolio_risk_intelligence_service if portfolio_risk_intelligence_service is not None else PortfolioRiskIntelligenceService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -284,6 +287,8 @@ class PortfolioHealth(QWidget):
             sip_optimization_service=self.sip_optimization_service,
 
             portfolio_opportunity_service=self.portfolio_opportunity_service,
+
+            portfolio_risk_intelligence_service=self.portfolio_risk_intelligence_service,
 
         )
 
@@ -374,6 +379,8 @@ class PortfolioHealth(QWidget):
         self.load_sip_optimization()
 
         self.load_portfolio_opportunities()
+
+        self.load_portfolio_risk_intelligence()
 
     def load_decision_prioritization(self) -> None:
 
@@ -1074,6 +1081,246 @@ class PortfolioHealth(QWidget):
                     empty_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
 
                     self.portfolio_opportunity_container.addWidget(empty_lbl)
+
+    def load_portfolio_risk_intelligence(self) -> None:
+
+        """Bind live portfolio risk intelligence data to UI."""
+
+        if getattr(self, "portfolio_risk_intelligence_service", None) is None:
+
+            return
+
+        try:
+
+            res = self.portfolio_risk_intelligence_service.get_risk()
+
+            self._update_portfolio_risk_intelligence_ui(res)
+
+        except Exception:
+
+            pass
+
+    def _update_portfolio_risk_intelligence_ui(self, result: Any) -> None:
+
+        if hasattr(self, "portfolio_risk_container"):
+
+            self._clear_layout(self.portfolio_risk_container)
+
+            if result is None or getattr(result, "analysis_status", "UNAVAILABLE") in ("UNAVAILABLE", "NO_DATA", "EMPTY", "ERROR"):
+
+                lbl = QLabel("No portfolio risk intelligence data available.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.portfolio_risk_container.addWidget(lbl)
+
+            else:
+
+                summary = getattr(result, "summary", None)
+
+                tot = getattr(summary, "total_assessments", 0) if summary else 0
+
+                assessed = getattr(summary, "assessed_count", 0) if summary else 0
+
+                unavail = getattr(summary, "unavailable_count", 0) if summary else 0
+
+                hi_risk = getattr(summary, "high_risk_count", 0) if summary else 0
+
+                med_risk = getattr(summary, "medium_risk_count", 0) if summary else 0
+
+                low_risk = getattr(summary, "low_risk_count", 0) if summary else 0
+
+                info_cnt = getattr(summary, "info_count", 0) if summary else 0
+
+                avg_score = getattr(summary, "average_risk_score", 0.0) if summary else 0.0
+
+                hi_score = getattr(summary, "highest_risk_score", 0.0) if summary else 0.0
+
+                top_weight = getattr(summary, "largest_position_weight", 0.0) if summary else 0.0
+
+                pos_cnt = getattr(summary, "position_count", 0) if summary else 0
+
+                div_status = getattr(summary, "diversification_status", "UNAVAILABLE") if summary else "UNAVAILABLE"
+
+                status = getattr(result, "analysis_status", "UNAVAILABLE")
+
+                summary_str = (
+
+                    f"Analysis Status: {status} | Total Assessments: {tot} | Assessed: {assessed} | Unavailable: {unavail}\n"
+
+                    f"High Risk: {hi_risk} | Medium Risk: {med_risk} | Low Risk: {low_risk} | Info: {info_cnt}\n"
+
+                    f"Average Risk Score: {avg_score:.1f} | Highest Risk Score: {hi_score:.1f} | Largest Weight: {top_weight:.1f}%\n"
+
+                    f"Position Count: {pos_cnt} | Diversification Status: {div_status}"
+
+                )
+
+                summ_lbl = QLabel(summary_str)
+
+                summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+
+                self.portfolio_risk_container.addWidget(summ_lbl)
+
+                assessments = getattr(result, "assessments", [])
+
+                if assessments:
+
+                    scroll_area = QScrollArea()
+
+                    scroll_area.setWidgetResizable(True)
+
+                    scroll_area.setMaximumHeight(280)
+
+                    scroll_widget = QWidget()
+
+                    list_layout = QVBoxLayout(scroll_widget)
+
+                    list_layout.setSpacing(6)
+
+                    for a in assessments:
+
+                        r_id = getattr(a, "risk_id", "N/A")
+
+                        sym = getattr(a, "symbol", "N/A")
+
+                        nm = getattr(a, "name", "N/A")
+
+                        atype = getattr(a, "asset_type", "N/A")
+
+                        rtype = getattr(a, "risk_type", "N/A")
+
+                        score = getattr(a, "risk_score", 0.0)
+
+                        level = getattr(a, "risk_level", "UNAVAILABLE")
+
+                        astatus = getattr(a, "assessment_status", "UNAVAILABLE")
+
+                        c_w = getattr(a, "current_weight", 0.0)
+
+                        t_w = getattr(a, "target_weight", 0.0)
+
+                        drift = getattr(a, "drift", 0.0)
+
+                        rat = getattr(a, "rationale", "")
+
+                        src = getattr(a, "source", "")
+
+                        ev_list = getattr(a, "evidence", [])
+
+                        ev_str = " | ".join(ev_list) if isinstance(ev_list, list) else str(ev_list)
+
+                        a_text = (
+
+                            f"• [{r_id}] {sym} ({nm}) | Risk Type: {rtype} | Category: {atype}\n"
+
+                            f"  Risk Score: {score:.1f}/100 | Risk Level: {level} | Status: {astatus} | Source: {src}\n"
+
+                            f"  Current Weight: {c_w:.1f}% | Target Weight: {t_w:.1f}% | Drift: {drift:+.1f}%\n"
+
+                            f"  Rationale: {rat}"
+
+                        )
+
+                        if ev_str:
+
+                            a_text += f"\n  Evidence: {ev_str}"
+
+                        a_lbl = QLabel(a_text)
+
+                        a_lbl.setStyleSheet("font-size: 12px; color: #334155; padding: 6px; background-color: #f8fafc; border-radius: 4px;")
+
+                        list_layout.addWidget(a_lbl)
+
+                    scroll_area.setWidget(scroll_widget)
+
+                    self.portfolio_risk_container.addWidget(scroll_area)
+
+                # Risk History Subsection (Chronological: OLDEST -> NEWEST)
+
+                hist_lbl = QLabel("PORTFOLIO RISK HISTORY (OLDEST → NEWEST)")
+
+                hist_lbl.setStyleSheet("font-size: 12px; font-weight: bold; color: #475569; margin-top: 10px; margin-bottom: 4px;")
+
+                self.portfolio_risk_container.addWidget(hist_lbl)
+
+                history = getattr(result, "history", None)
+
+                entries = getattr(history, "entries", []) if history else []
+
+                if entries:
+
+                    h_summary_str = (
+
+                        f"Total History Entries: {getattr(history, 'total_entries', len(entries))} | "
+
+                        f"Earliest: {getattr(history, 'earliest_timestamp', 'N/A')} | "
+
+                        f"Latest: {getattr(history, 'latest_timestamp', 'N/A')}"
+
+                    )
+
+                    h_sum_lbl = QLabel(h_summary_str)
+
+                    h_sum_lbl.setStyleSheet("font-size: 12px; color: #475569; font-style: italic; margin-bottom: 4px;")
+
+                    self.portfolio_risk_container.addWidget(h_sum_lbl)
+
+                    h_scroll = QScrollArea()
+
+                    h_scroll.setWidgetResizable(True)
+
+                    h_scroll.setMaximumHeight(180)
+
+                    h_widget = QWidget()
+
+                    h_layout = QVBoxLayout(h_widget)
+
+                    h_layout.setSpacing(4)
+
+                    for entry in entries:
+
+                        ts = getattr(entry, "timestamp", "N/A")
+
+                        avg_s = getattr(entry, "average_risk_score", 0.0)
+
+                        hi_s = getattr(entry, "highest_risk_score", 0.0)
+
+                        h_cnt = getattr(entry, "high_risk_count", 0)
+
+                        m_cnt = getattr(entry, "medium_risk_count", 0)
+
+                        l_cnt = getattr(entry, "low_risk_count", 0)
+
+                        p_cnt = getattr(entry, "position_count", 0)
+
+                        w_top = getattr(entry, "largest_position_weight", 0.0)
+
+                        entry_text = (
+
+                            f"[{ts}] Avg Score: {avg_s:.1f} | Peak Score: {hi_s:.1f} | "
+
+                            f"High Risk: {h_cnt} | Medium Risk: {m_cnt} | Low Risk: {l_cnt} | Positions: {p_cnt} | Top Weight: {w_top:.1f}%"
+
+                        )
+
+                        e_lbl = QLabel(entry_text)
+
+                        e_lbl.setStyleSheet("font-size: 11px; color: #475569; padding: 3px; background-color: #f1f5f9; border-radius: 3px;")
+
+                        h_layout.addWidget(e_lbl)
+
+                    h_scroll.setWidget(h_widget)
+
+                    self.portfolio_risk_container.addWidget(h_scroll)
+
+                else:
+
+                    no_h_lbl = QLabel("No portfolio risk history available.")
+
+                    no_h_lbl.setStyleSheet("font-size: 12px; color: #64748b; font-style: italic;")
+
+                    self.portfolio_risk_container.addWidget(no_h_lbl)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -5256,6 +5503,26 @@ class PortfolioHealth(QWidget):
         opp_layout.addLayout(self.portfolio_opportunity_container)
 
         root_layout.addWidget(opp_card)
+
+        # Portfolio Risk Intelligence Section
+        risk_card = QFrame()
+        risk_card.setObjectName("metricCard")
+        risk_layout = QVBoxLayout(risk_card)
+        risk_layout.setContentsMargins(16, 14, 16, 14)
+        risk_layout.setSpacing(8)
+
+        lbl_risk_title = QLabel("PORTFOLIO RISK INTELLIGENCE")
+        lbl_risk_title.setObjectName("cardTitle")
+        risk_layout.addWidget(lbl_risk_title)
+
+        lbl_risk_info = QLabel("Portfolio Risk Intelligence provides analytical risk observations only. It does not generate investment or transaction instructions.")
+        lbl_risk_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        risk_layout.addWidget(lbl_risk_info)
+
+        self.portfolio_risk_container = QVBoxLayout()
+        risk_layout.addLayout(self.portfolio_risk_container)
+
+        root_layout.addWidget(risk_card)
 
         root_layout.addStretch()
 

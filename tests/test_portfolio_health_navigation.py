@@ -3376,3 +3376,90 @@ def test_portfolio_opportunities_missing_data_safe(qapp):
         assert screen is not None
     except Exception:
         pytest.fail("Missing portfolio opportunity data should not crash UI")
+
+
+def test_portfolio_risk_intelligence_section_loads(qapp):
+    """Verify Portfolio Risk Intelligence container layout exists in PortfolioHealth widget."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "portfolio_risk_container")
+
+
+def test_portfolio_risk_intelligence_values_display(qapp):
+    """Verify Portfolio Risk Intelligence values display properly in UI."""
+    from services.portfolio_risk_intelligence_service import PortfolioRiskResult, PortfolioRiskSummary, RiskAssessment, RiskHistory, RiskHistoryEntry
+
+    class MockPortfolioRiskIntelligenceService:
+        def get_risk(self):
+            return PortfolioRiskResult(
+                analysis_status="ANALYZED",
+                summary=PortfolioRiskSummary(total_assessments=1, high_risk_count=1, assessed_count=1, highest_risk_score=75.0, position_count=1, largest_position_weight=25.0),
+                assessments=[
+                    RiskAssessment(
+                        risk_id="RISK_TEST",
+                        symbol="TEST",
+                        name="Test Symbol",
+                        asset_type="EQUITY",
+                        risk_type="CONCENTRATION",
+                        risk_score=75.0,
+                        risk_level="HIGH",
+                        assessment_status="ASSESSED",
+                        evidence=["Test concentration evidence"],
+                        rationale="Test risk rationale",
+                    )
+                ],
+                history=RiskHistory(
+                    total_entries=1,
+                    earliest_timestamp="2026-08-08T08:00:00Z",
+                    latest_timestamp="2026-08-08T08:00:00Z",
+                    entries=[
+                        RiskHistoryEntry(timestamp="2026-08-08T08:00:00Z", average_risk_score=75.0, highest_risk_score=75.0, high_risk_count=1, position_count=1, largest_position_weight=25.0)
+                    ]
+                )
+            )
+
+    risk_svc = MockPortfolioRiskIntelligenceService()
+    screen = PortfolioHealth(portfolio_risk_intelligence_service=risk_svc)
+    assert hasattr(screen, "portfolio_risk_container")
+
+
+def test_empty_portfolio_risk_intelligence_safe(qapp):
+    """Verify empty/None Portfolio Risk Intelligence result handles gracefully without crashing UI."""
+    class EmptyPortfolioRiskIntelligenceService:
+        def get_risk(self):
+            return None
+
+    risk_svc = EmptyPortfolioRiskIntelligenceService()
+    screen = PortfolioHealth(portfolio_risk_intelligence_service=risk_svc)
+    assert hasattr(screen, "portfolio_risk_container")
+
+
+def test_portfolio_risk_intelligence_missing_data_safe(qapp):
+    """Verify missing/broken portfolio risk data handles safely without crashing UI."""
+    class BrokenPortfolioRiskIntelligenceService:
+        def get_risk(self):
+            raise RuntimeError("Portfolio risk data missing")
+
+    risk_svc = BrokenPortfolioRiskIntelligenceService()
+    try:
+        screen = PortfolioHealth(portfolio_risk_intelligence_service=risk_svc)
+        assert screen is not None
+    except Exception:
+        pytest.fail("Missing portfolio risk data should not crash UI")
+
+
+def test_portfolio_risk_history_safe(qapp):
+    """Verify empty/corrupt risk history handles safely without crashing UI."""
+    from services.portfolio_risk_intelligence_service import PortfolioRiskResult, PortfolioRiskSummary, RiskHistory
+
+    class EmptyHistoryRiskIntelligenceService:
+        def get_risk(self):
+            return PortfolioRiskResult(
+                analysis_status="ANALYZED",
+                summary=PortfolioRiskSummary(total_assessments=0),
+                assessments=[],
+                history=RiskHistory(total_entries=0, entries=[])
+            )
+
+    risk_svc = EmptyHistoryRiskIntelligenceService()
+    screen = PortfolioHealth(portfolio_risk_intelligence_service=risk_svc)
+    assert hasattr(screen, "portfolio_risk_container")

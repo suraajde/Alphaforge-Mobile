@@ -37,6 +37,7 @@ from services.portfolio_intelligence_service import PortfolioIntelligenceResult
 from services.holding_quality_service import HoldingQualityResult
 from services.sip_optimization_service import SIPOptimizationResult
 from services.portfolio_opportunity_service import PortfolioOpportunityResult
+from services.portfolio_risk_intelligence_service import PortfolioRiskResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -189,6 +190,7 @@ class PortfolioHealthResult:
     holding_quality: Optional[HoldingQualityResult] = None
     sip_optimization: Optional[SIPOptimizationResult] = None
     portfolio_opportunities: Optional[PortfolioOpportunityResult] = None
+    portfolio_risk_intelligence: Optional[PortfolioRiskResult] = None
 
 class PortfolioHealthService:
 
@@ -249,6 +251,7 @@ class PortfolioHealthService:
         holding_quality_service: Optional[Any] = None,
         sip_optimization_service: Optional[Any] = None,
         portfolio_opportunity_service: Optional[Any] = None,
+        portfolio_risk_intelligence_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -305,6 +308,7 @@ class PortfolioHealthService:
         self._holding_quality_service = holding_quality_service
         self._sip_optimization_service = sip_optimization_service
         self._portfolio_opportunity_service = portfolio_opportunity_service
+        self._portfolio_risk_intelligence_service = portfolio_risk_intelligence_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1623,6 +1627,20 @@ class PortfolioHealthService:
                 res.portfolio_opportunities = opp_svc.get_opportunities()
             except Exception:
                 res.portfolio_opportunities = None
+
+        # Portfolio Risk Intelligence
+        if self._portfolio_risk_intelligence_service is not None and hasattr(self._portfolio_risk_intelligence_service, "get_risk"):
+            try:
+                res.portfolio_risk_intelligence = self._portfolio_risk_intelligence_service.get_risk()
+            except Exception:
+                res.portfolio_risk_intelligence = None
+        else:
+            try:
+                from services.portfolio_risk_intelligence_service import PortfolioRiskIntelligenceService
+                risk_svc = PortfolioRiskIntelligenceService()
+                res.portfolio_risk_intelligence = risk_svc.get_risk()
+            except Exception:
+                res.portfolio_risk_intelligence = None
 
         return res
 

@@ -1889,3 +1889,36 @@ def test_portfolio_opportunity_integration_works():
     assert result.portfolio_opportunities.analysis_status == "ANALYZED"
     assert result.portfolio_opportunities.summary.total_opportunities == 1
     assert result.portfolio_opportunities.summary.high_priority_count == 1
+
+
+def test_portfolio_risk_intelligence_integration_works():
+    from services.portfolio_risk_intelligence_service import PortfolioRiskResult, PortfolioRiskSummary, RiskAssessment
+
+    class MockPortfolioRiskIntelligenceService:
+        def get_risk(self):
+            return PortfolioRiskResult(
+                analysis_status="ANALYZED",
+                summary=PortfolioRiskSummary(total_assessments=1, high_risk_count=1, assessed_count=1, highest_risk_score=75.0),
+                assessments=[
+                    RiskAssessment(
+                        risk_id="RISK_MOCK",
+                        symbol="MOCK",
+                        name="Mock Symbol",
+                        asset_type="EQUITY",
+                        risk_type="CONCENTRATION",
+                        risk_score=75.0,
+                        risk_level="HIGH",
+                        assessment_status="ASSESSED",
+                    )
+                ],
+                rationale="Mock risk rationale",
+            )
+
+    risk_svc = MockPortfolioRiskIntelligenceService()
+    service = PortfolioHealthService(portfolio_risk_intelligence_service=risk_svc)
+    result = service.evaluate()
+    assert result.portfolio_risk_intelligence is not None
+    assert isinstance(result.portfolio_risk_intelligence, PortfolioRiskResult)
+    assert result.portfolio_risk_intelligence.analysis_status == "ANALYZED"
+    assert result.portfolio_risk_intelligence.summary.total_assessments == 1
+    assert result.portfolio_risk_intelligence.summary.high_risk_count == 1
