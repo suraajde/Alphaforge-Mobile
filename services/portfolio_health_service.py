@@ -14,7 +14,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Provides a single source of truth service layer for calculating basic Portfolio Health metrics
+
+
+
+
+
+
+
+
 
 
 
@@ -30,7 +54,23 @@ and returning a PortfolioHealthSnapshot.
 
 
 
+
+
+
+
+
+
+
+
 """
+
+
+
+
+
+
+
+
 
 
 
@@ -54,7 +94,31 @@ from __future__ import annotations
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from dataclasses import dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -78,7 +142,31 @@ from typing import Any, Optional
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 from services.decision_classification_service import DecisionClassificationResult
+
+
+
+
+
+
+
+
 
 
 
@@ -94,7 +182,23 @@ from services.decision_prioritization_service import DecisionPrioritizationResul
 
 
 
+
+
+
+
+
+
+
+
 from services.decision_engine_service import DecisionEngineResult
+
+
+
+
+
+
+
+
 
 
 
@@ -110,6 +214,14 @@ from services.decision_audit_service import DecisionAuditTrail
 
 
 
+
+
+
+
+
+
+
+
 from services.decision_audit_analytics_service import DecisionAuditAnalytics
 
 
@@ -118,7 +230,27 @@ from services.decision_audit_analytics_service import DecisionAuditAnalytics
 
 
 
+
+
+
+
+
+
+
+
 from services.decision_audit_trend_service import DecisionAuditTrend
+
+
+
+from services.rebalancing_service import RebalancingState
+
+
+
+
+
+
+
+
 
 
 
@@ -134,6 +266,14 @@ from services.decision_dashboard_service import DecisionDashboardResult
 
 
 
+
+
+
+
+
+
+
+
 from services.portfolio_analytics_service import (
 
 
@@ -142,7 +282,23 @@ from services.portfolio_analytics_service import (
 
 
 
+
+
+
+
+
+
+
+
     PortfolioAnalytics,
+
+
+
+
+
+
+
+
 
 
 
@@ -174,7 +330,39 @@ from services.portfolio_analytics_service import (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -190,7 +378,23 @@ class PortfolioHealth:
 
 
 
+
+
+
+
+
+
+
+
     overall_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -206,7 +410,23 @@ class PortfolioHealth:
 
 
 
+
+
+
+
+
+
+
+
     diversification_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -222,7 +442,23 @@ class PortfolioHealth:
 
 
 
+
+
+
+
+
+
+
+
     position_sizing_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -238,7 +474,23 @@ class PortfolioHealth:
 
 
 
+
+
+
+
+
+
+
+
     portfolio_structure_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -270,7 +522,39 @@ class PortfolioHealth:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -286,7 +570,23 @@ class PortfolioHealthSnapshot:
 
 
 
+
+
+
+
+
+
+
+
     position_count: int
+
+
+
+
+
+
+
+
 
 
 
@@ -302,7 +602,23 @@ class PortfolioHealthSnapshot:
 
 
 
+
+
+
+
+
+
+
+
     invested_value: float
+
+
+
+
+
+
+
+
 
 
 
@@ -318,7 +634,23 @@ class PortfolioHealthSnapshot:
 
 
 
+
+
+
+
+
+
+
+
     largest_position: str
+
+
+
+
+
+
+
+
 
 
 
@@ -350,7 +682,39 @@ class PortfolioHealthSnapshot:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -366,6 +730,14 @@ class PortfolioHealthAnalytics:
 
 
 
+
+
+
+
+
+
+
+
     diversification_score: int
 
 
@@ -374,7 +746,23 @@ class PortfolioHealthAnalytics:
 
 
 
+
+
+
+
+
+
+
+
     concentration_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -398,7 +786,31 @@ class PortfolioHealthAnalytics:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     strengths: list[str]
+
+
+
+
+
+
+
+
 
 
 
@@ -430,7 +842,39 @@ class PortfolioHealthAnalytics:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -446,7 +890,23 @@ class PortfolioHealthTrend:
 
 
 
+
+
+
+
+
+
+
+
     current_score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -462,7 +922,23 @@ class PortfolioHealthTrend:
 
 
 
+
+
+
+
+
+
+
+
     score_change: int
+
+
+
+
+
+
+
+
 
 
 
@@ -478,7 +954,23 @@ class PortfolioHealthTrend:
 
 
 
+
+
+
+
+
+
+
+
     previous_grade: str
+
+
+
+
+
+
+
+
 
 
 
@@ -510,7 +1002,39 @@ class PortfolioHealthTrend:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @dataclass
+
+
+
+
+
+
+
+
 
 
 
@@ -526,7 +1050,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     score: int
+
+
+
+
+
+
+
+
 
 
 
@@ -542,7 +1082,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     diversification_rating: str
+
+
+
+
+
+
+
+
 
 
 
@@ -558,7 +1114,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     position_count: int
+
+
+
+
+
+
+
+
 
 
 
@@ -574,7 +1146,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     cash_allocation_pct: float
+
+
+
+
+
+
+
+
 
 
 
@@ -590,7 +1178,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     trend: Optional[PortfolioHealthTrend] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -606,7 +1210,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     dashboard_summary: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -622,7 +1242,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     historical_insights: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -638,7 +1274,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     change_report: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -654,7 +1306,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     monitoring_dashboard: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -670,7 +1338,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     generated_alerts: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -686,7 +1370,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     alert_dashboard: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -702,7 +1402,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     alert_management: Optional[Any] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -718,7 +1434,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     decision_classification: Optional[DecisionClassificationResult] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -734,7 +1466,23 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     decision_dashboard: Optional[DecisionDashboardResult] = None
+
+
+
+
+
+
+
+
 
 
 
@@ -750,6 +1498,14 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     decision_audit_analytics: Optional[DecisionAuditAnalytics] = None
 
 
@@ -758,7 +1514,43 @@ class PortfolioHealthResult:
 
 
 
+
+
+
+
+
+
+
+
     decision_audit_trend: Optional[DecisionAuditTrend] = None
+
+
+
+    rebalancing: Optional[RebalancingState] = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -790,7 +1582,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
     """Service layer for computing portfolio health metrics and snapshots safely."""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -814,7 +1630,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self,
+
+
+
+
+
+
+
+
 
 
 
@@ -830,7 +1662,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         history_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -846,7 +1694,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         change_detection_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -862,7 +1726,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         monitoring_dashboard_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -878,7 +1758,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         alert_generation_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -894,7 +1790,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         alert_dashboard_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -910,7 +1822,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         alert_management_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -926,7 +1854,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         decision_classification_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -942,7 +1886,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         decision_dashboard_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -958,6 +1918,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         decision_audit_analytics_service: Optional[Any] = None,
 
 
@@ -966,7 +1934,27 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         decision_audit_trend_service: Optional[Any] = None,
+
+
+
+        rebalancing_service: Optional[Any] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -982,7 +1970,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         """Initialize PortfolioHealthService."""
+
+
+
+
+
+
+
+
 
 
 
@@ -998,7 +2002,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._history_service = history_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1014,7 +2034,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._change_detection_service = change_detection_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1030,7 +2066,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._monitoring_dashboard_service = monitoring_dashboard_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1046,7 +2098,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._alert_generation_service = alert_generation_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1062,7 +2130,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._alert_dashboard_service = alert_dashboard_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1078,7 +2162,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._alert_management_service = alert_management_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1094,7 +2194,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._decision_classification_service = decision_classification_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1110,7 +2226,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._decision_dashboard_service = decision_dashboard_service
+
+
+
+
+
+
+
+
 
 
 
@@ -1126,6 +2258,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._decision_audit_analytics_service = decision_audit_analytics_service
 
 
@@ -1134,7 +2274,35 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self._decision_audit_trend_service = decision_audit_trend_service
+
+
+
+        self._rebalancing_service = rebalancing_service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1158,7 +2326,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         """Build and return a portfolio health snapshot safely without exceptions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1182,7 +2374,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             PortfolioHealthSnapshot containing calculated portfolio metrics.
+
+
+
+
+
+
+
+
 
 
 
@@ -1198,7 +2406,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
 
 
 
@@ -1214,7 +2438,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -1230,7 +2470,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             return PortfolioHealthSnapshot(
+
+
+
+
+
+
+
+
 
 
 
@@ -1246,7 +2502,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 portfolio_value=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1262,7 +2534,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 cash_allocation_pct=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1278,6 +2566,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position_weight_pct=0.0,
 
 
@@ -1286,7 +2582,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1310,7 +2630,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         app_service = self._get_app_service()
+
+
+
+
+
+
+
+
 
 
 
@@ -1326,7 +2662,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             return PortfolioHealthSnapshot(
+
+
+
+
+
+
+
+
 
 
 
@@ -1342,7 +2694,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 portfolio_value=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1358,7 +2726,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 cash_allocation_pct=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1374,6 +2758,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position_weight_pct=0.0,
 
 
@@ -1382,7 +2774,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1406,7 +2822,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if not isinstance(status_res, dict) or status_res.get("status") != "OK":
+
+
+
+
+
+
+
+
 
 
 
@@ -1422,7 +2854,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 position_count=0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1438,7 +2886,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 invested_value=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1454,7 +2918,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position="N/A",
+
+
+
+
+
+
+
+
 
 
 
@@ -1470,7 +2950,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1494,7 +2998,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if not isinstance(state, dict):
+
+
+
+
+
+
+
+
 
 
 
@@ -1510,6 +3030,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             port_val = self._safe_float(status_res.get("portfolio_value"), 0.0)
 
 
@@ -1518,7 +3046,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             inv_val = self._safe_float(status_res.get("invested_market_value"), 0.0)
+
+
+
+
+
+
+
+
 
 
 
@@ -1542,7 +3086,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             cash_pct = (cash_bal / port_val * 100.0) if port_val > 0 else 0.0
+
+
+
+
+
+
+
+
 
 
 
@@ -1558,7 +3126,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 position_count=pos_count,
+
+
+
+
+
+
+
+
 
 
 
@@ -1574,7 +3158,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 invested_value=round(inv_val, 2),
+
+
+
+
+
+
+
+
 
 
 
@@ -1590,6 +3190,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position="N/A",
 
 
@@ -1598,7 +3206,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position_weight_pct=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -1622,7 +3246,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         positions = state.get("positions", {})
+
+
+
+
+
+
+
+
 
 
 
@@ -1638,7 +3286,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             positions = {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1670,6 +3342,22 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         active_positions = []
 
 
@@ -1678,7 +3366,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         total_invested_value = 0.0
+
+
+
+
+
+
+
+
 
 
 
@@ -1702,7 +3406,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         for symbol_key, pos_data in positions.items():
+
+
+
+
+
+
+
+
 
 
 
@@ -1718,7 +3446,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 continue
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1742,7 +3494,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             if not symbol:
+
+
+
+
+
+
+
+
 
 
 
@@ -1766,7 +3534,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             qty = self._safe_float(pos_data.get("quantity"), 0.0)
+
+
+
+
+
+
+
+
 
 
 
@@ -1782,7 +3574,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             invested_cost = self._safe_float(pos_data.get("invested_cost"), 0.0)
+
+
+
+
+
+
+
+
 
 
 
@@ -1806,6 +3614,22 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if current_val <= 0 and price > 0 and qty > 0:
 
 
@@ -1814,7 +3638,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 current_val = qty * price
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1846,7 +3694,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             total_invested_value += invested_cost
+
+
+
+
+
+
+
+
 
 
 
@@ -1870,7 +3742,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if qty > 0 or val > 0:
+
+
+
+
+
+
+
+
 
 
 
@@ -1886,7 +3782,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     "symbol": symbol,
+
+
+
+
+
+
+
+
 
 
 
@@ -1902,6 +3814,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     "value": val,
 
 
@@ -1910,7 +3830,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     "actual_weight": self._safe_float(pos_data.get("actual_weight"), 0.0),
+
+
+
+
+
+
+
+
 
 
 
@@ -1934,7 +3870,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         total_portfolio_value = self._safe_float(
+
+
+
+
+
+
+
+
 
 
 
@@ -1950,7 +3910,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             total_current_market_value + cash_balance,
+
+
+
+
+
+
+
+
 
 
 
@@ -1974,6 +3950,22 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if total_portfolio_value <= 0:
 
 
@@ -1982,7 +3974,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             total_portfolio_value = total_invested_value + cash_balance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2014,7 +4030,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if total_portfolio_value > 0:
+
+
+
+
+
+
+
+
 
 
 
@@ -2030,7 +4070,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -2054,7 +4110,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         largest_position = "N/A"
+
+
+
+
+
+
+
+
 
 
 
@@ -2078,7 +4158,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if active_positions:
+
+
+
+
+
+
+
+
 
 
 
@@ -2094,7 +4198,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             top = active_positions[0]
+
+
+
+
+
+
+
+
 
 
 
@@ -2118,7 +4238,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             if total_portfolio_value > 0:
+
+
+
+
+
+
+
+
 
 
 
@@ -2134,7 +4278,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             elif top["actual_weight"] > 0:
+
+
+
+
+
+
+
+
 
 
 
@@ -2158,7 +4318,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         return PortfolioHealthSnapshot(
+
+
+
+
+
+
+
+
 
 
 
@@ -2174,7 +4358,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             portfolio_value=round(total_portfolio_value, 2),
+
+
+
+
+
+
+
+
 
 
 
@@ -2190,7 +4390,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_allocation_pct=round(cash_pct, 2),
+
+
+
+
+
+
+
+
 
 
 
@@ -2206,6 +4422,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             largest_position_weight_pct=round(largest_weight_pct, 2),
 
 
@@ -2214,7 +4438,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2238,7 +4486,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         self,
+
+
+
+
+
+
+
+
 
 
 
@@ -2254,7 +4518,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         previous: Optional[PortfolioHealthResult] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -2270,6 +4550,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         """Evaluates trend by comparing current PortfolioHealthResult vs previous result."""
 
 
@@ -2278,7 +4566,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         current_score = getattr(current, "score", 0) if current else 0
+
+
+
+
+
+
+
+
 
 
 
@@ -2302,7 +4606,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if previous is None:
+
+
+
+
+
+
+
+
 
 
 
@@ -2318,7 +4646,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             previous_grade = current_grade
+
+
+
+
+
+
+
+
 
 
 
@@ -2334,7 +4678,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             trend_direction = "STABLE"
+
+
+
+
+
+
+
+
 
 
 
@@ -2350,7 +4710,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             previous_score = getattr(previous, "score", current_score)
+
+
+
+
+
+
+
+
 
 
 
@@ -2366,7 +4742,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             score_change = current_score - previous_score
+
+
+
+
+
+
+
+
 
 
 
@@ -2382,7 +4774,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 trend_direction = "IMPROVING"
+
+
+
+
+
+
+
+
 
 
 
@@ -2398,6 +4806,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 trend_direction = "DETERIORATING"
 
 
@@ -2406,7 +4822,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             else:
+
+
+
+
+
+
+
+
 
 
 
@@ -2430,7 +4862,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         return PortfolioHealthTrend(
+
+
+
+
+
+
+
+
 
 
 
@@ -2446,7 +4902,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             previous_score=previous_score,
+
+
+
+
+
+
+
+
 
 
 
@@ -2462,7 +4934,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             current_grade=current_grade,
+
+
+
+
+
+
+
+
 
 
 
@@ -2478,7 +4966,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             trend_direction=trend_direction,
+
+
+
+
+
+
+
+
 
 
 
@@ -2502,7 +5006,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def evaluate(
+
+
+
+
+
+
+
+
 
 
 
@@ -2518,7 +5046,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         snapshot: Optional[PortfolioHealthSnapshot] = None,
+
+
+
+
+
+
+
+
 
 
 
@@ -2534,7 +5078,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
     ) -> PortfolioHealthResult:
+
+
+
+
+
+
+
+
 
 
 
@@ -2558,7 +5118,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         Scoring Factors (Max = 100):
+
+
+
+
+
+
+
+
 
 
 
@@ -2574,7 +5158,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         - Concentration (40 pts)
+
+
+
+
+
+
+
+
 
 
 
@@ -2590,7 +5190,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         """
+
+
+
+
+
+
+
+
 
 
 
@@ -2606,7 +5222,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             if snapshot is None or not isinstance(snapshot, PortfolioHealthSnapshot):
+
+
+
+
+
+
+
+
 
 
 
@@ -2622,7 +5254,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -2638,7 +5286,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 position_count=0,
+
+
+
+
+
+
+
+
 
 
 
@@ -2654,7 +5318,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 invested_value=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -2670,6 +5350,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position="N/A",
 
 
@@ -2678,7 +5366,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 largest_position_weight_pct=0.0,
+
+
+
+
+
+
+
+
 
 
 
@@ -2702,6 +5406,22 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         pos_count = self._safe_int(getattr(snapshot, "position_count", 0), 0)
 
 
@@ -2710,7 +5430,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         largest_weight = self._safe_float(getattr(snapshot, "largest_position_weight_pct", 0.0), 0.0)
+
+
+
+
+
+
+
+
 
 
 
@@ -2734,7 +5470,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # 1. Position Count Score (40 pts)
+
+
+
+
+
+
+
+
 
 
 
@@ -2750,7 +5510,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             pos_score = 40
+
+
+
+
+
+
+
+
 
 
 
@@ -2766,7 +5542,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             pos_score = 30
+
+
+
+
+
+
+
+
 
 
 
@@ -2782,6 +5574,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             pos_score = 20
 
 
@@ -2790,7 +5590,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -2814,7 +5630,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # 2. Concentration Score (40 pts)
+
+
+
+
+
+
+
+
 
 
 
@@ -2830,7 +5670,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             conc_score = 40
+
+
+
+
+
+
+
+
 
 
 
@@ -2846,7 +5702,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             conc_score = 30
+
+
+
+
+
+
+
+
 
 
 
@@ -2862,6 +5734,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             conc_score = 20
 
 
@@ -2870,7 +5750,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -2894,7 +5790,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # 3. Cash Allocation Score (20 pts)
+
+
+
+
+
+
+
+
 
 
 
@@ -2910,7 +5830,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_score = 20
+
+
+
+
+
+
+
+
 
 
 
@@ -2926,7 +5862,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_score = 15
+
+
+
+
+
+
+
+
 
 
 
@@ -2942,7 +5894,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_score = 10
+
+
+
+
+
+
+
+
 
 
 
@@ -2958,7 +5926,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_score = 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2990,7 +5982,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Grade Mapping
+
+
+
+
+
+
+
+
 
 
 
@@ -3006,7 +6022,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             grade = "A"
+
+
+
+
+
+
+
+
 
 
 
@@ -3022,7 +6054,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             grade = "B"
+
+
+
+
+
+
+
+
 
 
 
@@ -3038,6 +6086,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             grade = "C"
 
 
@@ -3046,7 +6102,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -3070,7 +6142,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Diversification Rating
+
+
+
+
+
+
+
+
 
 
 
@@ -3086,7 +6182,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             diversification_rating = "GOOD"
+
+
+
+
+
+
+
+
 
 
 
@@ -3102,6 +6214,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             diversification_rating = "MODERATE"
 
 
@@ -3110,7 +6230,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -3134,7 +6270,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Concentration Rating
+
+
+
+
+
+
+
+
 
 
 
@@ -3150,7 +6310,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             concentration_rating = "LOW"
+
+
+
+
+
+
+
+
 
 
 
@@ -3166,6 +6342,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             concentration_rating = "MODERATE"
 
 
@@ -3174,7 +6358,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
+
+
+
+
+
+
+
+
 
 
 
@@ -3198,7 +6398,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Generate Strengths
+
+
+
+
+
+
+
+
 
 
 
@@ -3214,7 +6438,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if pos_count >= 10:
+
+
+
+
+
+
+
+
 
 
 
@@ -3230,7 +6470,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if largest_weight <= 10.0:
+
+
+
+
+
+
+
+
 
 
 
@@ -3246,7 +6502,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if cash_pct <= 10.0:
+
+
+
+
+
+
+
+
 
 
 
@@ -3270,7 +6542,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Generate Weaknesses
+
+
+
+
+
+
+
+
 
 
 
@@ -3286,7 +6582,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if pos_count < 6:
+
+
+
+
+
+
+
+
 
 
 
@@ -3302,7 +6614,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if largest_weight > 20.0:
+
+
+
+
+
+
+
+
 
 
 
@@ -3318,7 +6646,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if cash_pct > 20.0:
+
+
+
+
+
+
+
+
 
 
 
@@ -3342,7 +6686,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         analytics = PortfolioHealthAnalytics(
+
+
+
+
+
+
+
+
 
 
 
@@ -3358,7 +6726,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             concentration_score=conc_score,
+
+
+
+
+
+
+
+
 
 
 
@@ -3374,7 +6758,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             strengths=strengths,
+
+
+
+
+
+
+
+
 
 
 
@@ -3390,7 +6790,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3414,7 +6838,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             score=total_score,
+
+
+
+
+
+
+
+
 
 
 
@@ -3430,7 +6870,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             diversification_rating=diversification_rating,
+
+
+
+
+
+
+
+
 
 
 
@@ -3446,7 +6902,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             position_count=pos_count,
+
+
+
+
+
+
+
+
 
 
 
@@ -3462,6 +6934,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             cash_allocation_pct=cash_pct,
 
 
@@ -3470,7 +6950,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             analytics=analytics,
+
+
+
+
+
+
+
+
 
 
 
@@ -3494,7 +6990,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if previous is None and self._history_service is not None:
+
+
+
+
+
+
+
+
 
 
 
@@ -3510,7 +7030,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 latest = self._history_service.get_latest()
+
+
+
+
+
+
+
+
 
 
 
@@ -3526,7 +7062,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     previous = PortfolioHealthResult(
+
+
+
+
+
+
+
+
 
 
 
@@ -3542,7 +7094,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                         grade=latest.grade,
+
+
+
+
+
+
+
+
 
 
 
@@ -3558,7 +7126,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                         concentration_rating=latest.concentration_rating,
+
+
+
+
+
+
+
+
 
 
 
@@ -3574,7 +7158,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                         largest_position_weight_pct=latest.largest_position_weight_pct,
+
+
+
+
+
+
+
+
 
 
 
@@ -3590,6 +7190,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     )
 
 
@@ -3598,7 +7206,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -3622,7 +7246,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         res.trend = self.evaluate_trend(res, previous=previous)
+
+
+
+
+
+
+
+
 
 
 
@@ -3638,7 +7286,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3654,7 +7318,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -3670,6 +7350,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._history_service is not None and hasattr(self._history_service, "get_dashboard_summary"):
 
 
@@ -3678,7 +7366,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3694,7 +7398,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -3710,6 +7430,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._history_service is not None and hasattr(self._history_service, "get_historical_metrics"):
 
 
@@ -3718,7 +7446,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3734,7 +7478,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -3750,7 +7510,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._history_service is not None and hasattr(self._history_service, "get_historical_insights"):
+
+
+
+
+
+
+
+
 
 
 
@@ -3766,6 +7542,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.historical_insights = self._history_service.get_historical_insights()
 
 
@@ -3774,7 +7558,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -3798,6 +7598,22 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if self._monitor_service is not None and hasattr(self._monitor_service, "get_monitoring_state"):
 
 
@@ -3806,7 +7622,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3822,6 +7654,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -3830,7 +7670,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.monitoring_state = None
+
+
+
+
+
+
+
+
 
 
 
@@ -3846,7 +7702,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3862,7 +7734,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 mon_svc = PortfolioHealthMonitorService(history_service=self._history_service)
+
+
+
+
+
+
+
+
 
 
 
@@ -3878,6 +7766,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -3886,7 +7782,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.monitoring_state = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3910,7 +7830,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3926,6 +7862,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -3934,7 +7878,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.change_report = None
+
+
+
+
+
+
+
+
 
 
 
@@ -3950,7 +7910,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -3966,7 +7942,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 cd_svc = PortfolioHealthChangeDetectionService(history_service=self._history_service)
+
+
+
+
+
+
+
+
 
 
 
@@ -3982,6 +7974,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -3990,7 +7990,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.change_report = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4014,7 +8038,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4030,6 +8070,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4038,7 +8086,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.timeline = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4054,7 +8118,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4070,7 +8150,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 tl_svc = PortfolioHealthTimelineService(
+
+
+
+
+
+
+
+
 
 
 
@@ -4086,7 +8182,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     change_detection_service=self._change_detection_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4102,7 +8214,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.timeline = tl_svc.build_timeline()
+
+
+
+
+
+
+
+
 
 
 
@@ -4118,7 +8246,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.timeline = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4142,7 +8294,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4158,6 +8326,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4166,7 +8342,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.monitoring_dashboard = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4182,7 +8374,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4198,7 +8406,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 dash_svc = PortfolioHealthMonitoringDashboardService(
+
+
+
+
+
+
+
+
 
 
 
@@ -4214,7 +8438,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitor_service=self._monitor_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4230,7 +8470,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline_service=self._timeline_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4246,7 +8502,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.monitoring_dashboard = dash_svc.build_dashboard()
+
+
+
+
+
+
+
+
 
 
 
@@ -4262,7 +8534,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.monitoring_dashboard = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4286,7 +8582,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4302,6 +8614,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4310,7 +8630,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_center = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4326,7 +8662,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4342,7 +8694,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 ac_svc = AlertCenterService()
+
+
+
+
+
+
+
+
 
 
 
@@ -4358,6 +8726,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4366,7 +8742,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_center = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4390,7 +8790,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4406,7 +8822,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitoring_state=res.monitoring_state,
+
+
+
+
+
+
+
+
 
 
 
@@ -4422,7 +8854,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline=res.timeline,
+
+
+
+
+
+
+
+
 
 
 
@@ -4438,7 +8886,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4454,7 +8918,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.generated_alerts = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4470,7 +8950,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4486,7 +8982,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 gen_svc = AlertGenerationService(
+
+
+
+
+
+
+
+
 
 
 
@@ -4502,7 +9014,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitor_service=self._monitor_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4518,7 +9046,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline_service=self._timeline_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4534,7 +9078,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4550,7 +9110,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitoring_state=res.monitoring_state,
+
+
+
+
+
+
+
+
 
 
 
@@ -4566,7 +9142,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline=res.timeline,
+
+
+
+
+
+
+
+
 
 
 
@@ -4582,7 +9174,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4598,7 +9206,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.generated_alerts = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4622,6 +9254,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._alert_rules_service is not None and hasattr(self._alert_rules_service, "evaluate_rules"):
 
 
@@ -4630,7 +9270,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4646,7 +9302,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitoring_state=res.monitoring_state,
+
+
+
+
+
+
+
+
 
 
 
@@ -4662,7 +9334,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline=res.timeline,
+
+
+
+
+
+
+
+
 
 
 
@@ -4678,7 +9366,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4694,7 +9398,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_rules = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4710,7 +9430,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4726,7 +9462,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 rules_svc = AlertRulesService()
+
+
+
+
+
+
+
+
 
 
 
@@ -4742,7 +9494,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     monitoring_state=res.monitoring_state,
+
+
+
+
+
+
+
+
 
 
 
@@ -4758,7 +9526,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     timeline=res.timeline,
+
+
+
+
+
+
+
+
 
 
 
@@ -4774,7 +9558,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4790,7 +9590,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_rules = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4814,6 +9638,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._alert_dashboard_service is not None and hasattr(self._alert_dashboard_service, "build_dashboard"):
 
 
@@ -4822,7 +9654,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4838,7 +9686,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_center_state=res.alert_center,
+
+
+
+
+
+
+
+
 
 
 
@@ -4854,7 +9718,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_rules_result=res.alert_rules,
+
+
+
+
+
+
+
+
 
 
 
@@ -4870,6 +9750,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4878,7 +9766,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_dashboard = None
+
+
+
+
+
+
+
+
 
 
 
@@ -4894,7 +9798,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -4910,7 +9830,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 dash_svc = AlertDashboardService(
+
+
+
+
+
+
+
+
 
 
 
@@ -4926,7 +9862,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_generation_service=self._alert_generation_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -4942,7 +9894,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -4958,7 +9926,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_center_state=res.alert_center,
+
+
+
+
+
+
+
+
 
 
 
@@ -4974,7 +9958,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_rules_result=res.alert_rules,
+
+
+
+
+
+
+
+
 
 
 
@@ -4990,6 +9990,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -4998,7 +10006,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_dashboard = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5022,6 +10054,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._alert_history_service is not None and hasattr(self._alert_history_service, "get_history"):
 
 
@@ -5030,7 +10070,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5046,7 +10102,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5062,6 +10134,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     except Exception:
 
 
@@ -5070,7 +10150,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                         pass
+
+
+
+
+
+
+
+
 
 
 
@@ -5086,6 +10182,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5094,7 +10198,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_history = None
+
+
+
+
+
+
+
+
 
 
 
@@ -5110,7 +10230,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5126,7 +10262,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 hist_svc = AlertHistoryService()
+
+
+
+
+
+
+
+
 
 
 
@@ -5142,7 +10294,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5158,7 +10326,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -5174,7 +10358,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_history = hist_svc.get_history()
+
+
+
+
+
+
+
+
 
 
 
@@ -5190,7 +10390,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_history = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5214,6 +10438,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._alert_management_service is not None and hasattr(self._alert_management_service, "get_management_result"):
 
 
@@ -5222,7 +10454,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5238,6 +10486,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5246,7 +10502,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_management = None
+
+
+
+
+
+
+
+
 
 
 
@@ -5262,7 +10534,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5278,7 +10566,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 mgmt_svc = AlertManagementService(
+
+
+
+
+
+
+
+
 
 
 
@@ -5294,7 +10598,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_history_service=self._alert_history_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -5310,7 +10630,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -5326,6 +10662,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5334,7 +10678,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.alert_management = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5358,6 +10726,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._decision_engine_service is not None and hasattr(self._decision_engine_service, "evaluate"):
 
 
@@ -5366,7 +10742,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5382,7 +10774,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     portfolio_health_result=res,
+
+
+
+
+
+
+
+
 
 
 
@@ -5398,7 +10806,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -5414,7 +10838,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_engine = None
+
+
+
+
+
+
+
+
 
 
 
@@ -5430,7 +10870,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5446,7 +10902,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 dec_svc = DecisionEngineService()
+
+
+
+
+
+
+
+
 
 
 
@@ -5462,7 +10934,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     portfolio_health_result=res,
+
+
+
+
+
+
+
+
 
 
 
@@ -5478,7 +10966,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -5494,7 +10998,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_engine = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5518,6 +11046,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._decision_classification_service is not None and hasattr(self._decision_classification_service, "classify"):
 
 
@@ -5526,7 +11062,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5542,7 +11094,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     decision_engine_result=res.decision_engine,
+
+
+
+
+
+
+
+
 
 
 
@@ -5558,7 +11126,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_management_result=res.alert_management,
+
+
+
+
+
+
+
+
 
 
 
@@ -5574,6 +11158,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5582,7 +11174,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_classification = None
+
+
+
+
+
+
+
+
 
 
 
@@ -5598,7 +11206,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5614,7 +11238,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 cls_svc = DecisionClassificationService()
+
+
+
+
+
+
+
+
 
 
 
@@ -5630,7 +11270,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     decision_engine_result=res.decision_engine,
+
+
+
+
+
+
+
+
 
 
 
@@ -5646,7 +11302,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     alert_management_result=res.alert_management,
+
+
+
+
+
+
+
+
 
 
 
@@ -5662,6 +11334,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5670,7 +11350,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_classification = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5694,7 +11398,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._decision_prioritization_service is not None and hasattr(self._decision_prioritization_service, "prioritize"):
+
+
+
+
+
+
+
+
 
 
 
@@ -5710,7 +11430,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 cls_items = getattr(res.decision_classification, "classifications", None) if res.decision_classification else None
+
+
+
+
+
+
+
+
 
 
 
@@ -5726,7 +11462,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     classifications=cls_items,
+
+
+
+
+
+
+
+
 
 
 
@@ -5742,6 +11494,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
 
 
@@ -5750,7 +11510,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_prioritization = None
+
+
+
+
+
+
+
+
 
 
 
@@ -5766,7 +11542,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5782,7 +11574,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 prio_svc = DecisionPrioritizationService(
+
+
+
+
+
+
+
+
 
 
 
@@ -5798,6 +11606,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     decision_engine_service=self._decision_engine_service,
 
 
@@ -5806,7 +11622,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -5822,7 +11654,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_prioritization = prio_svc.prioritize(
+
+
+
+
+
+
+
+
 
 
 
@@ -5838,7 +11686,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 )
+
+
+
+
+
+
+
+
 
 
 
@@ -5854,7 +11718,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 res.decision_prioritization = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5878,7 +11766,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5894,7 +11798,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -5918,7 +11838,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # Decision Audit Trail
+
+
+
+
+
+
+
+
 
 
 
@@ -5934,7 +11878,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -5950,7 +11910,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 classifications = getattr(res.decision_classification, "classifications", []) if res.decision_classification else []
+
+
+
+
+
+
+
+
 
 
 
@@ -5966,7 +11942,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     decisions=priorities,
+
+
+
+
+
+
+
+
 
 
 
@@ -5982,7 +11974,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     priorities=priorities,
+
+
+
+
+
+
+
+
 
 
 
@@ -5998,7 +12006,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -6014,6 +12038,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         else:
 
 
@@ -6022,7 +12054,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -6038,7 +12086,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 audit_svc = DecisionAuditService()
+
+
+
+
+
+
+
+
 
 
 
@@ -6054,7 +12118,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 classifications = getattr(res.decision_classification, "classifications", []) if res.decision_classification else []
+
+
+
+
+
+
+
+
 
 
 
@@ -6070,7 +12150,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     decisions=priorities,
+
+
+
+
+
+
+
+
 
 
 
@@ -6086,7 +12182,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     priorities=priorities,
+
+
+
+
+
+
+
+
 
 
 
@@ -6102,7 +12214,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -6118,7 +12246,19 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         # Decision Audit Analytics
+
+
+
+
 
 
 
@@ -6126,7 +12266,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -6134,11 +12282,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             except Exception:
 
 
 
+
+
+
+
                 res.decision_audit_analytics = None
+
+
+
+
 
 
 
@@ -6146,7 +12306,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -6154,7 +12322,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
                 analytics_svc = DecisionAuditAnalyticsService()
+
+
+
+
 
 
 
@@ -6162,11 +12338,27 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             except Exception:
 
 
 
+
+
+
+
                 res.decision_audit_analytics = None
+
+
+
+
+
+
+
+
 
 
 
@@ -6178,11 +12370,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
         if self._decision_audit_trend_service is not None and hasattr(self._decision_audit_trend_service, "build_trend"):
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -6190,11 +12394,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             except Exception:
 
 
 
+
+
+
+
                 res.decision_audit_trend = None
+
+
+
+
 
 
 
@@ -6202,7 +12418,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             try:
+
+
+
+
 
 
 
@@ -6210,7 +12434,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
                 trend_svc = DecisionAuditTrendService()
+
+
+
+
 
 
 
@@ -6218,7 +12450,15 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
             except Exception:
+
+
+
+
 
 
 
@@ -6230,7 +12470,45 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+        # Rebalancing Foundation
+        if self._rebalancing_service is not None and hasattr(self._rebalancing_service, "get_state"):
+            try:
+                res.rebalancing = self._rebalancing_service.get_state()
+            except Exception:
+                res.rebalancing = None
+        else:
+            try:
+                from services.rebalancing_service import RebalancingService
+                rebal_svc = RebalancingService()
+                res.rebalancing = rebal_svc.get_state()
+            except Exception:
+                res.rebalancing = None
+
         return res
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6254,7 +12532,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         if self._portfolio_app_service is not None:
+
+
+
+
+
+
+
+
 
 
 
@@ -6278,7 +12572,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
 
 
 
@@ -6294,7 +12612,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 create_portfolio_application_service,
+
+
+
+
+
+
+
+
 
 
 
@@ -6310,7 +12644,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             return create_portfolio_application_service()
+
+
+
+
+
+
+
+
 
 
 
@@ -6326,7 +12676,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             try:
+
+
+
+
+
+
+
+
 
 
 
@@ -6342,7 +12708,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                     PortfolioApplicationService,
+
+
+
+
+
+
+
+
 
 
 
@@ -6358,6 +12740,14 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 return PortfolioApplicationService()
 
 
@@ -6366,7 +12756,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
             except Exception:
+
+
+
+
+
+
+
+
 
 
 
@@ -6390,7 +12796,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @staticmethod
+
+
+
+
+
+
+
+
 
 
 
@@ -6406,7 +12836,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
 
 
 
@@ -6422,7 +12868,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 return default
+
+
+
+
+
+
+
+
 
 
 
@@ -6438,7 +12900,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         except (TypeError, ValueError):
+
+
+
+
+
+
+
+
 
 
 
@@ -6462,7 +12940,31 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @staticmethod
+
+
+
+
+
+
+
+
 
 
 
@@ -6478,7 +12980,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         try:
+
+
+
+
+
+
+
+
 
 
 
@@ -6494,7 +13012,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
                 return default
+
+
+
+
+
+
+
+
 
 
 
@@ -6510,7 +13044,23 @@ class PortfolioHealthService:
 
 
 
+
+
+
+
+
+
+
+
         except (TypeError, ValueError):
+
+
+
+
+
+
+
+
 
 
 
