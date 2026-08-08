@@ -48,6 +48,7 @@ from services.rebalancing_recommendation_service import RebalancingRecommendatio
 from services.portfolio_intelligence_service import PortfolioIntelligenceService
 from services.holding_quality_service import HoldingQualityService
 from services.sip_optimization_service import SIPOptimizationService
+from services.portfolio_opportunity_service import PortfolioOpportunityService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -130,6 +131,7 @@ class PortfolioHealth(QWidget):
         portfolio_intelligence_service: Optional[PortfolioIntelligenceService] = None,
         holding_quality_service: Optional[HoldingQualityService] = None,
         sip_optimization_service: Optional[SIPOptimizationService] = None,
+        portfolio_opportunity_service: Optional[PortfolioOpportunityService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -227,6 +229,7 @@ class PortfolioHealth(QWidget):
         self.portfolio_intelligence_service = portfolio_intelligence_service if portfolio_intelligence_service is not None else PortfolioIntelligenceService()
         self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService()
         self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
+        self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -279,6 +282,8 @@ class PortfolioHealth(QWidget):
             holding_quality_service=self.holding_quality_service,
 
             sip_optimization_service=self.sip_optimization_service,
+
+            portfolio_opportunity_service=self.portfolio_opportunity_service,
 
         )
 
@@ -367,6 +372,8 @@ class PortfolioHealth(QWidget):
         self.load_holding_quality()
 
         self.load_sip_optimization()
+
+        self.load_portfolio_opportunities()
 
     def load_decision_prioritization(self) -> None:
 
@@ -925,6 +932,148 @@ class PortfolioHealth(QWidget):
                     scroll_area.setWidget(scroll_widget)
 
                     self.sip_optimization_container.addWidget(scroll_area)
+
+    def load_portfolio_opportunities(self) -> None:
+
+        """Bind live portfolio opportunity analysis data to UI."""
+
+        if getattr(self, "portfolio_opportunity_service", None) is None:
+
+            return
+
+        try:
+
+            res = self.portfolio_opportunity_service.get_opportunities()
+
+            self._update_portfolio_opportunities_ui(res)
+
+        except Exception:
+
+            pass
+
+    def _update_portfolio_opportunities_ui(self, result: Any) -> None:
+
+        if hasattr(self, "portfolio_opportunity_container"):
+
+            self._clear_layout(self.portfolio_opportunity_container)
+
+            if result is None or getattr(result, "analysis_status", "UNAVAILABLE") in ("UNAVAILABLE", "NO_DATA", "EMPTY"):
+
+                lbl = QLabel("No portfolio opportunities available.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.portfolio_opportunity_container.addWidget(lbl)
+
+            else:
+
+                summary = getattr(result, "summary", None)
+
+                tot = getattr(summary, "total_opportunities", 0) if summary else 0
+
+                hi = getattr(summary, "high_priority_count", 0) if summary else 0
+
+                med = getattr(summary, "medium_priority_count", 0) if summary else 0
+
+                low = getattr(summary, "low_priority_count", 0) if summary else 0
+
+                assessed = getattr(summary, "assessed_count", 0) if summary else 0
+
+                unavail = getattr(summary, "unavailable_count", 0) if summary else 0
+
+                avg_score = getattr(summary, "average_opportunity_score", 0.0) if summary else 0.0
+
+                hi_score = getattr(summary, "highest_opportunity_score", 0.0) if summary else 0.0
+
+                status = getattr(result, "analysis_status", "UNAVAILABLE")
+
+                summary_str = (
+
+                    f"Status: {status} | Total Opportunities: {tot} | High: {hi} | Medium: {med} | Low: {low}\n"
+
+                    f"Assessed: {assessed} | Unavailable: {unavail} | Average Score: {avg_score:.1f} | Highest Score: {hi_score:.1f}"
+
+                )
+
+                summ_lbl = QLabel(summary_str)
+
+                summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+
+                self.portfolio_opportunity_container.addWidget(summ_lbl)
+
+                opportunities = getattr(result, "opportunities", [])
+
+                if opportunities:
+
+                    scroll_area = QScrollArea()
+
+                    scroll_area.setWidgetResizable(True)
+
+                    scroll_area.setMaximumHeight(300)
+
+                    scroll_widget = QWidget()
+
+                    list_layout = QVBoxLayout(scroll_widget)
+
+                    list_layout.setSpacing(6)
+
+                    for opp in opportunities:
+
+                        opp_id = getattr(opp, "opportunity_id", "N/A")
+
+                        sym = getattr(opp, "symbol", "N/A")
+
+                        nm = getattr(opp, "name", "N/A")
+
+                        atype = getattr(opp, "asset_type", "N/A")
+
+                        op_type = getattr(opp, "opportunity_type", "N/A")
+
+                        score = getattr(opp, "opportunity_score", 0.0)
+
+                        priority = getattr(opp, "priority", "LOW")
+
+                        op_status = getattr(opp, "opportunity_status", "UNAVAILABLE")
+
+                        rat = getattr(opp, "rationale", "")
+
+                        src = getattr(opp, "source", "")
+
+                        ev_list = getattr(opp, "evidence", [])
+
+                        ev_str = " | ".join(ev_list) if isinstance(ev_list, list) else str(ev_list)
+
+                        opp_text = (
+
+                            f"• [{opp_id}] {sym} ({nm}) | Type: {op_type} | Category: {atype}\n"
+
+                            f"  Score: {score:.1f}/100 | Priority: {priority} | Status: {op_status} | Source: {src}\n"
+
+                            f"  Rationale: {rat}"
+
+                        )
+
+                        if ev_str:
+
+                            opp_text += f"\n  Evidence: {ev_str}"
+
+                        opp_lbl = QLabel(opp_text)
+
+                        opp_lbl.setStyleSheet("font-size: 12px; color: #334155; padding: 6px; background-color: #f8fafc; border-radius: 4px;")
+
+                        list_layout.addWidget(opp_lbl)
+
+                    scroll_area.setWidget(scroll_widget)
+
+                    self.portfolio_opportunity_container.addWidget(scroll_area)
+
+                else:
+
+                    empty_lbl = QLabel("No portfolio opportunities available.")
+
+                    empty_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
+
+                    self.portfolio_opportunity_container.addWidget(empty_lbl)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -5087,6 +5236,26 @@ class PortfolioHealth(QWidget):
         sip_layout.addLayout(self.sip_optimization_container)
 
         root_layout.addWidget(sip_card)
+
+        # Portfolio Opportunities Section
+        opp_card = QFrame()
+        opp_card.setObjectName("metricCard")
+        opp_layout = QVBoxLayout(opp_card)
+        opp_layout.setContentsMargins(16, 14, 16, 14)
+        opp_layout.setSpacing(8)
+
+        lbl_opp_title = QLabel("PORTFOLIO OPPORTUNITIES")
+        lbl_opp_title.setObjectName("cardTitle")
+        opp_layout.addWidget(lbl_opp_title)
+
+        lbl_opp_info = QLabel("Portfolio opportunities are analytical observations only. No investment transaction or portfolio change is executed.")
+        lbl_opp_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        opp_layout.addWidget(lbl_opp_info)
+
+        self.portfolio_opportunity_container = QVBoxLayout()
+        opp_layout.addLayout(self.portfolio_opportunity_container)
+
+        root_layout.addWidget(opp_card)
 
         root_layout.addStretch()
 

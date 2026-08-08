@@ -36,6 +36,7 @@ from services.rebalancing_recommendation_service import RebalancingRecommendatio
 from services.portfolio_intelligence_service import PortfolioIntelligenceResult
 from services.holding_quality_service import HoldingQualityResult
 from services.sip_optimization_service import SIPOptimizationResult
+from services.portfolio_opportunity_service import PortfolioOpportunityResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -187,6 +188,7 @@ class PortfolioHealthResult:
     portfolio_intelligence: Optional[PortfolioIntelligenceResult] = None
     holding_quality: Optional[HoldingQualityResult] = None
     sip_optimization: Optional[SIPOptimizationResult] = None
+    portfolio_opportunities: Optional[PortfolioOpportunityResult] = None
 
 class PortfolioHealthService:
 
@@ -246,6 +248,7 @@ class PortfolioHealthService:
         portfolio_intelligence_service: Optional[Any] = None,
         holding_quality_service: Optional[Any] = None,
         sip_optimization_service: Optional[Any] = None,
+        portfolio_opportunity_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -301,6 +304,7 @@ class PortfolioHealthService:
         self._portfolio_intelligence_service = portfolio_intelligence_service
         self._holding_quality_service = holding_quality_service
         self._sip_optimization_service = sip_optimization_service
+        self._portfolio_opportunity_service = portfolio_opportunity_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1605,6 +1609,20 @@ class PortfolioHealthService:
                 res.sip_optimization = sip_svc.analyze_sip()
             except Exception:
                 res.sip_optimization = None
+
+        # Portfolio Opportunity Engine
+        if self._portfolio_opportunity_service is not None and hasattr(self._portfolio_opportunity_service, "get_opportunities"):
+            try:
+                res.portfolio_opportunities = self._portfolio_opportunity_service.get_opportunities()
+            except Exception:
+                res.portfolio_opportunities = None
+        else:
+            try:
+                from services.portfolio_opportunity_service import PortfolioOpportunityService
+                opp_svc = PortfolioOpportunityService()
+                res.portfolio_opportunities = opp_svc.get_opportunities()
+            except Exception:
+                res.portfolio_opportunities = None
 
         return res
 

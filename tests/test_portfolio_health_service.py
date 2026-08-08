@@ -1857,3 +1857,35 @@ def test_sip_optimization_integration_works():
     assert result.sip_optimization.total_sip_invested == 10000.0
     assert result.sip_optimization.analysis_status == "ANALYZED"
 
+
+def test_portfolio_opportunity_integration_works():
+    from services.portfolio_opportunity_service import PortfolioOpportunityResult, PortfolioOpportunitySummary, OpportunityRecord
+
+    class MockPortfolioOpportunityService:
+        def get_opportunities(self):
+            return PortfolioOpportunityResult(
+                analysis_status="ANALYZED",
+                summary=PortfolioOpportunitySummary(total_opportunities=1, high_priority_count=1, assessed_count=1, highest_opportunity_score=85.0),
+                opportunities=[
+                    OpportunityRecord(
+                        opportunity_id="OPP_MOCK",
+                        symbol="MOCK",
+                        name="Mock Symbol",
+                        asset_type="EQUITY",
+                        opportunity_type="ALLOCATION_GAP",
+                        opportunity_score=85.0,
+                        opportunity_status="IDENTIFIED",
+                        priority="HIGH",
+                    )
+                ],
+                rationale="Mock opportunity rationale",
+            )
+
+    opp_svc = MockPortfolioOpportunityService()
+    service = PortfolioHealthService(portfolio_opportunity_service=opp_svc)
+    result = service.evaluate()
+    assert result.portfolio_opportunities is not None
+    assert isinstance(result.portfolio_opportunities, PortfolioOpportunityResult)
+    assert result.portfolio_opportunities.analysis_status == "ANALYZED"
+    assert result.portfolio_opportunities.summary.total_opportunities == 1
+    assert result.portfolio_opportunities.summary.high_priority_count == 1

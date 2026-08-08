@@ -3316,3 +3316,63 @@ def test_sip_optimization_no_data_safe(qapp):
     except Exception:
         pytest.fail("Missing SIP optimization data should not crash UI")
 
+
+def test_portfolio_opportunities_section_loads(qapp):
+    """Verify Portfolio Opportunities container layout exists in PortfolioHealth widget."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "portfolio_opportunity_container")
+
+
+def test_portfolio_opportunities_values_display(qapp):
+    """Verify Portfolio Opportunities values display properly in UI."""
+    from services.portfolio_opportunity_service import PortfolioOpportunityResult, PortfolioOpportunitySummary, OpportunityRecord
+
+    class MockPortfolioOpportunityService:
+        def get_opportunities(self):
+            return PortfolioOpportunityResult(
+                analysis_status="ANALYZED",
+                summary=PortfolioOpportunitySummary(total_opportunities=1, high_priority_count=1, assessed_count=1, highest_opportunity_score=85.0),
+                opportunities=[
+                    OpportunityRecord(
+                        opportunity_id="OPP_TEST",
+                        symbol="TEST",
+                        name="Test Symbol",
+                        asset_type="EQUITY",
+                        opportunity_type="ALLOCATION_GAP",
+                        opportunity_score=85.0,
+                        opportunity_status="IDENTIFIED",
+                        priority="HIGH",
+                        evidence=["Test evidence"],
+                        rationale="Test rationale",
+                    )
+                ]
+            )
+
+    opp_svc = MockPortfolioOpportunityService()
+    screen = PortfolioHealth(portfolio_opportunity_service=opp_svc)
+    assert hasattr(screen, "portfolio_opportunity_container")
+
+
+def test_empty_portfolio_opportunities_safe(qapp):
+    """Verify empty/None Portfolio Opportunities result handles gracefully without crashing UI."""
+    class EmptyPortfolioOpportunityService:
+        def get_opportunities(self):
+            return None
+
+    opp_svc = EmptyPortfolioOpportunityService()
+    screen = PortfolioHealth(portfolio_opportunity_service=opp_svc)
+    assert hasattr(screen, "portfolio_opportunity_container")
+
+
+def test_portfolio_opportunities_missing_data_safe(qapp):
+    """Verify missing/broken portfolio opportunity data handles safely without crashing UI."""
+    class BrokenPortfolioOpportunityService:
+        def get_opportunities(self):
+            raise RuntimeError("Portfolio opportunity data missing")
+
+    opp_svc = BrokenPortfolioOpportunityService()
+    try:
+        screen = PortfolioHealth(portfolio_opportunity_service=opp_svc)
+        assert screen is not None
+    except Exception:
+        pytest.fail("Missing portfolio opportunity data should not crash UI")
