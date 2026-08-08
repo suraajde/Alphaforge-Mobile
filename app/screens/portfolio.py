@@ -3041,12 +3041,14 @@ class Portfolio(QWidget):
         nifty_ret_1y = self._safe_float(bm_summary.get("benchmark_return_1y"), 0.0)
         alpha_1y = self._safe_float(bm_summary.get("alpha_return_1y"), 0.0)
 
+        fmt = "+.2f" if summary is not None else "+.1f"
+
         # Portfolio Return (1Y)
         if status_raw == "UNKNOWN" and port_ret_1y == 0.0:
             self.bm_portfolio_return_value.setText("N/A")
             self.bm_portfolio_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            self.bm_portfolio_return_value.setText(f"{port_ret_1y:+.1f}%")
+            self.bm_portfolio_return_value.setText(f"{port_ret_1y:{fmt}}%")
             color = GREEN if port_ret_1y > 0 else (RED if port_ret_1y < 0 else NEUTRAL)
             self.bm_portfolio_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
@@ -3055,7 +3057,7 @@ class Portfolio(QWidget):
             self.bm_nifty_return_value.setText("N/A")
             self.bm_nifty_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            self.bm_nifty_return_value.setText(f"{nifty_ret_1y:+.1f}%")
+            self.bm_nifty_return_value.setText(f"{nifty_ret_1y:{fmt}}%")
             color = GREEN if nifty_ret_1y > 0 else (RED if nifty_ret_1y < 0 else NEUTRAL)
             self.bm_nifty_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
@@ -3064,23 +3066,34 @@ class Portfolio(QWidget):
             self.bm_alpha_return_value.setText("N/A")
             self.bm_alpha_return_value.setStyleSheet(f"color: {NEUTRAL}; font-weight: 700; font-size: 20px;")
         else:
-            self.bm_alpha_return_value.setText(f"{alpha_1y:+.1f}%")
+            self.bm_alpha_return_value.setText(f"{alpha_1y:{fmt}}%")
             color = GREEN if alpha_1y > 0 else (RED if alpha_1y < 0 else NEUTRAL)
             self.bm_alpha_return_value.setStyleSheet(f"color: {color}; font-weight: 700; font-size: 20px;")
 
         # Status Mapping
-        if status_raw == "UNKNOWN" and alpha_1y == 0.0 and port_ret_1y == 0.0 and nifty_ret_1y == 0.0:
-            bm_status_text = "Benchmark Data Unavailable"
-            bm_status_color = NEUTRAL
-        elif status_raw == "BEATING_BENCHMARK" or alpha_1y > 0:
-            bm_status_text = "✓ Outperforming Nifty 50"
-            bm_status_color = GREEN
-        elif status_raw == "LAGGING_BENCHMARK" or alpha_1y < 0:
-            bm_status_text = "⚠ Underperforming Nifty 50"
-            bm_status_color = RED
+        if summary is not None:
+            if alpha_1y > 0:
+                bm_status_text = "OUTPERFORMING"
+                bm_status_color = GREEN
+            elif alpha_1y < 0:
+                bm_status_text = "UNDERPERFORMING"
+                bm_status_color = RED
+            else:
+                bm_status_text = "INLINE"
+                bm_status_color = NEUTRAL
         else:
-            bm_status_text = "Benchmark Data Unavailable"
-            bm_status_color = NEUTRAL
+            if status_raw == "UNKNOWN" and alpha_1y == 0.0 and port_ret_1y == 0.0 and nifty_ret_1y == 0.0:
+                bm_status_text = "Benchmark Data Unavailable"
+                bm_status_color = NEUTRAL
+            elif status_raw == "BEATING_BENCHMARK" or alpha_1y > 0:
+                bm_status_text = "✓ Outperforming Nifty 50"
+                bm_status_color = GREEN
+            elif status_raw == "LAGGING_BENCHMARK" or alpha_1y < 0:
+                bm_status_text = "⚠ Underperforming Nifty 50"
+                bm_status_color = RED
+            else:
+                bm_status_text = "Benchmark Data Unavailable"
+                bm_status_color = NEUTRAL
 
         self.bm_status_value.setText(bm_status_text)
         self.bm_status_value.setStyleSheet(f"color: {bm_status_color}; font-weight: 700; font-size: 15px;")

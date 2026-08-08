@@ -19,6 +19,8 @@ from services.portfolio_analytics_service import (
     PortfolioHolding,
 )
 from services.portfolio_health_service import (
+    PortfolioHealth,
+    PortfolioHealthResult,
     PortfolioHealthService,
 )
 from services.recommendation_engine import (
@@ -1284,11 +1286,54 @@ class PortfolioOrchestrationService:
             )
         )
 
-        health = (
+        health_eval = (
             self.health_service.evaluate(
                 analytics
             )
         )
+
+        decision_dashboard = getattr(health_eval, "decision_dashboard", None)
+
+        if isinstance(health_eval, PortfolioHealthResult):
+            health_analytics = getattr(health_eval, "analytics", None)
+            div_score = (
+                getattr(health_analytics, "diversification_score", 20)
+                if health_analytics
+                else 20
+            )
+            conc_score = (
+                getattr(health_analytics, "concentration_score", 20)
+                if health_analytics
+                else 20
+            )
+            pos_score = (
+                getattr(health_analytics, "cash_score", 20)
+                if health_analytics
+                else 20
+            )
+
+            grade = getattr(health_eval, "grade", "D")
+            if grade == "A":
+                rec = "Healthy portfolio. No immediate rebalance required."
+            elif grade == "B":
+                rec = "Good portfolio. Minor optimisation recommended."
+            elif grade == "C":
+                rec = "Portfolio should be reviewed."
+            else:
+                rec = "Portfolio requires rebalancing."
+
+            health = PortfolioHealth(
+                overall_score=getattr(health_eval, "score", 0),
+                overall_grade=grade,
+                diversification_score=div_score,
+                concentration_score=conc_score,
+                position_sizing_score=pos_score,
+                weight_balance_score=20,
+                portfolio_structure_score=20,
+                recommendation=rec,
+            )
+        else:
+            health = health_eval
 
         recommendations = (
             self.recommendation_engine.generate(
@@ -1338,6 +1383,12 @@ class PortfolioOrchestrationService:
 
             "health":
                 health,
+
+            "health_result":
+                health_eval,
+
+            "decision_dashboard":
+                decision_dashboard,
 
             "recommendations":
                 recommendations,

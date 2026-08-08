@@ -11,6 +11,7 @@ from typing import Any, Optional
 from services.decision_classification_service import DecisionClassificationResult
 from services.decision_prioritization_service import DecisionPrioritizationResult
 from services.decision_engine_service import DecisionEngineResult
+from services.decision_dashboard_service import DecisionDashboardResult
 from services.portfolio_analytics_service import (
     PortfolioAnalytics,
 )
@@ -86,6 +87,7 @@ class PortfolioHealthResult:
     decision_engine: Optional[DecisionEngineResult] = None
     decision_classification: Optional[DecisionClassificationResult] = None
     decision_prioritization: Optional[DecisionPrioritizationResult] = None
+    decision_dashboard: Optional[DecisionDashboardResult] = None
 
 
 class PortfolioHealthService:
@@ -108,6 +110,7 @@ class PortfolioHealthService:
         decision_engine_service: Optional[Any] = None,
         decision_classification_service: Optional[Any] = None,
         decision_prioritization_service: Optional[Any] = None,
+        decision_dashboard_service: Optional[Any] = None,
     ) -> None:
         """Initialize PortfolioHealthService."""
         self._portfolio_app_service = portfolio_app_service
@@ -125,6 +128,7 @@ class PortfolioHealthService:
         self._decision_engine_service = decision_engine_service
         self._decision_classification_service = decision_classification_service
         self._decision_prioritization_service = decision_prioritization_service
+        self._decision_dashboard_service = decision_dashboard_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
         """Build and return a portfolio health snapshot safely without exceptions.
@@ -716,6 +720,11 @@ class PortfolioHealthService:
             except Exception:
                 res.decision_prioritization = None
 
+        if self._decision_dashboard_service is not None and hasattr(self._decision_dashboard_service, "get_dashboard"):
+            try:
+                res.decision_dashboard = self._decision_dashboard_service.get_dashboard()
+            except Exception:
+                res.decision_dashboard = None
         return res
 
     def _get_app_service(self) -> Optional[Any]:
