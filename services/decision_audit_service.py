@@ -300,9 +300,13 @@ class DecisionAuditService:
 
 
 
-            with open(self._storage_path, "w", encoding="utf-8") as fh:
+            temp_path = self._storage_path + ".tmp"
+
+            with open(temp_path, "w", encoding="utf-8") as fh:
 
                 json.dump(data, fh, indent=2)
+
+            os.replace(temp_path, self._storage_path)
 
         except Exception:
 

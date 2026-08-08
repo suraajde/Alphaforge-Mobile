@@ -336,7 +336,7 @@ class Alpha12StabilityService:
         except Exception as exc:
             return _empty_result(
                 status="ERROR",
-                rationale=f"Error performing Alpha 12 stability analysis: {str(exc)}",
+                rationale=f"Error performing Alpha 12 stability analysis: {str(exc)[:500]}",
             )
 
     def get_stability(

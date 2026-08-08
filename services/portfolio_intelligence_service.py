@@ -265,8 +265,10 @@ class PortfolioIntelligenceService:
                 "snapshots": valid_snaps,
             }
 
-            with open(self._history_path, "w", encoding="utf-8") as fh:
+            temp_path = self._history_path + ".tmp"
+            with open(temp_path, "w", encoding="utf-8") as fh:
                 json.dump(data, fh, indent=2)
+            os.replace(temp_path, self._history_path)
         except Exception:
             pass
 

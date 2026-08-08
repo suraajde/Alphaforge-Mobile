@@ -106,7 +106,9 @@ class AlertHistoryService:
 
             if updated or not self.storage_path.exists():
                 raw_list = [asdict(e) for e in existing_entries]
-                self.storage_path.write_text(json.dumps(raw_list, indent=2), encoding="utf-8")
+                temp_path = self.storage_path.with_suffix(self.storage_path.suffix + ".tmp")
+                temp_path.write_text(json.dumps(raw_list, indent=2), encoding="utf-8")
+                temp_path.replace(self.storage_path)
         except Exception:
             pass
 

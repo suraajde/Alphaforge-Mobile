@@ -560,9 +560,13 @@ class DriftDetectionService:
 
 
 
-            with open(self._history_path, "w", encoding="utf-8") as f:
+            temp_path = self._history_path + ".tmp"
+
+            with open(temp_path, "w", encoding="utf-8") as f:
 
                 json.dump(data, f, indent=2)
+
+            os.replace(temp_path, self._history_path)
 
         except Exception:
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 @dataclass
@@ -258,7 +258,7 @@ class Alpha12ChallengerService:
             if result.total_challengers_evaluated > 0:
                 result.average_challenger_score = round(total_score / max(1, (sum(1 for r in records if r.challenger_score is not None))), 2) if total_score > 0 else 0.0
                 result.average_score_advantage = round(total_adv / result.total_challengers_evaluated, 2)
-            result.latest_evaluation_timestamp = datetime.utcnow().isoformat() + "Z"
+            result.latest_evaluation_timestamp = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
             return result
         except Exception:

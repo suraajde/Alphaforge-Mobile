@@ -85,7 +85,9 @@ class AlertCenterService:
         try:
             self._ensure_storage_exists()
             raw_list = [asdict(a) for a in alerts]
-            self.storage_path.write_text(json.dumps(raw_list, indent=2), encoding="utf-8")
+            temp_path = self.storage_path.with_suffix(self.storage_path.suffix + ".tmp")
+            temp_path.write_text(json.dumps(raw_list, indent=2), encoding="utf-8")
+            temp_path.replace(self.storage_path)
         except Exception:
             pass
 

@@ -112,8 +112,10 @@ class PortfolioHealthHistoryService:
 
             self._ensure_directory()
             data = [asdict(e) for e in history]
-            with open(self.storage_path, "w", encoding="utf-8") as f:
+            temp_path = self.storage_path + ".tmp"
+            with open(temp_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
+            os.replace(temp_path, self.storage_path)
 
             self._cached_mtime = os.path.getmtime(self.storage_path)
             self._cached_entries = history

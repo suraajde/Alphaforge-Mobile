@@ -451,7 +451,7 @@ class Alpha12MappingService:
         except Exception as exc:
             return _empty_result(
                 status="ERROR",
-                rationale=f"Error performing Alpha 12 mapping: {str(exc)}",
+                rationale=f"Error performing Alpha 12 mapping: {str(exc)[:500]}",
             )
 
     def get_mapping(
