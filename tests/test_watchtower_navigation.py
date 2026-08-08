@@ -1,4 +1,4 @@
-"""Unit and navigation test suite for Watchtower Screen (Sprint 14.0.0)."""
+"""Unit and navigation test suite for Watchtower Screen & Lazy Navigation (Sprint 14.0.1)."""
 
 import pytest
 from PySide6.QtWidgets import QApplication
@@ -73,18 +73,43 @@ def test_watchtower_sidebar_navigation(qapp):
     """Verify Watchtower page is registered on MainWindow and connected to sidebar."""
     win = MainWindow()
 
-    # Verify watchtower is instantiated on MainWindow
-    assert hasattr(win, "watchtower")
+    # Verify watchtower is instantiated on demand
+    assert win.watchtower is not None
     assert isinstance(win.watchtower, Watchtower)
 
     # Verify watchtower is added to QStackedWidget
     assert win.pages.indexOf(win.watchtower) != -1
-
-    # Verify sidebar button exists
-    assert hasattr(win.sidebar, "watchtower_btn")
 
     # Simulate sidebar click for Watchtower
     win.sidebar.watchtower_btn.click()
 
     # Verify current widget switched to watchtower
     assert win.pages.currentWidget() == win.watchtower
+
+
+def test_portfolio_opened_before_research_radar(qapp):
+    """Verify Portfolio opened before ResearchRadar returns valid current_alpha12 without crash or lost provider link."""
+    win = MainWindow()
+
+    # Open portfolio FIRST before research_radar has been visited
+    win.sidebar.portfolio_btn.click()
+    assert win.pages.currentWidget() == win.portfolio
+
+    # Verify provider function executes cleanly
+    candidates = win._current_alpha12()
+    assert isinstance(candidates, list)
+
+
+def test_research_radar_to_portfolio_flow(qapp):
+    """Verify Alpha 12 scan result in ResearchRadar flows into Portfolio provider."""
+    win = MainWindow()
+
+    # Simulate scan result set on ResearchRadar
+    win.research_radar.last_result = {
+        "alpha12": [{"symbol": "STOCK1", "score": 90}]
+    }
+
+    # Verify _current_alpha12 provider returns updated alpha12 candidates
+    candidates = win._current_alpha12()
+    assert len(candidates) == 1
+    assert candidates[0]["symbol"] == "STOCK1"

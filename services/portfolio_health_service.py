@@ -264,7 +264,7 @@ class PortfolioHealthService:
         alpha12_challenger_service: Optional[Any] = None,
         alpha12_replacement_governance_service: Optional[Any] = None,
         alpha12_stability_service: Optional[Any] = None,
-
+        time_provider: Optional[Any] = None,
     ) -> None:
 
         """Initialize PortfolioHealthService."""
@@ -326,6 +326,19 @@ class PortfolioHealthService:
         self._alpha12_challenger_service = alpha12_challenger_service
         self._alpha12_replacement_governance_service = alpha12_replacement_governance_service
         self._alpha12_stability_service = alpha12_stability_service
+
+        import time
+        self._time_provider = time_provider if time_provider is not None else time.monotonic
+        self._evaluation_cache: Optional[PortfolioHealthResult] = None
+        self._evaluation_cache_key: Optional[str] = None
+        self._evaluation_cache_time: float = 0.0
+        self._evaluation_cache_ttl: float = 5.0
+
+    def invalidate_evaluation_cache(self) -> None:
+        """Explicitly invalidate the portfolio health evaluation cache."""
+        self._evaluation_cache = None
+        self._evaluation_cache_key = None
+        self._evaluation_cache_time = 0.0
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -658,10 +671,40 @@ class PortfolioHealthService:
             )
 
         pos_count = self._safe_int(getattr(snapshot, "position_count", 0), 0)
-
+        port_val = self._safe_float(getattr(snapshot, "portfolio_value", 0.0), 0.0)
+        inv_val = self._safe_float(getattr(snapshot, "invested_value", 0.0), 0.0)
         largest_weight = self._safe_float(getattr(snapshot, "largest_position_weight_pct", 0.0), 0.0)
-
         cash_pct = self._safe_float(getattr(snapshot, "cash_allocation_pct", 0.0), 0.0)
+        largest_pos = str(getattr(snapshot, "largest_position", "N/A"))
+
+        if previous is not None:
+            prev_score = self._safe_int(getattr(previous, "score", 0), 0)
+            prev_grade = str(getattr(previous, "grade", ""))
+            prev_div = str(getattr(previous, "diversification_rating", ""))
+            prev_conc = str(getattr(previous, "concentration_rating", ""))
+            prev_fp = f"{prev_score}_{prev_grade}_{prev_div}_{prev_conc}"
+        else:
+            prev_fp = "none"
+
+        import os
+        hist_mtime = 0.0
+        if self._history_service is not None:
+            storage_path = getattr(self._history_service, "storage_path", None)
+            if storage_path and os.path.exists(storage_path):
+                try:
+                    hist_mtime = os.path.getmtime(storage_path)
+                except Exception:
+                    hist_mtime = 0.0
+
+        cache_key = f"{pos_count}_{port_val:.2f}_{inv_val:.2f}_{cash_pct:.2f}_{largest_pos}_{largest_weight:.2f}_{prev_fp}_{hist_mtime}"
+        now = self._time_provider()
+
+        if (
+            self._evaluation_cache is not None
+            and self._evaluation_cache_key == cache_key
+            and (now - self._evaluation_cache_time) < self._evaluation_cache_ttl
+        ):
+            return self._evaluation_cache
 
         # 1. Position Count Score (40 pts)
 
@@ -1779,6 +1822,10 @@ class PortfolioHealthService:
                     res.alpha12_stability = None
         except Exception:
             res.alpha12_stability = None
+
+        self._evaluation_cache = res
+        self._evaluation_cache_key = cache_key
+        self._evaluation_cache_time = now
 
         return res
 

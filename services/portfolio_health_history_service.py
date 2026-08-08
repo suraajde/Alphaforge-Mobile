@@ -70,6 +70,8 @@ class PortfolioHealthHistoryService:
             base_dir = Path(__file__).resolve().parent.parent
             storage_path = os.path.join(base_dir, "data", "portfolio_health", "portfolio_health_history.json")
         self.storage_path = storage_path
+        self._cached_mtime: Optional[float] = None
+        self._cached_entries: list[PortfolioHealthHistoryEntry] = []
 
     def _ensure_directory(self) -> None:
         dir_name = os.path.dirname(self.storage_path)
@@ -113,18 +115,30 @@ class PortfolioHealthHistoryService:
             with open(self.storage_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
 
+            self._cached_mtime = os.path.getmtime(self.storage_path)
+            self._cached_entries = history
+
             return entry
         except Exception:
             return None
 
     def get_history(self) -> list[PortfolioHealthHistoryEntry]:
-        """Loads and returns historical portfolio health entries safely without raising exceptions."""
+        """Loads and returns historical portfolio health entries safely with mtime caching."""
         try:
             if not os.path.exists(self.storage_path):
+                self._cached_mtime = None
+                self._cached_entries = []
                 return []
+
+            mtime = os.path.getmtime(self.storage_path)
+            if self._cached_mtime is not None and self._cached_mtime == mtime:
+                return list(self._cached_entries)
+
             with open(self.storage_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             if not isinstance(data, list):
+                self._cached_mtime = mtime
+                self._cached_entries = []
                 return []
 
             entries = []
@@ -143,9 +157,11 @@ class PortfolioHealthHistoryService:
                             largest_position=str(item.get("largest_position", "N/A")),
                         )
                     )
-            return entries
+            self._cached_mtime = mtime
+            self._cached_entries = entries
+            return list(entries)
         except Exception:
-            return []
+            return list(self._cached_entries) if self._cached_entries else []
 
     def get_latest(self) -> Optional[PortfolioHealthHistoryEntry]:
         """Returns the most recent history entry, or None if empty."""

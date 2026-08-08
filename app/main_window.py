@@ -1,19 +1,11 @@
 from PySide6.QtWidgets import (
-    QMainWindow,
-    QWidget,
     QHBoxLayout,
+    QMainWindow,
     QStackedWidget,
+    QWidget,
 )
 
 from app.screens.sidebar import Sidebar
-from app.screens.dashboard import Dashboard
-from app.screens.stock_explorer import StockExplorer
-from app.screens.research_radar import ResearchRadar
-from app.screens.portfolio import Portfolio
-from app.screens.portfolio_health import PortfolioHealth
-from app.screens.portfolio_action_center import PortfolioActionCenter
-from app.screens.watchtower import Watchtower
-from app.screens.settings import Settings
 
 
 class MainWindow(QMainWindow):
@@ -37,26 +29,17 @@ class MainWindow(QMainWindow):
 
         self.pages = QStackedWidget()
 
-        self.dashboard = Dashboard()
-        self.stock_explorer = StockExplorer()
-        self.research_radar = ResearchRadar()
-        self.portfolio = Portfolio(
-            alpha12_provider=
-                self._current_alpha12
-        )
-        self.portfolio_health = PortfolioHealth()
-        self.action_center = PortfolioActionCenter()
-        self.watchtower = Watchtower()
-        self.settings = Settings()
+        self._dashboard = None
+        self._stock_explorer = None
+        self._research_radar = None
+        self._portfolio = None
+        self._portfolio_health = None
+        self._action_center = None
+        self._watchtower = None
+        self._settings = None
 
-        self.pages.addWidget(self.dashboard)
-        self.pages.addWidget(self.stock_explorer)
-        self.pages.addWidget(self.research_radar)
-        self.pages.addWidget(self.portfolio)
-        self.pages.addWidget(self.portfolio_health)
-        self.pages.addWidget(self.action_center)
-        self.pages.addWidget(self.watchtower)
-        self.pages.addWidget(self.settings)
+        # Build initial screen (Dashboard)
+        self.navigate_to("dashboard")
 
         # ---------------- Layout ----------------
 
@@ -66,45 +49,123 @@ class MainWindow(QMainWindow):
         # ---------------- Navigation ----------------
 
         self.sidebar.dashboard_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.dashboard)
+            lambda: self.navigate_to("dashboard")
         )
 
         self.sidebar.stock_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.stock_explorer)
+            lambda: self.navigate_to("stock_explorer")
         )
 
         self.sidebar.research_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.research_radar)
+            lambda: self.navigate_to("research_radar")
         )
 
         self.sidebar.portfolio_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.portfolio)
+            lambda: self.navigate_to("portfolio")
         )
 
         self.sidebar.health_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(
-                self.portfolio_health
-            )
+            lambda: self.navigate_to("portfolio_health")
         )
 
         self.sidebar.action_center_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.action_center)
+            lambda: self.navigate_to("action_center")
         )
 
         self.sidebar.watchtower_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.watchtower)
+            lambda: self.navigate_to("watchtower")
         )
 
         self.sidebar.settings_btn.clicked.connect(
-            lambda: self.pages.setCurrentWidget(self.settings)
+            lambda: self.navigate_to("settings")
         )
 
-    def _current_alpha12(
-        self,
-    ):
+    @property
+    def dashboard(self):
+        if self._dashboard is None:
+            from app.screens.dashboard import Dashboard
+            self._dashboard = Dashboard()
+            self.pages.addWidget(self._dashboard)
+        return self._dashboard
 
+    @property
+    def stock_explorer(self):
+        if self._stock_explorer is None:
+            from app.screens.stock_explorer import StockExplorer
+            self._stock_explorer = StockExplorer()
+            self.pages.addWidget(self._stock_explorer)
+        return self._stock_explorer
+
+    @property
+    def research_radar(self):
+        if self._research_radar is None:
+            from app.screens.research_radar import ResearchRadar
+            self._research_radar = ResearchRadar()
+            self.pages.addWidget(self._research_radar)
+        return self._research_radar
+
+    @property
+    def portfolio(self):
+        if self._portfolio is None:
+            from app.screens.portfolio import Portfolio
+            self._portfolio = Portfolio(
+                alpha12_provider=self._current_alpha12
+            )
+            self.pages.addWidget(self._portfolio)
+        return self._portfolio
+
+    @property
+    def portfolio_health(self):
+        if self._portfolio_health is None:
+            from app.screens.portfolio_health import PortfolioHealth
+            self._portfolio_health = PortfolioHealth()
+            self.pages.addWidget(self._portfolio_health)
+        return self._portfolio_health
+
+    @property
+    def action_center(self):
+        if self._action_center is None:
+            from app.screens.portfolio_action_center import PortfolioActionCenter
+            self._action_center = PortfolioActionCenter()
+            self.pages.addWidget(self._action_center)
+        return self._action_center
+
+    @property
+    def watchtower(self):
+        if self._watchtower is None:
+            from app.screens.watchtower import Watchtower
+            self._watchtower = Watchtower()
+            self.pages.addWidget(self._watchtower)
+        return self._watchtower
+
+    @property
+    def settings(self):
+        if self._settings is None:
+            from app.screens.settings import Settings
+            self._settings = Settings()
+            self.pages.addWidget(self._settings)
+        return self._settings
+
+    def navigate_to(self, target: str) -> None:
+        screen_map = {
+            "dashboard": lambda: self.dashboard,
+            "stock_explorer": lambda: self.stock_explorer,
+            "research_radar": lambda: self.research_radar,
+            "portfolio": lambda: self.portfolio,
+            "portfolio_health": lambda: self.portfolio_health,
+            "action_center": lambda: self.action_center,
+            "watchtower": lambda: self.watchtower,
+            "settings": lambda: self.settings,
+        }
+        getter = screen_map.get(target)
+        if getter is not None:
+            screen = getter()
+            self.pages.setCurrentWidget(screen)
+
+    def _current_alpha12(self):
+        radar = self.research_radar
         result = getattr(
-            self.research_radar,
+            radar,
             "last_result",
             None,
         )
@@ -113,7 +174,6 @@ class MainWindow(QMainWindow):
             result,
             dict,
         ):
-
             return []
 
         alpha12 = result.get(
@@ -125,7 +185,6 @@ class MainWindow(QMainWindow):
             alpha12,
             list,
         ):
-
             return []
 
         return alpha12
