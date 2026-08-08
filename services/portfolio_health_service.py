@@ -38,6 +38,7 @@ from services.holding_quality_service import HoldingQualityResult
 from services.sip_optimization_service import SIPOptimizationResult
 from services.portfolio_opportunity_service import PortfolioOpportunityResult
 from services.portfolio_risk_intelligence_service import PortfolioRiskResult
+from services.alpha12_mapping_service import Alpha12MappingResult
 
 from services.decision_dashboard_service import DecisionDashboardResult
 
@@ -191,6 +192,7 @@ class PortfolioHealthResult:
     sip_optimization: Optional[SIPOptimizationResult] = None
     portfolio_opportunities: Optional[PortfolioOpportunityResult] = None
     portfolio_risk_intelligence: Optional[PortfolioRiskResult] = None
+    alpha12_mapping: Optional[Alpha12MappingResult] = None
 
 class PortfolioHealthService:
 
@@ -252,6 +254,7 @@ class PortfolioHealthService:
         sip_optimization_service: Optional[Any] = None,
         portfolio_opportunity_service: Optional[Any] = None,
         portfolio_risk_intelligence_service: Optional[Any] = None,
+        alpha12_mapping_service: Optional[Any] = None,
 
     ) -> None:
 
@@ -309,6 +312,7 @@ class PortfolioHealthService:
         self._sip_optimization_service = sip_optimization_service
         self._portfolio_opportunity_service = portfolio_opportunity_service
         self._portfolio_risk_intelligence_service = portfolio_risk_intelligence_service
+        self._alpha12_mapping_service = alpha12_mapping_service
 
     def build_snapshot(self) -> PortfolioHealthSnapshot:
 
@@ -1641,6 +1645,20 @@ class PortfolioHealthService:
                 res.portfolio_risk_intelligence = risk_svc.get_risk()
             except Exception:
                 res.portfolio_risk_intelligence = None
+
+        # Alpha 12 Portfolio Mapping
+        if self._alpha12_mapping_service is not None and hasattr(self._alpha12_mapping_service, "get_mapping"):
+            try:
+                res.alpha12_mapping = self._alpha12_mapping_service.get_mapping()
+            except Exception:
+                res.alpha12_mapping = None
+        else:
+            try:
+                from services.alpha12_mapping_service import Alpha12MappingService
+                map_svc = Alpha12MappingService()
+                res.alpha12_mapping = map_svc.get_mapping()
+            except Exception:
+                res.alpha12_mapping = None
 
         return res
 

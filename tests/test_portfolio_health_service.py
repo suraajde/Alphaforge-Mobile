@@ -1922,3 +1922,38 @@ def test_portfolio_risk_intelligence_integration_works():
     assert result.portfolio_risk_intelligence.analysis_status == "ANALYZED"
     assert result.portfolio_risk_intelligence.summary.total_assessments == 1
     assert result.portfolio_risk_intelligence.summary.high_risk_count == 1
+
+
+def test_alpha12_mapping_integration_works():
+    from services.alpha12_mapping_service import Alpha12MappingResult, Alpha12PortfolioMapping, Alpha12HoldingMapping
+
+    class MockAlpha12MappingService:
+        def get_mapping(self):
+            return Alpha12MappingResult(
+                analysis_status="ANALYZED",
+                portfolio=Alpha12PortfolioMapping(
+                    mapping_status="MAPPED",
+                    total_alpha12_holdings=1,
+                    mapped_holdings=1,
+                    unmapped_holdings=0,
+                    mapping_coverage_pct=100.0,
+                    holdings=[
+                        Alpha12HoldingMapping(
+                            symbol="MOCK",
+                            name="Mock Symbol",
+                            alpha12_rank=1,
+                            mapping_status="MAPPED",
+                        )
+                    ],
+                ),
+                rationale="Mock mapping rationale",
+            )
+
+    map_svc = MockAlpha12MappingService()
+    service = PortfolioHealthService(alpha12_mapping_service=map_svc)
+    result = service.evaluate()
+    assert result.alpha12_mapping is not None
+    assert isinstance(result.alpha12_mapping, Alpha12MappingResult)
+    assert result.alpha12_mapping.analysis_status == "ANALYZED"
+    assert result.alpha12_mapping.portfolio.total_alpha12_holdings == 1
+    assert result.alpha12_mapping.portfolio.mapped_holdings == 1

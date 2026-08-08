@@ -50,6 +50,7 @@ from services.holding_quality_service import HoldingQualityService
 from services.sip_optimization_service import SIPOptimizationService
 from services.portfolio_opportunity_service import PortfolioOpportunityService
 from services.portfolio_risk_intelligence_service import PortfolioRiskIntelligenceService
+from services.alpha12_mapping_service import Alpha12MappingService
 
 from services.decision_classification_service import DecisionClassificationService
 
@@ -134,6 +135,7 @@ class PortfolioHealth(QWidget):
         sip_optimization_service: Optional[SIPOptimizationService] = None,
         portfolio_opportunity_service: Optional[PortfolioOpportunityService] = None,
         portfolio_risk_intelligence_service: Optional[PortfolioRiskIntelligenceService] = None,
+        alpha12_mapping_service: Optional[Alpha12MappingService] = None,
         parent: Optional[QWidget] = None,
 
     ) -> None:
@@ -233,6 +235,7 @@ class PortfolioHealth(QWidget):
         self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
         self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
         self.portfolio_risk_intelligence_service = portfolio_risk_intelligence_service if portfolio_risk_intelligence_service is not None else PortfolioRiskIntelligenceService()
+        self.alpha12_mapping_service = alpha12_mapping_service if alpha12_mapping_service is not None else Alpha12MappingService()
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -289,6 +292,8 @@ class PortfolioHealth(QWidget):
             portfolio_opportunity_service=self.portfolio_opportunity_service,
 
             portfolio_risk_intelligence_service=self.portfolio_risk_intelligence_service,
+
+            alpha12_mapping_service=self.alpha12_mapping_service,
 
         )
 
@@ -381,6 +386,8 @@ class PortfolioHealth(QWidget):
         self.load_portfolio_opportunities()
 
         self.load_portfolio_risk_intelligence()
+
+        self.load_alpha12_mapping()
 
     def load_decision_prioritization(self) -> None:
 
@@ -1321,6 +1328,162 @@ class PortfolioHealth(QWidget):
                     no_h_lbl.setStyleSheet("font-size: 12px; color: #64748b; font-style: italic;")
 
                     self.portfolio_risk_container.addWidget(no_h_lbl)
+
+    def load_alpha12_mapping(self) -> None:
+
+        """Bind live Alpha 12 portfolio mapping result to UI."""
+
+        if getattr(self, "alpha12_mapping_service", None) is None:
+
+            return
+
+        try:
+
+            res = self.alpha12_mapping_service.get_mapping()
+
+            self._update_alpha12_mapping_ui(res)
+
+        except Exception:
+
+            pass
+
+    def _update_alpha12_mapping_ui(self, result: Any) -> None:
+
+        if hasattr(self, "alpha12_mapping_container"):
+
+            self._clear_layout(self.alpha12_mapping_container)
+
+            if result is None or getattr(result, "analysis_status", "UNAVAILABLE") in ("UNAVAILABLE", "ERROR"):
+
+                lbl = QLabel("Alpha 12 portfolio source is unavailable.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.alpha12_mapping_container.addWidget(lbl)
+
+            elif getattr(result, "analysis_status", "UNAVAILABLE") == "NO_DATA":
+
+                lbl = QLabel("No Alpha 12 portfolio mapping data available.")
+
+                lbl.setStyleSheet("font-size: 14px; color: #64748b; font-style: italic;")
+
+                self.alpha12_mapping_container.addWidget(lbl)
+
+            else:
+
+                port = getattr(result, "portfolio", None)
+
+                tot = getattr(port, "total_alpha12_holdings", 0) if port else 0
+
+                mapped = getattr(port, "mapped_holdings", 0) if port else 0
+
+                unmapped = getattr(port, "unmapped_holdings", 0) if port else 0
+
+                coverage = getattr(port, "mapping_coverage_pct", 0.0) if port else 0.0
+
+                m_status = getattr(port, "mapping_status", "UNAVAILABLE") if port else "UNAVAILABLE"
+
+                a_status = getattr(result, "analysis_status", "UNAVAILABLE")
+
+                ts = getattr(port, "latest_timestamp", None) or "N/A"
+
+                summary_str = (
+
+                    f"Mapping Status: {m_status} | Analysis Status: {a_status}\n"
+
+                    f"Total Alpha 12 Holdings: {tot} | Mapped Holdings: {mapped} | Unmapped Holdings: {unmapped}\n"
+
+                    f"Mapping Coverage: {coverage:.1f}% | Latest Snapshot: {ts}"
+
+                )
+
+                summ_lbl = QLabel(summary_str)
+
+                summ_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 8px;")
+
+                self.alpha12_mapping_container.addWidget(summ_lbl)
+
+                holdings = getattr(port, "holdings", []) if port else []
+
+                if holdings:
+
+                    scroll_area = QScrollArea()
+
+                    scroll_area.setWidgetResizable(True)
+
+                    scroll_area.setMaximumHeight(280)
+
+                    scroll_widget = QWidget()
+
+                    list_layout = QVBoxLayout(scroll_widget)
+
+                    list_layout.setSpacing(6)
+
+                    for h in holdings:
+
+                        sym = getattr(h, "symbol", "N/A")
+
+                        nm = getattr(h, "name", "N/A")
+
+                        rank = getattr(h, "alpha12_rank", None)
+
+                        rank_str = f"#{rank}" if rank is not None else "Unranked"
+
+                        a_w = getattr(h, "alpha12_weight", None)
+
+                        a_w_str = f"{a_w:.2f}%" if a_w is not None else "N/A"
+
+                        c_w = getattr(h, "current_weight", None)
+
+                        c_w_str = f"{c_w:.2f}%" if c_w is not None else "N/A"
+
+                        c_v = getattr(h, "current_value", None)
+
+                        c_v_str = f"₹{c_v:,.2f}" if c_v is not None else "N/A"
+
+                        atype = getattr(h, "asset_type", "EQUITY")
+
+                        h_status = getattr(h, "mapping_status", "UNAVAILABLE")
+
+                        rat = getattr(h, "rationale", "")
+
+                        src = getattr(h, "source", "")
+
+                        ev_list = getattr(h, "evidence", [])
+
+                        ev_str = " | ".join(ev_list) if isinstance(ev_list, list) else str(ev_list)
+
+                        h_text = (
+
+                            f"• [{h_status}] {sym} ({nm}) | Rank: {rank_str} | Asset Type: {atype} | Source: {src}\n"
+
+                            f"  Alpha 12 Weight: {a_w_str} | Current Weight: {c_w_str} | Current Value: {c_v_str}\n"
+
+                            f"  Rationale: {rat}"
+
+                        )
+
+                        if ev_str:
+
+                            h_text += f"\n  Evidence: {ev_str}"
+
+                        h_lbl = QLabel(h_text)
+
+                        h_lbl.setStyleSheet("font-size: 12px; color: #334155; padding: 6px; background-color: #f8fafc; border-radius: 4px;")
+
+                        list_layout.addWidget(h_lbl)
+
+                    scroll_area.setWidget(scroll_widget)
+
+                    self.alpha12_mapping_container.addWidget(scroll_area)
+
+                else:
+
+                    empty_h_lbl = QLabel("No Alpha 12 portfolio mapping data available.")
+
+                    empty_h_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
+
+                    self.alpha12_mapping_container.addWidget(empty_h_lbl)
 
     def load_rebalancing_candidates(self) -> None:
 
@@ -5523,6 +5686,26 @@ class PortfolioHealth(QWidget):
         risk_layout.addLayout(self.portfolio_risk_container)
 
         root_layout.addWidget(risk_card)
+
+        # Alpha 12 Portfolio Mapping Section
+        a12_card = QFrame()
+        a12_card.setObjectName("metricCard")
+        a12_layout = QVBoxLayout(a12_card)
+        a12_layout.setContentsMargins(16, 14, 16, 14)
+        a12_layout.setSpacing(8)
+
+        lbl_a12_title = QLabel("ALPHA 12 PORTFOLIO MAPPING")
+        lbl_a12_title.setObjectName("cardTitle")
+        a12_layout.addWidget(lbl_a12_title)
+
+        lbl_a12_info = QLabel("Alpha 12 Portfolio Mapping is a read-only informational mapping layer. No challenger, replacement, or rebalancing action is executed.")
+        lbl_a12_info.setStyleSheet("font-size: 13px; color: #475569; font-style: italic;")
+        a12_layout.addWidget(lbl_a12_info)
+
+        self.alpha12_mapping_container = QVBoxLayout()
+        a12_layout.addLayout(self.alpha12_mapping_container)
+
+        root_layout.addWidget(a12_card)
 
         root_layout.addStretch()
 

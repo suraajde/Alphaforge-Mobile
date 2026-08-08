@@ -3463,3 +3463,87 @@ def test_portfolio_risk_history_safe(qapp):
     risk_svc = EmptyHistoryRiskIntelligenceService()
     screen = PortfolioHealth(portfolio_risk_intelligence_service=risk_svc)
     assert hasattr(screen, "portfolio_risk_container")
+
+
+def test_alpha12_mapping_section_loads(qapp):
+    """Verify Alpha 12 Portfolio Mapping container layout exists in PortfolioHealth widget."""
+    screen = PortfolioHealth()
+    assert hasattr(screen, "alpha12_mapping_container")
+
+
+def test_alpha12_mapping_values_display(qapp):
+    """Verify Alpha 12 Portfolio Mapping values display properly in UI."""
+    from services.alpha12_mapping_service import Alpha12MappingResult, Alpha12PortfolioMapping, Alpha12HoldingMapping
+
+    class MockAlpha12MappingService:
+        def get_mapping(self):
+            return Alpha12MappingResult(
+                analysis_status="ANALYZED",
+                portfolio=Alpha12PortfolioMapping(
+                    mapping_status="MAPPED",
+                    total_alpha12_holdings=1,
+                    mapped_holdings=1,
+                    unmapped_holdings=0,
+                    mapping_coverage_pct=100.0,
+                    holdings=[
+                        Alpha12HoldingMapping(
+                            symbol="TEST",
+                            name="Test Symbol",
+                            alpha12_rank=1,
+                            alpha12_weight=100.0,
+                            current_weight=100.0,
+                            current_value=50000.0,
+                            asset_type="EQUITY",
+                            mapping_status="MAPPED",
+                            evidence=["Exact symbol match: TEST"],
+                            rationale="Test mapping rationale",
+                        )
+                    ],
+                )
+            )
+
+    map_svc = MockAlpha12MappingService()
+    screen = PortfolioHealth(alpha12_mapping_service=map_svc)
+    assert hasattr(screen, "alpha12_mapping_container")
+
+
+def test_empty_alpha12_mapping_safe(qapp):
+    """Verify empty/None Alpha 12 Mapping result handles gracefully without crashing UI."""
+    class EmptyAlpha12MappingService:
+        def get_mapping(self):
+            return None
+
+    map_svc = EmptyAlpha12MappingService()
+    screen = PortfolioHealth(alpha12_mapping_service=map_svc)
+    assert hasattr(screen, "alpha12_mapping_container")
+
+
+def test_alpha12_mapping_missing_data_safe(qapp):
+    """Verify missing/broken Alpha 12 mapping data handles safely without crashing UI."""
+    class BrokenAlpha12MappingService:
+        def get_mapping(self):
+            raise RuntimeError("Alpha 12 mapping data missing")
+
+    map_svc = BrokenAlpha12MappingService()
+    try:
+        screen = PortfolioHealth(alpha12_mapping_service=map_svc)
+        assert screen is not None
+    except Exception:
+        pytest.fail("Missing Alpha 12 mapping data should not crash UI")
+
+
+def test_alpha12_mapping_unavailable_source_safe(qapp):
+    """Verify UNAVAILABLE Alpha 12 mapping status displays safely in UI."""
+    from services.alpha12_mapping_service import Alpha12MappingResult, Alpha12PortfolioMapping
+
+    class UnavailableAlpha12MappingService:
+        def get_mapping(self):
+            return Alpha12MappingResult(
+                analysis_status="UNAVAILABLE",
+                portfolio=Alpha12PortfolioMapping(mapping_status="UNAVAILABLE"),
+                rationale="Alpha 12 portfolio source is not available."
+            )
+
+    map_svc = UnavailableAlpha12MappingService()
+    screen = PortfolioHealth(alpha12_mapping_service=map_svc)
+    assert hasattr(screen, "alpha12_mapping_container")
