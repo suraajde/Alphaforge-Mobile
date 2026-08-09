@@ -103,6 +103,15 @@ class RecommendationDetailPanel(QWidget):
             self.clear()
             return
 
+        if str(priority).upper() == "N/A" or str(title) == "No active portfolio to evaluate":
+            self.title_value.setText("No active portfolio to evaluate")
+            self.priority_value.setText("N/A")
+            self.confidence_value.setText("N/A")
+            self.score_value.setText("N/A")
+            self.suggested_action_value.setText("Create or import a portfolio.")
+            self.reasons_value.setText("• No active portfolio positions are available for analysis.")
+            return
+
         self.title_value.setText(str(title))
         self.priority_value.setText(str(priority))
         self.confidence_value.setText(str(confidence) if confidence is not None else "-")

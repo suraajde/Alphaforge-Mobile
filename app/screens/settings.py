@@ -36,7 +36,7 @@ class Settings(QWidget):
 
         content_widget = QWidget()
         root_layout = QVBoxLayout(content_widget)
-        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setContentsMargins(0, 0, 0, 32)
         root_layout.setSpacing(16)
 
         # Header Title

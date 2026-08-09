@@ -66,6 +66,23 @@ class RecommendationEngine:
 
         report = RecommendationReport()
 
+        pos_count = getattr(analytics, "position_count", getattr(analytics, "holding_count", 0))
+        if pos_count == 0:
+            from services.recommendation_models import Recommendation
+            empty_rec = Recommendation(
+                category="PORTFOLIO",
+                priority="N/A",
+                action="NONE",
+                confidence=0,
+                target="N/A",
+                title="No active portfolio to evaluate",
+                reasons=["No active portfolio positions are available for analysis."],
+                suggested_action="Create or import a portfolio.",
+                score=0,
+            )
+            report.portfolio_recommendations.append(empty_rec)
+            return report
+
         for rule in self._rules:
 
             rule.apply(
