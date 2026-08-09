@@ -13,6 +13,21 @@ venv/
 # Logs
 *.log
 
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE
+.vscode/
+
+# Logs
+*.log
+
 # Database
 *.duckdb
 
@@ -24,3 +39,13 @@ data/cache/
 # AlphaForge local portfolio runtime state
 data/portfolio/
 local_backups/
+
+# PyTest temp & build outputs
+.pytest_tmp/
+.pytest_cache/
+build/
+dist/
+
+# Runtime persistence data
+data/intelligence/
+data/rebalancing/
