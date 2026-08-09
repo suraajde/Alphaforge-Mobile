@@ -183,32 +183,12 @@ class PortfolioActionCenter(QWidget):
         scroll.setWidget(container)
         root_layout.addWidget(scroll)
 
-        # Initial Sample Presentation
-        self.load_mock_data()
+        # Initial Presentation
+        self.load_plan(None)
 
     def load_mock_data(self) -> None:
-        """Load sample RebalancePlan data matching Sprint 12.9.1 mock requirements."""
-        from services.rebalance_decision_service import RebalanceDecision
-        from services.rebalance_orchestrator_service import RebalancePlan
-
-        sample_plan = RebalancePlan(
-            approved_actions=[],
-            deferred_actions=[
-                RebalanceDecision(
-                    action="REVIEW",
-                    symbol="HDFCBANK",
-                    candidate_symbol="ICICIBANK",
-                    priority="MEDIUM",
-                    confidence=74.0,
-                    rationale=["Cooling period active (15/30 days held)"],
-                )
-            ],
-            turnover_pct=0.0,
-            replacement_count=0,
-            add_count=0,
-            rationale=["Monthly review completed. No approved replacements required; 1 position flagged for manual review."],
-        )
-        self.load_plan(sample_plan)
+        """Clear mock data and load current active portfolio plan."""
+        self.load_plan(None)
 
     def load_plan(
         self,
@@ -219,6 +199,7 @@ class PortfolioActionCenter(QWidget):
         """Populate the Action Center UI widgets using ActionCenterService view model."""
         from services.portfolio_state_service import PortfolioStateService
         from config.path_config import get_data_path
+        from app.theme import UIColors, get_status_color
 
         state_path = get_data_path("portfolio/portfolio_state.json")
         state_res = PortfolioStateService().load_state(path=state_path)
@@ -227,10 +208,10 @@ class PortfolioActionCenter(QWidget):
 
         date_str = review_date or datetime.now().strftime("%Y-%m-%d")
 
-        if not positions:
+        if not positions and plan is None and observations is None:
             self.lbl_review_date_val.setText(date_str)
             self.lbl_status_val.setText("NO ACTIVE PORTFOLIO DATA")
-            self.lbl_status_val.setStyleSheet("color: #94a3b8; font-weight: 700; font-size: 16px;")
+            self.lbl_status_val.setStyleSheet(f"color: {UIColors.GREY}; font-weight: 700; font-size: 16px;")
             self.lbl_approved_count_val.setText("0")
             self.lbl_deferred_count_val.setText("0")
             self.lbl_turnover_val.setText("0.0%")
@@ -248,7 +229,7 @@ class PortfolioActionCenter(QWidget):
         self.lbl_review_date_val.setText(vm.summary.review_date)
         self.lbl_status_val.setText(vm.summary.portfolio_status)
 
-        status_color = "#16a34a" if vm.summary.portfolio_status == "REBALANCE APPROVED" else "#64748b"
+        status_color = get_status_color(vm.summary.portfolio_status)
         self.lbl_status_val.setStyleSheet(f"color: {status_color}; font-weight: 700; font-size: 16px;")
 
         self.lbl_approved_count_val.setText(str(vm.summary.approved_action_count))

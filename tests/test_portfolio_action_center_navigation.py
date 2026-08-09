@@ -41,15 +41,13 @@ def test_sidebar_navigation(qapp):
 def test_mock_viewmodel_loading(qapp):
     screen = PortfolioActionCenter()
 
-    # Verify initial load of mock data driven by sample GovernanceEvaluation objects
-    assert screen.lbl_status_val.text() == "NO ACTION REQUIRED"
+    # Verify initial load of unpopulated state shows NO ACTIVE PORTFOLIO DATA
+    assert screen.lbl_status_val.text() == "NO ACTIVE PORTFOLIO DATA"
     assert screen.lbl_approved_count_val.text() == "0"
-    assert screen.lbl_deferred_count_val.text() == "2"
+    assert screen.lbl_deferred_count_val.text() == "0"
     assert screen.lbl_turnover_val.text() == "0.0%"
-    assert screen.deferred_table.rowCount() == 2
-    assert screen.deferred_table.item(0, 0).text() == "WARNING"
-    assert screen.deferred_table.item(0, 1).text() == "HDFCBANK"
-    assert screen.deferred_table.item(0, 2).text() == "ICICIBANK"
+    assert screen.approved_table.rowCount() == 0
+    assert screen.deferred_table.rowCount() == 0
 
     # Governance Snapshot labels verification
     assert screen.lbl_gov_freq.text() == "Monthly Review"

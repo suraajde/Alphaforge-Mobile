@@ -278,8 +278,32 @@ class Portfolio(QWidget):
             self.load_portfolio
         )
 
+        self.reset_button = QPushButton(
+            "Reset Portfolio"
+        )
+        self.reset_button.setStyleSheet("""
+            QPushButton {
+                background-color: #dc2626;
+                color: white;
+                border: none;
+                border-radius: 7px;
+                padding: 9px 18px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background-color: #b91c1c;
+            }
+        """)
+        self.reset_button.clicked.connect(
+            self._on_reset_portfolio_clicked
+        )
+
         header.addWidget(
             self.refresh_button
+        )
+        header.addWidget(
+            self.reset_button
         )
 
         root.addLayout(
@@ -622,6 +646,9 @@ class Portfolio(QWidget):
         except Exception:
             # Defensive: if any list is missing or connection fails, ignore
             pass
+
+        self.allocation_frame = self._build_investment_allocation_ui()
+        root.addWidget(self.allocation_frame)
 
         root.addWidget(self.intelligence_frame)
 
@@ -3199,6 +3226,9 @@ class Portfolio(QWidget):
 
             self.intelligence_frame.hide()
 
+            if hasattr(self, "allocation_frame"):
+                self.allocation_frame.hide()
+
             self.table.setRowCount(
                 0
             )
@@ -3218,6 +3248,9 @@ class Portfolio(QWidget):
         self.holdings_frame.show()
 
         self.intelligence_frame.show()
+
+        if hasattr(self, "allocation_frame"):
+            self.allocation_frame.show()
 
         self.subtitle_label.setText(
             "Persistent Alpha 12 portfolio monitoring | Active Portfolio: Primary Portfolio"
@@ -3609,6 +3642,228 @@ class Portfolio(QWidget):
         self.status_label.setText(
             "Portfolio state could not be loaded."
         )
+
+    # ======================================================
+    # PORTFOLIO RESET & INVESTMENT ALLOCATION (Sprint 14.1.1)
+    # ======================================================
+
+    def _on_reset_portfolio_clicked(self) -> None:
+        """Handle double-confirmation Portfolio Reset action (Requirement 3)."""
+        from PySide6.QtWidgets import QMessageBox
+        from services.portfolio_administration_service import PortfolioAdministrationService
+
+        summary = self.portfolio_service.get_portfolio_summary()
+        if not summary.get("portfolio_exists", False):
+            QMessageBox.information(
+                self,
+                "No Portfolio to Reset",
+                "There is currently no active portfolio to reset.",
+            )
+            return
+
+        # Confirmation 1
+        reply1 = QMessageBox.warning(
+            self,
+            "Reset Portfolio?",
+            "This will remove the current AlphaForge portfolio and all portfolio-derived analytical state.\n\nDo you want to proceed?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply1 != QMessageBox.Yes:
+            return
+
+        # Confirmation 2
+        reply2 = QMessageBox.warning(
+            self,
+            "Confirm Portfolio Reset",
+            "I understand that the current portfolio data will be removed and cannot be undone without restoring a backup.\n\nAre you absolutely sure you want to reset?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply2 != QMessageBox.Yes:
+            return
+
+        # Execute Reset
+        admin_svc = PortfolioAdministrationService()
+        res = admin_svc.reset_portfolio_holdings()
+
+        if res.get("status") == "OK":
+            QMessageBox.information(
+                self,
+                "Portfolio Reset Complete",
+                "The portfolio has been successfully reset. A backup was saved prior to reset."
+            )
+            self.load_portfolio()
+        else:
+            QMessageBox.critical(
+                self,
+                "Reset Failed",
+                f"Failed to reset portfolio: {res.get('error', 'Unknown error')}"
+            )
+
+    def _build_investment_allocation_ui(self) -> QFrame:
+        """Build the Investment Allocation UI (Requirements 7, 8, 9, 10, 11)."""
+        from PySide6.QtWidgets import (
+            QLineEdit, QFormLayout, QHBoxLayout, QHeaderView, QTableWidget, QTableWidgetItem
+        )
+
+        frame = QFrame()
+        frame.setObjectName("metricCard")
+        layout = QVBoxLayout(frame)
+        layout.setContentsMargins(16, 14, 16, 14)
+        layout.setSpacing(12)
+
+        title = QLabel("INVESTMENT ALLOCATION (NEW MONEY DEPLOYMENT)")
+        title.setStyleSheet("font-size: 16px; font-weight: 700; color: #173b67;")
+        layout.addWidget(title)
+
+        subtitle = QLabel(
+            "Propose new-money deployment across current Alpha 12 candidates without selling existing holdings."
+        )
+        subtitle.setStyleSheet("font-size: 12px; color: #64748b;")
+        layout.addWidget(subtitle)
+
+        ctrl_layout = QHBoxLayout()
+        ctrl_layout.setSpacing(20)
+
+        # Box 1: Monthly Investment
+        monthly_box = QFrame()
+        monthly_box.setStyleSheet("QFrame { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; }")
+        mb_layout = QVBoxLayout(monthly_box)
+        mb_layout.setSpacing(6)
+
+        lbl_mb_title = QLabel("MONTHLY INVESTMENT")
+        lbl_mb_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #16a34a;")
+        mb_layout.addWidget(lbl_mb_title)
+
+        lbl_mb_desc = QLabel("Enter total monthly contribution (₹):")
+        lbl_mb_desc.setStyleSheet("font-size: 12px; color: #475569;")
+        mb_layout.addWidget(lbl_mb_desc)
+
+        self.monthly_input = QLineEdit()
+        self.monthly_input.setPlaceholderText("e.g. 30000")
+        self.monthly_input.setText("30000")
+        self.monthly_input.setStyleSheet("QLineEdit { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; font-size: 13px; font-weight: 600; color: #0f172a; }")
+        mb_layout.addWidget(self.monthly_input)
+
+        btn_gen_monthly = QPushButton("Generate Monthly Allocation")
+        btn_gen_monthly.setStyleSheet("QPushButton { background-color: #16a34a; color: white; border: none; border-radius: 6px; padding: 8px 14px; font-size: 13px; font-weight: 600; } QPushButton:hover { background-color: #15803d; }")
+        btn_gen_monthly.clicked.connect(self._on_generate_monthly_allocation)
+        mb_layout.addWidget(btn_gen_monthly)
+
+        ctrl_layout.addWidget(monthly_box)
+
+        # Box 2: Lump-Sum Investment
+        lump_box = QFrame()
+        lump_box.setStyleSheet("QFrame { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; }")
+        lb_layout = QVBoxLayout(lump_box)
+        lb_layout.setSpacing(6)
+
+        lbl_lb_title = QLabel("LUMP-SUM INVESTMENT")
+        lbl_lb_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #2563eb;")
+        lb_layout.addWidget(lbl_lb_title)
+
+        lbl_lb_desc = QLabel("Enter lump-sum investment (₹):")
+        lbl_lb_desc.setStyleSheet("font-size: 12px; color: #475569;")
+        lb_layout.addWidget(lbl_lb_desc)
+
+        self.lump_input = QLineEdit()
+        self.lump_input.setPlaceholderText("e.g. 100000")
+        self.lump_input.setText("100000")
+        self.lump_input.setStyleSheet("QLineEdit { background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; font-size: 13px; font-weight: 600; color: #0f172a; }")
+        lb_layout.addWidget(self.lump_input)
+
+        btn_gen_lump = QPushButton("Generate Lump-Sum Allocation")
+        btn_gen_lump.setStyleSheet("QPushButton { background-color: #2563eb; color: white; border: none; border-radius: 6px; padding: 8px 14px; font-size: 13px; font-weight: 600; } QPushButton:hover { background-color: #1d4ed8; }")
+        btn_gen_lump.clicked.connect(self._on_generate_lump_sum_allocation)
+        lb_layout.addWidget(btn_gen_lump)
+
+        ctrl_layout.addWidget(lump_box)
+        layout.addLayout(ctrl_layout)
+
+        self.lbl_alloc_summary = QLabel("Enter an investment amount above and click Generate Allocation.")
+        self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #173b67; padding: 4px 0px;")
+        layout.addWidget(self.lbl_alloc_summary)
+
+        self.alloc_table = QTableWidget(0, 8)
+        self.alloc_table.setHorizontalHeaderLabels([
+            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Suggested Amount (₹)", "Allocation %", "Reason"
+        ])
+        self.alloc_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.alloc_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.alloc_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.alloc_table.setMinimumHeight(220)
+        layout.addWidget(self.alloc_table)
+
+        lbl_disclaimer = QLabel("Note: This is an analytical allocation proposal. No transaction is executed automatically.")
+        lbl_disclaimer.setStyleSheet("font-size: 11px; color: #64748b; font-style: italic;")
+        layout.addWidget(lbl_disclaimer)
+
+        return frame
+
+    def _on_generate_monthly_allocation(self) -> None:
+        """Generate Monthly Investment Allocation proposal (Requirement 7 & 9)."""
+        from services.investment_allocation_service import InvestmentAllocationService
+        from PySide6.QtWidgets import QMessageBox
+
+        txt = self.monthly_input.text().strip().replace(",", "")
+        try:
+            val = float(txt)
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric monthly investment amount.")
+            return
+
+        svc = InvestmentAllocationService()
+        res = svc.allocate_monthly_investment(val)
+
+        if res.total_allocated_amount <= 0:
+            QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
+            return
+
+        self._render_allocation_results(res)
+
+    def _on_generate_lump_sum_allocation(self) -> None:
+        """Generate Lump-Sum Investment Allocation proposal (Requirement 10)."""
+        from services.investment_allocation_service import InvestmentAllocationService
+        from PySide6.QtWidgets import QMessageBox
+
+        txt = self.lump_input.text().strip().replace(",", "")
+        try:
+            val = float(txt)
+        except ValueError:
+            QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric lump-sum investment amount.")
+            return
+
+        svc = InvestmentAllocationService()
+        res = svc.allocate_lump_sum_investment(val)
+
+        if res.total_allocated_amount <= 0:
+            QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
+            return
+
+        self._render_allocation_results(res)
+
+    def _render_allocation_results(self, res) -> None:
+        """Render InvestmentAllocationResult items into alloc_table."""
+        from PySide6.QtWidgets import QTableWidgetItem
+
+        alloc_type = "Monthly Investment" if res.allocation_type == "MONTHLY" else "Lump-Sum Investment"
+        self.lbl_alloc_summary.setText(
+            f"USER INPUT: {alloc_type} ₹{res.total_input_amount:,.2f}  |  ALPHAFORGE RECOMMENDATION: Recommended deployment: ₹{res.total_allocated_amount:,.2f}"
+        )
+        self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #15803d; padding: 4px 0px;")
+
+        self.alloc_table.setRowCount(0)
+        for i, item in enumerate(res.allocations):
+            self.alloc_table.insertRow(i)
+            self.alloc_table.setItem(i, 0, QTableWidgetItem(f"#{item.alpha12_rank}"))
+            self.alloc_table.setItem(i, 1, QTableWidgetItem(item.symbol))
+            self.alloc_table.setItem(i, 2, QTableWidgetItem(item.company_name))
+            self.alloc_table.setItem(i, 3, QTableWidgetItem(f"{item.conviction:.1f}%"))
+            self.alloc_table.setItem(i, 4, QTableWidgetItem(f"{item.current_weight_pct:.1f}%"))
+            self.alloc_table.setItem(i, 5, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
+            self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
+            self.alloc_table.setItem(i, 7, QTableWidgetItem(item.reason))
 
         QMessageBox.warning(
             self,

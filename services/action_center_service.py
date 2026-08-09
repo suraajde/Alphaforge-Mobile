@@ -118,8 +118,10 @@ class ActionCenterService:
             gov_actions = self.governance_pipeline.generate_actions_from_evaluations(evaluations)
         elif observations is not None:
             gov_actions = self.governance_pipeline.generate_actions(observations)
-        else:
+        elif plan is not None:
             gov_actions = self.governance_pipeline.generate_actions_from_evaluations(DEFAULT_SAMPLE_EVALUATIONS)
+        else:
+            gov_actions = []
 
         approved_vms: List[ApprovedActionViewModel] = []
         deferred_vms: List[DeferredActionViewModel] = []
@@ -130,8 +132,8 @@ class ActionCenterService:
             sev_str = g_act.severity.value if hasattr(g_act.severity, "value") else str(g_act.severity)
             rationale_list.append(f"Governance Alert [{sev_str}]: {g_act.title} - {g_act.description}")
 
-            curr_sym = "HDFCBANK" if "HDFCBANK" in g_act.title else g_act.title
-            cand_sym = "ICICIBANK" if "ICICIBANK" in g_act.title else "-"
+            curr_sym = g_act.title
+            cand_sym = "-"
 
             conf_val = 74.0 if sev_str == "WARNING" else (90.0 if sev_str == "WATCH" else 40.0)
 

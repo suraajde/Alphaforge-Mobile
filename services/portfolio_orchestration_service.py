@@ -21,6 +21,7 @@ from services.portfolio_analytics_service import (
 from services.portfolio_health_service import (
     PortfolioHealth,
     PortfolioHealthResult,
+    PortfolioHealthSnapshot,
     PortfolioHealthService,
 )
 from services.recommendation_engine import (
@@ -1286,11 +1287,23 @@ class PortfolioOrchestrationService:
             )
         )
 
-        health_eval = (
-            self.health_service.evaluate(
-                analytics
+        pos_cnt = len(holdings) if holdings else 0
+        if pos_cnt > 0:
+            port_val = float(state.get("total_portfolio_value", 0.0)) if isinstance(state, dict) else 0.0
+            inv_val = float(state.get("invested_market_value", 0.0)) if isinstance(state, dict) else 0.0
+            top_weight = max((h.weight for h in holdings), default=0.0)
+            top_sym = next((h.symbol for h in holdings if h.weight == top_weight), "N/A")
+            snapshot = PortfolioHealthSnapshot(
+                position_count=pos_cnt,
+                portfolio_value=port_val,
+                invested_value=inv_val,
+                cash_allocation_pct=0.0,
+                largest_position=top_sym,
+                largest_position_weight_pct=top_weight,
             )
-        )
+            health_eval = self.health_service.evaluate(snapshot)
+        else:
+            health_eval = self.health_service.evaluate()
 
         decision_dashboard = getattr(health_eval, "decision_dashboard", None)
 

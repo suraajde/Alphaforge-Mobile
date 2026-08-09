@@ -127,8 +127,9 @@ class PortfolioAdministrationService:
         path: Optional[str | Path] = None,
         backup_dir: Optional[str | Path] = None,
     ) -> dict:
-        """Reset portfolio holdings while preserving creation date, creating an automatic backup first."""
-        target_file = Path(path) if path is not None else self.state_service.DEFAULT_STATE_PATH
+        """Reset portfolio holdings, create automatic backup, and clear derived analytical state."""
+        from config.path_config import get_data_path
+        target_file = Path(path) if path is not None else self.state_service.get_default_state_path()
 
         # Automatic backup before reset
         backup_res = self.create_backup(path=target_file, backup_dir=backup_dir)
@@ -152,6 +153,7 @@ class PortfolioAdministrationService:
         )
 
         reset_state = {
+            "state_version": "1.0",
             "created_at": created_at,
             "updated_at": now_iso,
             "cash_balance": 0.0,
@@ -165,6 +167,25 @@ class PortfolioAdministrationService:
         }
 
         self.state_service.save_state(reset_state, path=target_file)
+
+        # Clear analytical JSON history files
+        analytical_files = [
+            get_data_path("intelligence/portfolio_intelligence_history.json"),
+            get_data_path("intelligence/portfolio_opportunity_history.json"),
+            get_data_path("intelligence/portfolio_risk_history.json"),
+            get_data_path("rebalancing/alpha12_stability_history.json"),
+            get_data_path("rebalancing/drift_history.json"),
+            get_data_path("decisions/decision_audit.json"),
+            get_data_path("alerts/portfolio_alerts.json"),
+            get_data_path("alerts/alert_history.json"),
+        ]
+
+        for p in analytical_files:
+            try:
+                if p.exists():
+                    p.unlink()
+            except Exception:
+                pass
 
         return {
             "status": "OK",
