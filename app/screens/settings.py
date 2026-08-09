@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 
+from config.path_config import get_base_data_dir, get_data_path
 from core.version import APP_VERSION
 
 
@@ -69,7 +70,7 @@ class Settings(QWidget):
         sys_info = (
             "• Application Name: AlphaForge — AI Portfolio Construction Engine\n"
             f"• Release Version: v{APP_VERSION} (Stable Release)\n"
-            "• Target Release: Version 1.0 Stable Release (Chapter 20)\n"
+            "• Release Status: Version 1.0.0 Stable Release (Chapter 20 Completed)\n"
             "• Architecture: Decoupled Service Architecture / PySide6 Framework\n"
             "• Runtime Engine: Python 3.14"
         )
@@ -115,11 +116,12 @@ class Settings(QWidget):
         lbl_data_title = QLabel("DATA PERSISTENCE & STORAGE DIRECTORIES")
         lbl_data_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
 
+        base_dir = get_base_data_dir()
         data_info = (
-            "• Portfolio Intelligence History: data/intelligence/portfolio_intelligence_history.json\n"
-            "• Drift Detection History: data/rebalancing/drift_detection_history.json\n"
-            "• Alpha 12 Stability History: data/rebalancing/alpha12_stability_history.json\n"
-            "• Storage State: Active Local JSON Persistence (Safe File Lock & Non-blocking I/O)"
+            f"• Base Data Directory: {base_dir}\n"
+            f"• Portfolio Intelligence Storage: {get_data_path('intelligence/portfolio_intelligence_history.json')}\n"
+            f"• Alpha 12 Stability Storage: {get_data_path('rebalancing/alpha12_stability_history.json')}\n"
+            "• Persistence Architecture: Centralized CWD-Independent Path Resolver (Atomic Write & Non-blocking I/O)"
         )
         lbl_data_body = QLabel(data_info)
         lbl_data_body.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")

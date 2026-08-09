@@ -73,7 +73,7 @@ class Dashboard(QWidget):
         title_lbl.setStyleSheet("font-size: 24px; font-weight: bold; color: #1e3a8a;")
 
         welcome_lbl = QLabel(
-            "Welcome to AlphaForge — AI Portfolio Construction Engine (v1.0.0-rc1)"
+            f"Welcome to AlphaForge — AI Portfolio Construction Engine (v{APP_VERSION} Stable)"
         )
         welcome_lbl.setStyleSheet("font-size: 14px; color: #475569; font-weight: 600;")
 
