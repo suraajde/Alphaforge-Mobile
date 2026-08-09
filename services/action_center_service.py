@@ -15,26 +15,6 @@ from services.portfolio_governance_service import GovernanceEvaluation
 from services.rebalance_orchestrator_service import RebalancePlan
 
 
-DEFAULT_SAMPLE_EVALUATIONS: List[GovernanceEvaluation] = [
-    GovernanceEvaluation(
-        current_symbol="HDFCBANK",
-        candidate_symbol="ICICIBANK",
-        decision="REVIEW",
-        current_score=72.0,
-        candidate_score=85.0,
-        score_delta=13.0,
-        is_cooling_active=True,
-        holding_days=15,
-        sector_guardrail_breached=True,
-        reasons=[
-            "Cooling period active (15/30 days held).",
-            "Sector diversification guardrail triggered for sector 'Banking'.",
-        ],
-        replacement_justification="Review HDFCBANK -> ICICIBANK: Strong candidate flagged for manual review during cooling period.",
-    )
-]
-
-
 @dataclass
 class ReviewSummaryViewModel:
     """View model for monthly review summary metadata."""
@@ -118,8 +98,6 @@ class ActionCenterService:
             gov_actions = self.governance_pipeline.generate_actions_from_evaluations(evaluations)
         elif observations is not None:
             gov_actions = self.governance_pipeline.generate_actions(observations)
-        elif plan is not None:
-            gov_actions = self.governance_pipeline.generate_actions_from_evaluations(DEFAULT_SAMPLE_EVALUATIONS)
         else:
             gov_actions = []
 
@@ -210,3 +188,76 @@ class ActionCenterService:
             governance_snapshot=snapshot,
             governance_pipeline_actions=gov_actions,
         )
+
+    def evaluate_active_portfolio(
+        self,
+        portfolio_state: Optional[Dict[str, Any]] = None,
+        alpha12_candidates: Optional[List[Dict[str, Any]]] = None,
+        review_date: Optional[str] = None,
+    ) -> ActionCenterViewModel:
+        """Dynamically evaluate active portfolio holdings against Alpha 12 governance rules without mock data."""
+        from services.portfolio_state_service import PortfolioStateService
+        from services.portfolio_governance_service import PortfolioGovernanceService
+        from services.rebalance_decision_service import RebalanceDecisionService
+        from services.rebalance_orchestrator_service import RebalanceOrchestratorService
+        from services.universe_service import UniverseService
+
+        if portfolio_state is None:
+            state_res = PortfolioStateService().load_state()
+            portfolio_state = state_res.get("state", {}) if isinstance(state_res, dict) else {}
+
+        positions = portfolio_state.get("positions", {}) if isinstance(portfolio_state, dict) else {}
+        date_str = review_date or datetime.now().strftime("%Y-%m-%d")
+
+        if not positions:
+            return ActionCenterViewModel(
+                summary=ReviewSummaryViewModel(
+                    review_date=date_str,
+                    portfolio_status="NO ACTIVE PORTFOLIO DATA",
+                    approved_action_count=0,
+                    deferred_action_count=0,
+                    estimated_turnover=0.0,
+                ),
+                approved_actions=[],
+                deferred_actions=[],
+                rationale=["No active portfolio data — Create or import a portfolio to evaluate portfolio actions."],
+                governance_snapshot=GovernanceSnapshotViewModel(),
+            )
+
+        holdings = []
+        for sym, pos_data in positions.items():
+            if isinstance(pos_data, dict):
+                holdings.append({
+                    "symbol": sym,
+                    "score": float(pos_data.get("composite_score", pos_data.get("score", 75.0))),
+                    "conviction": float(pos_data.get("conviction", 80.0)),
+                    "sector": str(pos_data.get("sector", "General")),
+                    "weight": float(pos_data.get("actual_weight", pos_data.get("current_weight", 0.0))),
+                })
+
+        if alpha12_candidates is None:
+            res = UniverseService().get_enabled_stocks()
+            stocks = res.get("stocks", []) if isinstance(res, dict) else []
+            alpha12_candidates = stocks[:12]
+
+        candidates = []
+        for i, cand in enumerate(alpha12_candidates, start=1):
+            if isinstance(cand, dict):
+                candidates.append({
+                    "symbol": str(cand.get("symbol", "")).upper(),
+                    "score": float(cand.get("composite_score", cand.get("score", max(60.0, 95.0 - (i - 1) * 2.5)))),
+                    "conviction": float(cand.get("conviction", max(60.0, 95.0 - (i - 1) * 2.5))),
+                    "sector": str(cand.get("sector", "General")),
+                })
+
+        gov_svc = PortfolioGovernanceService()
+        evaluations = gov_svc.evaluate_portfolio(holdings, candidates)
+
+        dec_svc = RebalanceDecisionService(gov_svc)
+        decisions = [dec_svc.create_decision_from_governance(ev) for ev in evaluations]
+
+        orchestrator = RebalanceOrchestratorService()
+        plan = orchestrator.generate_plan(decisions, current_portfolio_size=len(holdings))
+
+        return self.build_view_model(plan=plan, evaluations=evaluations, review_date=review_date)
+

@@ -26,9 +26,11 @@ class AllocationItem:
     alpha12_rank: int
     conviction: float
     current_weight_pct: float
-    suggested_amount: float
-    suggested_pct: float
-    reason: str
+    target_weight_pct: float = 8.33
+    expected_weight_pct: float = 8.33
+    suggested_amount: float = 0.0
+    suggested_pct: float = 0.0
+    reason: str = ""
 
 
 @dataclass
@@ -158,13 +160,19 @@ class InvestmentAllocationService:
             allocated_so_far += item_amt
             item_pct = (item_amt / total_amount * 100.0) if total_amount > 0 else 0.0
 
+            # Calculate expected resulting weight
+            curr_pos_val = float(pos_info.get("market_value", pos_info.get("invested_cost", 0.0)))
+            new_pos_val = curr_pos_val + item_amt
+            new_total_val = total_val + total_amount
+            expected_wt = (new_pos_val / new_total_val * 100.0) if new_total_val > 0 else item_pct
+
             # Generate factual reason
             rank = cand["rank"]
             conv = cand["conviction"]
             if curr_weight == 0.0:
                 reason = f"Alpha 12 Rank #{rank} (Conviction: {conv:.1f}%). New position allocation."
-            elif curr_weight < (100.0 / len(candidates)):
-                reason = f"Alpha 12 Rank #{rank} (Conviction: {conv:.1f}%). Currently underrepresented ({curr_weight:.1f}% weight)."
+            elif curr_weight < target_weight:
+                reason = f"Alpha 12 Rank #{rank} (Conviction: {conv:.1f}%). Currently underrepresented ({curr_weight:.1f}% weight vs target {target_weight:.1f}%)."
             else:
                 reason = f"Alpha 12 Rank #{rank} (Conviction: {conv:.1f}%). Core incumbent position ({curr_weight:.1f}% weight)."
 
@@ -175,6 +183,8 @@ class InvestmentAllocationService:
                     alpha12_rank=rank,
                     conviction=conv,
                     current_weight_pct=round(curr_weight, 2),
+                    target_weight_pct=round(target_weight, 2),
+                    expected_weight_pct=round(expected_wt, 2),
                     suggested_amount=item_amt,
                     suggested_pct=round(item_pct, 1),
                     reason=reason,
@@ -194,7 +204,7 @@ class InvestmentAllocationService:
             total_input_amount=total_amount,
             total_allocated_amount=round(total_alloc, 2),
             allocations=allocations,
-            summary_rationale=f"Monthly investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates.",
+            summary_rationale=f"NEW MONEY DEPLOYMENT: Monthly investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates without selling incumbents.",
         )
 
     def allocate_lump_sum_investment(
@@ -264,6 +274,14 @@ class InvestmentAllocationService:
             allocated_so_far += item_amt
             item_pct = (item_amt / total_amount * 100.0) if total_amount > 0 else 0.0
 
+            target_weight = 100.0 / len(candidates)
+            total_val = float(portfolio_state.get("total_portfolio_value", 0.0))
+            pos_info = positions.get(cand["symbol"], {}) if isinstance(positions, dict) else {}
+            curr_pos_val = float(pos_info.get("market_value", pos_info.get("invested_cost", 0.0)))
+            new_pos_val = curr_pos_val + item_amt
+            new_total_val = total_val + total_amount
+            expected_wt = (new_pos_val / new_total_val * 100.0) if new_total_val > 0 else item_pct
+
             rank = cand["rank"]
             conv = cand["conviction"]
             reason = f"Alpha 12 Rank #{rank} (Conviction: {conv:.1f}%). Lump-sum strategic allocation."
@@ -275,6 +293,8 @@ class InvestmentAllocationService:
                     alpha12_rank=rank,
                     conviction=conv,
                     current_weight_pct=round(curr_weight, 2),
+                    target_weight_pct=round(target_weight, 2),
+                    expected_weight_pct=round(expected_wt, 2),
                     suggested_amount=item_amt,
                     suggested_pct=round(item_pct, 1),
                     reason=reason,
@@ -293,5 +313,5 @@ class InvestmentAllocationService:
             total_input_amount=total_amount,
             total_allocated_amount=round(total_alloc, 2),
             allocations=allocations,
-            summary_rationale=f"Lump-sum investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates.",
+            summary_rationale=f"NEW MONEY DEPLOYMENT: Lump-sum investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates.",
         )

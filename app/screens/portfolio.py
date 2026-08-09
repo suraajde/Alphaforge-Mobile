@@ -3785,9 +3785,9 @@ class Portfolio(QWidget):
         self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #173b67; padding: 4px 0px;")
         layout.addWidget(self.lbl_alloc_summary)
 
-        self.alloc_table = QTableWidget(0, 8)
+        self.alloc_table = QTableWidget(0, 10)
         self.alloc_table.setHorizontalHeaderLabels([
-            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Suggested Amount (₹)", "Allocation %", "Reason"
+            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Target Weight", "Expected Weight", "Suggested Amount (₹)", "Allocation %", "Reason"
         ])
         self.alloc_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.alloc_table.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -3802,20 +3802,19 @@ class Portfolio(QWidget):
         return frame
 
     def _on_generate_monthly_allocation(self) -> None:
-        """Generate Monthly Investment Allocation proposal (Requirement 7 & 9)."""
-        from services.investment_allocation_service import InvestmentAllocationService
+        """Generate Monthly Investment Allocation."""
         from PySide6.QtWidgets import QMessageBox
+        from services.investment_allocation_service import InvestmentAllocationService
 
-        txt = self.monthly_input.text().strip().replace(",", "")
+        txt = self.monthly_input.text().strip()
         try:
-            val = float(txt)
+            amt = float(txt)
         except ValueError:
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric monthly investment amount.")
             return
 
         svc = InvestmentAllocationService()
-        res = svc.allocate_monthly_investment(val)
-
+        res = svc.allocate_monthly_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
             return
@@ -3823,20 +3822,19 @@ class Portfolio(QWidget):
         self._render_allocation_results(res)
 
     def _on_generate_lump_sum_allocation(self) -> None:
-        """Generate Lump-Sum Investment Allocation proposal (Requirement 10)."""
-        from services.investment_allocation_service import InvestmentAllocationService
+        """Generate Lump-Sum Investment Allocation."""
         from PySide6.QtWidgets import QMessageBox
+        from services.investment_allocation_service import InvestmentAllocationService
 
-        txt = self.lump_input.text().strip().replace(",", "")
+        txt = self.lump_input.text().strip()
         try:
-            val = float(txt)
+            amt = float(txt)
         except ValueError:
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric lump-sum investment amount.")
             return
 
         svc = InvestmentAllocationService()
-        res = svc.allocate_lump_sum_investment(val)
-
+        res = svc.allocate_lump_sum_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
             return
@@ -3861,9 +3859,11 @@ class Portfolio(QWidget):
             self.alloc_table.setItem(i, 2, QTableWidgetItem(item.company_name))
             self.alloc_table.setItem(i, 3, QTableWidgetItem(f"{item.conviction:.1f}%"))
             self.alloc_table.setItem(i, 4, QTableWidgetItem(f"{item.current_weight_pct:.1f}%"))
-            self.alloc_table.setItem(i, 5, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
-            self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
-            self.alloc_table.setItem(i, 7, QTableWidgetItem(item.reason))
+            self.alloc_table.setItem(i, 5, QTableWidgetItem(f"{item.target_weight_pct:.1f}%"))
+            self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.expected_weight_pct:.1f}%"))
+            self.alloc_table.setItem(i, 7, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
+            self.alloc_table.setItem(i, 8, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
+            self.alloc_table.setItem(i, 9, QTableWidgetItem(item.reason))
 
         QMessageBox.warning(
             self,

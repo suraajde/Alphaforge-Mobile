@@ -223,7 +223,10 @@ class PortfolioActionCenter(QWidget):
             )
             return
 
-        vm: ActionCenterViewModel = self.service.build_view_model(plan, observations=observations, review_date=review_date)
+        if plan is None and observations is None:
+            vm: ActionCenterViewModel = self.service.evaluate_active_portfolio(portfolio_state=state, review_date=review_date)
+        else:
+            vm: ActionCenterViewModel = self.service.build_view_model(plan, observations=observations, review_date=review_date)
 
         # 1. Render Summary
         self.lbl_review_date_val.setText(vm.summary.review_date)

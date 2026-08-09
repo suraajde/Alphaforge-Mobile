@@ -312,7 +312,7 @@ class SIPOptimizationService:
             rat = (
                 f"Analyzed {len(holdings)} positions; {len(sip_txns)} SIP transactions found."
                 if total_sip_txns > 0
-                else "No transactions with source='SIP' found in portfolio history."
+                else "No historical SIP configuration recorded."
             )
 
             return SIPOptimizationResult(

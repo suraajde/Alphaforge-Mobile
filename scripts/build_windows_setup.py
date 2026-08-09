@@ -19,7 +19,8 @@ import subprocess
 from pathlib import Path
 
 def build_windows_setup_installer():
-    dist_root = Path(r"D:\ALPHAFORGE\dist")
+    project_root = Path(__file__).resolve().parent.parent
+    dist_root = project_root / "dist"
     app_dir = dist_root / "AlphaForge-v1.0.0-Windows"
     setup_exe = dist_root / "AlphaForge-v1.0.0-Windows-Setup.exe"
 
@@ -28,8 +29,7 @@ def build_windows_setup_installer():
 
     print("Building standalone Windows Installer AlphaForge-v1.0.0-Windows-Setup.exe...")
 
-    # Create installer payload zip inside temp build directory
-    payload_dir = Path(r"D:\ALPHAFORGE\build\installer_payload")
+    payload_dir = project_root / "build" / "installer_payload"
     if payload_dir.exists():
         shutil.rmtree(payload_dir)
     payload_dir.mkdir(parents=True, exist_ok=True)
@@ -43,37 +43,25 @@ def build_windows_setup_installer():
                 rel_p = full_p.relative_to(app_dir)
                 zf.write(full_p, rel_p)
 
-    # Write installer script entrypoint
     installer_script = payload_dir / "setup_runner.py"
     script_content = r'''import os
 import sys
 import shutil
 import zipfile
 from pathlib import Path
+import subprocess
 import ctypes
 
-def is_admin():
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except Exception:
-        return False
-
 def main():
-    print("=" * 60)
-    print("      AlphaForge AI Portfolio Engine — Windows Setup")
-    print("=" * 60)
-    print()
-
     # Target directory: %LOCALAPPDATA%\Programs\AlphaForge
     local_app_data = os.environ.get("LOCALAPPDATA", r"C:\Users\Public")
     target_dir = Path(local_app_data) / "Programs" / "AlphaForge"
 
-    print(f"Installing AlphaForge to: {target_dir}")
     if target_dir.exists():
         try:
             shutil.rmtree(target_dir)
-        except Exception as e:
-            print(f"Updating existing installation directory... ({e})")
+        except Exception:
+            pass
 
     target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -83,48 +71,53 @@ def main():
     else:
         payload_zip = Path(__file__).parent / "app_payload.zip"
 
-    print("Extracting application files...")
     with zipfile.ZipFile(payload_zip, 'r') as zf:
         zf.extractall(target_dir)
 
-    # Create Start Menu shortcut
+    exe_target = target_dir / "AlphaForge.exe"
+
+    # Create Start Menu & Desktop Shortcuts
     try:
         app_data = os.environ.get("APPDATA", "")
+        user_profile = os.environ.get("USERPROFILE", "")
+
+        targets = []
         if app_data:
             start_menu_dir = Path(app_data) / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "AlphaForge"
             start_menu_dir.mkdir(parents=True, exist_ok=True)
+            targets.append(start_menu_dir / "AlphaForge.lnk")
 
-            exe_target = target_dir / "AlphaForge.exe"
-            shortcut_path = start_menu_dir / "AlphaForge.lnk"
+        if user_profile:
+            desktop_dir = Path(user_profile) / "Desktop"
+            if not desktop_dir.exists():
+                onedrive_desktop = Path(user_profile) / "OneDrive" / "Desktop"
+                if onedrive_desktop.exists():
+                    desktop_dir = onedrive_desktop
 
-            # Create shortcut via PowerShell VBScript bridge
-            ps_cmd = f'$s=(New-Object -COM WScript.Shell).CreateShortcut("{shortcut_path}"); $s.TargetPath="{exe_target}"; $s.WorkingDirectory="{target_dir}"; $s.Save()'
-            subprocess.run(["powershell", "-Command", ps_cmd], capture_output=True)
-            print("Start Menu shortcut created successfully.")
+            if desktop_dir.exists():
+                targets.append(desktop_dir / "AlphaForge.lnk")
 
-            # Create Desktop shortcut
-            user_profile = os.environ.get("USERPROFILE", "")
-            if user_profile:
-                desktop_dir = Path(user_profile) / "Desktop"
-                if desktop_dir.exists():
-                    desktop_shortcut = desktop_dir / "AlphaForge.lnk"
-                    ps_desktop = f'$s=(New-Object -COM WScript.Shell).CreateShortcut("{desktop_shortcut}"); $s.TargetPath="{exe_target}"; $s.WorkingDirectory="{target_dir}"; $s.Save()'
-                    subprocess.run(["powershell", "-Command", ps_desktop], capture_output=True)
-                    print("Desktop shortcut created successfully.")
+        for shortcut_path in targets:
+            vbs_code = f'Set WshShell = CreateObject("WScript.Shell")\nSet sc = WshShell.CreateShortcut("{shortcut_path}")\nsc.TargetPath = "{exe_target}"\nsc.WorkingDirectory = "{target_dir}"\nsc.Save()'
+            vbs_file = target_dir / "_temp_shortcut.vbs"
+            vbs_file.write_text(vbs_code, encoding="utf-8")
+            subprocess.run(["cscript", "//Nologo", str(vbs_file)], capture_output=True)
+            if vbs_file.exists():
+                vbs_file.unlink()
     except Exception as exc:
-        print(f"Shortcut creation notice: {exc}")
+        pass
 
-    # Create uninstaller script in target directory
+    # Create safe uninstaller script
     uninstaller_path = target_dir / "uninstall.bat"
-    uninstaller_path.write_text(f'@echo off\necho Uninstalling AlphaForge...\ntimeout /t 2 /nobreak >nul\nrmdir /s /q "{target_dir}"\necho AlphaForge uninstalled successfully. User data in APPDATA was preserved.\npause\n', encoding="utf-8")
+    uninstaller_code = f"@echo off\necho Uninstalling AlphaForge...\ntimeout /t 1 /nobreak >nul\ncd /d %TEMP%\nrmdir /s /q \"{target_dir}\"\necho AlphaForge uninstalled. User portfolio data in APPDATA was preserved.\npause\n"
+    uninstaller_path.write_text(uninstaller_code, encoding="utf-8")
 
-    print()
-    print("=" * 60)
-    print("   INSTALLATION COMPLETE!")
-    print(f"   AlphaForge is installed at: {target_dir}")
-    print("   User portfolio data location: %APPDATA%\\AlphaForge\\data")
-    print("=" * 60)
-    print()
+    # Show Windows Dialog Popup
+    msg = f"AlphaForge v1.0 has been successfully installed!\n\nInstall Location:\n{target_dir}\n\nShortcuts created on Desktop and Start Menu."
+    try:
+        ctypes.windll.user32.MessageBoxW(0, msg, "AlphaForge Setup Complete", 0x40)
+    except Exception:
+        print(msg)
 
 if __name__ == "__main__":
     main()
@@ -140,7 +133,7 @@ if __name__ == "__main__":
         f"--add-data={payload_zip};.",
         str(installer_script),
         "--distpath", str(dist_root),
-        "--workpath", str(Path(r"D:\ALPHAFORGE\build\setup_work")),
+        "--workpath", str(project_root / "build" / "setup_work"),
     ]
 
     print(f"Running PyInstaller setup build: {' '.join(cmd)}")

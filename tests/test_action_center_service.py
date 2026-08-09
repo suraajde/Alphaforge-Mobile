@@ -56,7 +56,7 @@ def test_summary_generation():
     assert vm_active.summary.review_date == "2026-08-02"
     assert vm_active.summary.portfolio_status == "REBALANCE APPROVED"
     assert vm_active.summary.approved_action_count == 1
-    assert vm_active.summary.deferred_action_count == 2  # 1 governance alert + 1 plan deferred item
+    assert vm_active.summary.deferred_action_count == 1  # 1 plan deferred item (no mock data injection)
     assert vm_active.summary.estimated_turnover == 8.33
 
 
@@ -156,4 +156,4 @@ def test_ui_screen_loads_without_error(qapp):
     screen.load_plan(plan, review_date="2026-08-02")
     assert screen.lbl_status_val.text() == "REBALANCE APPROVED"
     assert screen.approved_table.rowCount() == 1
-    assert screen.deferred_table.rowCount() == 2  # 1 governance alert + 1 plan deferred action
+    assert screen.deferred_table.rowCount() == 1  # 1 plan deferred action (no mock data injection)

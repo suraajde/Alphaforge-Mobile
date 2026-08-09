@@ -156,23 +156,34 @@ class Dashboard(QWidget):
 
     def _load_health_summary(self) -> None:
         try:
+            snapshot = self.portfolio_health_service.build_snapshot()
+            pos_cnt = getattr(snapshot, "position_count", 0)
+            val = getattr(snapshot, "portfolio_value", 0.0)
+
+            if pos_cnt <= 0:
+                self.lbl_health_val.setText("N/A")
+                self.lbl_health_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
+                self.lbl_val_val.setText("₹0.00")
+                self.lbl_val_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
+                return
+
             res = self.portfolio_health_service.evaluate()
             score = getattr(res, "score", 0)
-            grade = getattr(res, "grade", "D")
+            grade = getattr(res, "grade", "N/A")
             self.lbl_health_val.setText(f"{score}/100 ({grade})")
-
-            snapshot = self.portfolio_health_service.build_snapshot()
-            val = getattr(snapshot, "portfolio_value", 0.0)
-            if val > 0:
-                self.lbl_val_val.setText(f"${val:,.2f}")
-            else:
-                self.lbl_val_val.setText("Unavailable")
+            self.lbl_val_val.setText(f"₹{val:,.2f}")
         except Exception:
-            self.lbl_health_val.setText("Unavailable")
-            self.lbl_val_val.setText("Unavailable")
+            self.lbl_health_val.setText("N/A")
+            self.lbl_val_val.setText("₹0.00")
 
     def _load_stability_summary(self) -> None:
         try:
+            snapshot = self.portfolio_health_service.build_snapshot()
+            pos_cnt = getattr(snapshot, "position_count", 0)
+            if pos_cnt <= 0:
+                self.lbl_stab_val.setText("N/A")
+                return
+
             res = self.alpha12_stability_service.get_stability()
             metrics = getattr(res, "stability_metrics", None)
             if metrics is not None and getattr(metrics, "assessment_status", "UNAVAILABLE") != "UNAVAILABLE":
@@ -180,9 +191,9 @@ class Dashboard(QWidget):
                 rating = getattr(metrics, "stability_rating", "MODERATE")
                 self.lbl_stab_val.setText(f"{score:.1f} ({rating})")
             else:
-                self.lbl_stab_val.setText("Unavailable")
+                self.lbl_stab_val.setText("N/A")
         except Exception:
-            self.lbl_stab_val.setText("Unavailable")
+            self.lbl_stab_val.setText("N/A")
 
     def _load_alerts_summary(self) -> None:
         try:
@@ -197,18 +208,26 @@ class Dashboard(QWidget):
         try:
             snapshot = self.portfolio_health_service.build_snapshot()
             pos_cnt = getattr(snapshot, "position_count", 0)
-            cash_pct = getattr(snapshot, "cash_allocation_pct", 0.0)
-            largest_pos = getattr(snapshot, "largest_position", "N/A")
 
-            res = self.portfolio_health_service.evaluate(snapshot)
-            div_rating = getattr(res, "diversification_rating", "POOR")
-            conc_rating = getattr(res, "concentration_rating", "HIGH")
+            if pos_cnt <= 0:
+                summary_str = (
+                    "• Active Positions: 0 | Portfolio Status: No Active Portfolio Created\n"
+                    "• Diversification Rating: N/A | Concentration Risk: N/A\n"
+                    f"• System Status: Operational (v{APP_VERSION} Stable)"
+                )
+            else:
+                cash_pct = getattr(snapshot, "cash_allocation_pct", 0.0)
+                largest_pos = getattr(snapshot, "largest_position", "N/A")
+                res = self.portfolio_health_service.evaluate(snapshot)
+                div_rating = getattr(res, "diversification_rating", "N/A")
+                conc_rating = getattr(res, "concentration_rating", "N/A")
 
-            summary_str = (
-                f"• Active Positions: {pos_cnt} | Cash Allocation: {cash_pct:.1f}% | Largest Position: {largest_pos}\n"
-                f"• Diversification Rating: {div_rating} | Concentration Risk: {conc_rating}\n"
-                f"• System Status: Operational (v{APP_VERSION} Stable)"
-            )
+                summary_str = (
+                    f"• Active Positions: {pos_cnt} | Cash Allocation: {cash_pct:.1f}% | Largest Position: {largest_pos}\n"
+                    f"• Diversification Rating: {div_rating} | Concentration Risk: {conc_rating}\n"
+                    f"• System Status: Operational (v{APP_VERSION} Stable)"
+                )
+
             lbl = QLabel(summary_str)
             lbl.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
             self.detail_container.addWidget(lbl)

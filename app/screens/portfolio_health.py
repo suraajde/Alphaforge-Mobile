@@ -854,7 +854,17 @@ class PortfolioHealth(QWidget):
 
                 rat = getattr(result, "rationale", "") if result is not None else ""
 
-                msg = f"No SIP optimization data available. ({rat})" if rat else "No SIP optimization data available."
+                if "No historical SIP configuration" in rat:
+
+                    msg = rat
+
+                elif rat:
+
+                    msg = f"No SIP optimization data available. ({rat})"
+
+                else:
+
+                    msg = "No historical SIP configuration recorded."
 
                 lbl = QLabel(msg)
 

@@ -178,6 +178,8 @@ class PortfolioAdministrationService:
             get_data_path("decisions/decision_audit.json"),
             get_data_path("alerts/portfolio_alerts.json"),
             get_data_path("alerts/alert_history.json"),
+            get_data_path("portfolio_health/portfolio_health_history.json"),
+            get_data_path("alpha12/alpha12_mapping_history.json"),
         ]
 
         for p in analytical_files:
