@@ -707,138 +707,92 @@ class PortfolioHealthService:
             return self._evaluation_cache
 
         # 1. Position Count Score (40 pts)
-
-        if pos_count >= 10:
-
-            pos_score = 40
-
-        elif pos_count >= 7:
-
-            pos_score = 30
-
-        elif pos_count >= 4:
-
-            pos_score = 20
-
+        if pos_count == 0:
+            pos_score = 0
+            conc_score = 0
+            cash_score = 0
+            total_score = 0
+            grade = "N/A"
+            diversification_rating = "N/A"
+            concentration_rating = "N/A"
         else:
+            if pos_count >= 10:
+                pos_score = 40
+            elif pos_count >= 7:
+                pos_score = 30
+            elif pos_count >= 4:
+                pos_score = 20
+            else:
+                pos_score = 10
 
-            pos_score = 10
+            # 2. Concentration Score (40 pts)
+            if largest_weight <= 10.0:
+                conc_score = 40
+            elif largest_weight <= 15.0:
+                conc_score = 30
+            elif largest_weight <= 20.0:
+                conc_score = 20
+            else:
+                conc_score = 10
 
-        # 2. Concentration Score (40 pts)
+            # 3. Cash Allocation Score (20 pts)
+            if cash_pct <= 10.0:
+                cash_score = 20
+            elif cash_pct <= 20.0:
+                cash_score = 15
+            elif cash_pct <= 30.0:
+                cash_score = 10
+            else:
+                cash_score = 5
 
-        if largest_weight <= 10.0:
+            total_score = pos_score + conc_score + cash_score
 
-            conc_score = 40
+            # Grade Mapping
+            if total_score >= 90:
+                grade = "A"
+            elif total_score >= 80:
+                grade = "B"
+            elif total_score >= 70:
+                grade = "C"
+            else:
+                grade = "D"
 
-        elif largest_weight <= 15.0:
+            # Diversification Rating
+            if pos_count >= 10:
+                diversification_rating = "GOOD"
+            elif pos_count >= 6:
+                diversification_rating = "MODERATE"
+            else:
+                diversification_rating = "POOR"
 
-            conc_score = 30
-
-        elif largest_weight <= 20.0:
-
-            conc_score = 20
-
-        else:
-
-            conc_score = 10
-
-        # 3. Cash Allocation Score (20 pts)
-
-        if cash_pct <= 10.0:
-
-            cash_score = 20
-
-        elif cash_pct <= 20.0:
-
-            cash_score = 15
-
-        elif cash_pct <= 30.0:
-
-            cash_score = 10
-
-        else:
-
-            cash_score = 5
-
-        total_score = pos_score + conc_score + cash_score
-
-        # Grade Mapping
-
-        if total_score >= 90:
-
-            grade = "A"
-
-        elif total_score >= 80:
-
-            grade = "B"
-
-        elif total_score >= 70:
-
-            grade = "C"
-
-        else:
-
-            grade = "D"
-
-        # Diversification Rating
-
-        if pos_count >= 10:
-
-            diversification_rating = "GOOD"
-
-        elif pos_count >= 6:
-
-            diversification_rating = "MODERATE"
-
-        else:
-
-            diversification_rating = "POOR"
-
-        # Concentration Rating
-
-        if largest_weight <= 10.0:
-
-            concentration_rating = "LOW"
-
-        elif largest_weight <= 20.0:
-
-            concentration_rating = "MODERATE"
-
-        else:
-
-            concentration_rating = "HIGH"
+            # Concentration Rating
+            if largest_weight <= 10.0:
+                concentration_rating = "LOW"
+            elif largest_weight <= 20.0:
+                concentration_rating = "MODERATE"
+            else:
+                concentration_rating = "HIGH"
 
         # Generate Strengths
-
         strengths = []
-
-        if pos_count >= 10:
-
-            strengths.append("Good diversification")
-
-        if largest_weight <= 10.0:
-
-            strengths.append("Low concentration risk")
-
-        if cash_pct <= 10.0:
-
-            strengths.append("Healthy cash allocation")
-
-        # Generate Weaknesses
-
         weaknesses = []
 
-        if pos_count < 6:
+        if pos_count == 0:
+            weaknesses.append("No active portfolio positions found. Create or import a portfolio.")
+        else:
+            if pos_count >= 10:
+                strengths.append("Good diversification")
+            if largest_weight <= 10.0:
+                strengths.append("Low concentration risk")
+            if cash_pct <= 10.0:
+                strengths.append("Healthy cash allocation")
 
-            weaknesses.append("Portfolio may be under-diversified")
-
-        if largest_weight > 20.0:
-
-            weaknesses.append("High concentration risk")
-
-        if cash_pct > 20.0:
-
-            weaknesses.append("Elevated cash allocation")
+            if pos_count < 6:
+                weaknesses.append("Portfolio may be under-diversified")
+            if largest_weight > 20.0:
+                weaknesses.append("High concentration risk")
+            if cash_pct > 20.0:
+                weaknesses.append("Elevated cash allocation")
 
         analytics = PortfolioHealthAnalytics(
 

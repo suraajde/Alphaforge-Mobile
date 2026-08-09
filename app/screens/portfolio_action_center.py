@@ -3,8 +3,7 @@
 Presents governance review summaries, approved actions, deferred actions, rebalance rationale,
 and governance policy snapshots in a modern PySide6 interface.
 """
-from __future__ import annotations
-
+from datetime import datetime
 from typing import Optional
 
 from PySide6.QtCore import Qt
@@ -218,6 +217,31 @@ class PortfolioActionCenter(QWidget):
         review_date: Optional[str] = None,
     ) -> None:
         """Populate the Action Center UI widgets using ActionCenterService view model."""
+        from services.portfolio_state_service import PortfolioStateService
+        from config.path_config import get_data_path
+
+        state_path = get_data_path("portfolio/portfolio_state.json")
+        state_res = PortfolioStateService().load_state(path=state_path)
+        state = state_res.get("state", {}) if isinstance(state_res, dict) else {}
+        positions = state.get("positions", {}) if isinstance(state, dict) else {}
+
+        date_str = review_date or datetime.now().strftime("%Y-%m-%d")
+
+        if not positions:
+            self.lbl_review_date_val.setText(date_str)
+            self.lbl_status_val.setText("NO ACTIVE PORTFOLIO DATA")
+            self.lbl_status_val.setStyleSheet("color: #94a3b8; font-weight: 700; font-size: 16px;")
+            self.lbl_approved_count_val.setText("0")
+            self.lbl_deferred_count_val.setText("0")
+            self.lbl_turnover_val.setText("0.0%")
+            self.approved_table.setRowCount(0)
+            self.deferred_table.setRowCount(0)
+            self.rationale_list.clear()
+            self.rationale_list.addItem(
+                QListWidgetItem("• No active portfolio data — Create or import a portfolio to evaluate portfolio actions.")
+            )
+            return
+
         vm: ActionCenterViewModel = self.service.build_view_model(plan, observations=observations, review_date=review_date)
 
         # 1. Render Summary

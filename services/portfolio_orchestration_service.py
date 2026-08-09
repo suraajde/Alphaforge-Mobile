@@ -1296,42 +1296,55 @@ class PortfolioOrchestrationService:
 
         if isinstance(health_eval, PortfolioHealthResult):
             health_analytics = getattr(health_eval, "analytics", None)
-            div_score = (
-                getattr(health_analytics, "diversification_score", 20)
-                if health_analytics
-                else 20
-            )
-            conc_score = (
-                getattr(health_analytics, "concentration_score", 20)
-                if health_analytics
-                else 20
-            )
-            pos_score = (
-                getattr(health_analytics, "cash_score", 20)
-                if health_analytics
-                else 20
-            )
-
+            score_val = getattr(health_eval, "score", 0)
             grade = getattr(health_eval, "grade", "D")
-            if grade == "A":
-                rec = "Healthy portfolio. No immediate rebalance required."
-            elif grade == "B":
-                rec = "Good portfolio. Minor optimisation recommended."
-            elif grade == "C":
-                rec = "Portfolio should be reviewed."
+
+            if grade == "N/A" or score_val == 0:
+                div_score = 0
+                conc_score = 0
+                pos_score = 0
+                weight_balance = 0
+                structure = 0
+                rec = "No active portfolio positions"
+                grade = "N/A"
             else:
-                rec = "Portfolio requires rebalancing."
+                div_score = (
+                    getattr(health_analytics, "diversification_score", 20)
+                    if health_analytics
+                    else 20
+                )
+                conc_score = (
+                    getattr(health_analytics, "concentration_score", 20)
+                    if health_analytics
+                    else 20
+                )
+                pos_score = (
+                    getattr(health_analytics, "cash_score", 20)
+                    if health_analytics
+                    else 20
+                )
+                weight_balance = 20
+                structure = 20
+                if grade == "A":
+                    rec = "Healthy portfolio. No immediate rebalance required."
+                elif grade == "B":
+                    rec = "Good portfolio. Minor optimisation recommended."
+                elif grade == "C":
+                    rec = "Portfolio should be reviewed."
+                else:
+                    rec = "Portfolio requires rebalancing."
 
             health = PortfolioHealth(
-                overall_score=getattr(health_eval, "score", 0),
+                overall_score=score_val,
                 overall_grade=grade,
                 diversification_score=div_score,
                 concentration_score=conc_score,
                 position_sizing_score=pos_score,
-                weight_balance_score=20,
-                portfolio_structure_score=20,
+                weight_balance_score=weight_balance,
+                portfolio_structure_score=structure,
                 recommendation=rec,
             )
+
         else:
             health = health_eval
 

@@ -51,7 +51,7 @@ def test_settings_version_and_path_display(qapp):
                 assert "v1.0.0 (Stable Release)" in txt
                 found_version = True
             if "Release Status:" in txt:
-                assert "Version 1.0.0 Stable Release (Chapter 20 Completed)" in txt
+                assert "Version 1.0.0 Stable Release" in txt
                 found_status = True
             if "User Writable Data Directory:" in txt:
                 assert base_dir_str in txt

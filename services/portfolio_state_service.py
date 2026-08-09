@@ -5,47 +5,22 @@ from datetime import datetime, timezone
 import json
 from pathlib import Path
 
+from config.path_config import get_data_path
+
 
 class PortfolioStateService:
     """
     AlphaForge Portfolio State & Monthly Accumulation Engine.
-
-    Maintains confirmed investment state separately from
-    recommendation engines.
-
-    Responsibilities:
-    - Create an empty portfolio state.
-    - Apply confirmed BUY transactions.
-    - Maintain actual quantities.
-    - Maintain weighted average purchase cost.
-    - Maintain invested cost.
-    - Maintain cash carry-forward.
-    - Mark holdings to supplied market prices.
-    - Calculate current value, actual weight and target drift.
-    - Preserve Alpha 12 portfolio metadata.
-    - Create immutable-style portfolio snapshots.
-
-    This service does NOT:
-    - Select Alpha 12 stocks.
-    - Calculate target portfolio weights.
-    - Generate initial deployment recommendations.
-    - Generate Smart SIP recommendations.
-    - Assume recommendations were executed.
-    - Sell holdings.
-    - Replace Alpha 12 members.
+    ...
     """
 
     STATE_VERSION = "1.0"
 
-    DEFAULT_STATE_PATH = (
-        Path(__file__)
-        .resolve()
-        .parent
-        .parent
-        / "data"
-        / "portfolio"
-        / "portfolio_state.json"
-    )
+    DEFAULT_STATE_PATH = get_data_path("portfolio/portfolio_state.json")
+
+    @classmethod
+    def get_default_state_path(cls) -> Path:
+        return get_data_path("portfolio/portfolio_state.json")
 
     @staticmethod
     def _normalize_symbol(value):
@@ -1765,7 +1740,7 @@ class PortfolioStateService:
 
             if path is not None
 
-            else self.DEFAULT_STATE_PATH
+            else self.get_default_state_path()
 
         )
 
@@ -1831,7 +1806,7 @@ class PortfolioStateService:
 
             if path is not None
 
-            else self.DEFAULT_STATE_PATH
+            else self.get_default_state_path()
 
         )
 

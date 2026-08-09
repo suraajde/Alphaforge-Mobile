@@ -70,15 +70,14 @@ class Settings(QWidget):
         sys_info = (
             "• Application Name: AlphaForge — AI Portfolio Construction Engine\n"
             f"• Release Version: v{APP_VERSION} (Stable Release)\n"
-            "• Release Status: Version 1.0.0 Stable Release (Chapter 20 Completed)\n"
-            "• Developed By: Suraj Dev\n"
-            "• Contact Email: suraajde@gmail.com\n"
-            '• LinkedIn: <a href="https://www.linkedin.com/in/suraaj-de-81336932/">suraaj-de-81336932</a>\n'
-            '• GitHub: <a href="https://github.com/suraajde">github.com/suraajde</a>'
+            "• Release Status: Version 1.0.0 Stable Release\n"
+            "• Created & Developed By: Suraj Dev\n"
+            "• Email: suraajde@gmail.com\n"
+            "• LinkedIn: suraaj-de-81336932\n"
+            "• GitHub: github.com/suraajde"
         )
         lbl_sys_body = QLabel(sys_info)
         lbl_sys_body.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
-        lbl_sys_body.setOpenExternalLinks(True)
 
         sys_layout.addWidget(lbl_sys_title)
         sys_layout.addWidget(lbl_sys_body)
@@ -96,10 +95,10 @@ class Settings(QWidget):
         lbl_lic_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #0f172a;")
 
         lic_info = (
-            "<b>Personal Use License:</b><br>"
+            "Personal Use License:\n"
             "AlphaForge is provided under a personal use software license for individual analytical and research purposes. "
-            "It requires no activation keys, paid subscriptions, or online license server validation.<br><br>"
-            "<b>Educational Investment Disclaimer:</b><br>"
+            "It requires no activation keys, paid subscriptions, or online license server validation.\n\n"
+            "Educational Investment Disclaimer:\n"
             "AlphaForge is analytical and educational software. Its outputs are provided for informational and research purposes only "
             "and do not constitute personalized investment, financial, legal, tax, or securities advice. "
             "Users are solely responsible for their own investment decisions and should conduct their own research and, where appropriate, "

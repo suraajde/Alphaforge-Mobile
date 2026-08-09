@@ -66,10 +66,9 @@ class PortfolioIntelligenceScoreService:
             # Return safe default
             component_scores = {k: 0.0 for k in self.COMPONENT_WEIGHTS.keys()}
             overall = 0.0
-            grade = self._grade_from_score(overall)
+            grade = "N/A"
             summary = (
-                f"Portfolio Intelligence: {overall:.1f}/100 ({grade}). "
-                "Insufficient data to score portfolio."
+                "Portfolio Intelligence: N/A. Insufficient data to score portfolio."
             )
             return PortfolioIntelligenceScore(
                 overall_score=overall,
@@ -80,6 +79,23 @@ class PortfolioIntelligenceScoreService:
                 warnings=warnings,
                 summary=summary,
             )
+
+        if getattr(health, "overall_grade", "") == "N/A" or getattr(health, "overall_score", 0) == 0:
+            component_scores = {k: 0.0 for k in self.COMPONENT_WEIGHTS.keys()}
+            overall = 0.0
+            grade = "N/A"
+            summary = "No active portfolio positions found. Create or import a portfolio."
+            weaknesses.append("No active portfolio positions found. Create or import a portfolio.")
+            return PortfolioIntelligenceScore(
+                overall_score=overall,
+                component_scores=component_scores,
+                investment_grade=grade,
+                strengths=strengths,
+                weaknesses=weaknesses,
+                warnings=warnings,
+                summary=summary,
+            )
+
 
         # Build component scores scaled to 0-100
         # health.overall_score is already 0-100

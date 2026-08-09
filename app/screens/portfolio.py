@@ -71,7 +71,7 @@ class Portfolio(QWidget):
         self._build_ui()
 
         self.initial_investment_btn = QPushButton(
-            "Create Investment Plan"
+            "+ Create Portfolio"
         )
 
         self.initial_investment_btn.setMinimumHeight(
@@ -644,7 +644,7 @@ class Portfolio(QWidget):
         )
 
         self.empty_title = QLabel(
-            "No Active Portfolio"
+            "No portfolio created yet."
         )
 
         self.empty_title.setObjectName(
@@ -3197,12 +3197,18 @@ class Portfolio(QWidget):
 
             self.holdings_frame.hide()
 
+            self.intelligence_frame.hide()
+
             self.table.setRowCount(
                 0
             )
 
             self.status_label.setText(
-                "No persistent portfolio state found."
+                "No portfolio created yet."
+            )
+
+            self.subtitle_label.setText(
+                "Persistent Alpha 12 portfolio monitoring"
             )
 
             return
@@ -3210,6 +3216,16 @@ class Portfolio(QWidget):
         self.empty_frame.hide()
 
         self.holdings_frame.show()
+
+        self.intelligence_frame.show()
+
+        self.subtitle_label.setText(
+            "Persistent Alpha 12 portfolio monitoring | Active Portfolio: Primary Portfolio"
+        )
+
+        self.status_label.setText(
+            "Active Portfolio: Primary Portfolio"
+        )
 
         positions = summary.get(
             "positions",

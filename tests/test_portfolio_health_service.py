@@ -326,9 +326,9 @@ def test_evaluate_empty_portfolio_safety():
 
     assert result.position_count == 0
 
-    assert result.diversification_rating == "POOR"
+    assert result.diversification_rating == "N/A"
 
-    assert result.concentration_rating == "LOW"
+    assert result.concentration_rating == "N/A"
 
 def test_analytics_object_exists():
 
@@ -426,11 +426,11 @@ def test_empty_portfolio_safety_analytics():
 
     assert isinstance(result.analytics, PortfolioHealthAnalytics)
 
-    assert result.analytics.diversification_score == 10
+    assert result.analytics.diversification_score == 0
 
-    assert result.analytics.concentration_score == 40
+    assert result.analytics.concentration_score == 0
 
-    assert result.analytics.cash_score == 20
+    assert result.analytics.cash_score == 0
 
 def test_trend_object_exists():
 

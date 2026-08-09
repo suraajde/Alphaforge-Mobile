@@ -194,13 +194,13 @@ def test_empty_portfolio_ui_safety(qapp):
 
             return PortfolioHealthResult(
 
-                score=70,
+                score=0,
 
-                grade="C",
+                grade="N/A",
 
-                diversification_rating="POOR",
+                diversification_rating="N/A",
 
-                concentration_rating="LOW",
+                concentration_rating="N/A",
 
                 position_count=0,
 
@@ -212,11 +212,11 @@ def test_empty_portfolio_ui_safety(qapp):
 
     screen = PortfolioHealth(service=EmptyHealthService())
 
-    assert "70 / 100" in screen.cards["Overall Health Score"].text()
+    assert "N/A" in screen.cards["Overall Health Score"].text()
 
-    assert screen.cards["Diversification"].text() == "POOR"
+    assert screen.cards["Diversification"].text() == "N/A"
 
-    assert screen.cards["Concentration"].text() == "LOW"
+    assert screen.cards["Concentration"].text() == "N/A"
 
 def test_analytics_section_loads(qapp):
 

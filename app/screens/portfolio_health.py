@@ -3598,50 +3598,61 @@ class PortfolioHealth(QWidget):
             pass
 
     def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
-
         """Bind live snapshot metrics to the metric cards."""
-
         if snapshot is None:
-
             return
+
+        pos_cnt = getattr(snapshot, "position_count", 0)
+
+        if hasattr(self, "empty_banner"):
+            if pos_cnt == 0:
+                self.empty_banner.show()
+            else:
+                self.empty_banner.hide()
 
         if "Position Count" in self.cards:
-
-            self.cards["Position Count"].setText(str(snapshot.position_count))
+            self.cards["Position Count"].setText(str(pos_cnt))
 
         if "Cash Allocation" in self.cards:
-
-            val = snapshot.cash_allocation_pct
-
-            val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
-
-            self.cards["Cash Allocation"].setText(val_str)
+            if pos_cnt == 0:
+                self.cards["Cash Allocation"].setText("N/A")
+            else:
+                val = snapshot.cash_allocation_pct
+                val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
+                self.cards["Cash Allocation"].setText(val_str)
 
         if "Largest Position" in self.cards:
-
-            self.cards["Largest Position"].setText(str(snapshot.largest_position))
+            if pos_cnt == 0:
+                self.cards["Largest Position"].setText("N/A")
+            else:
+                self.cards["Largest Position"].setText(str(snapshot.largest_position))
 
     def load_result(self, result: Optional[PortfolioHealthResult] = None) -> None:
-
         """Bind live PortfolioHealthResult metrics to score, diversification, concentration, and analytics sections."""
-
         if result is None:
-
             return
 
+        pos_cnt = getattr(result, "position_count", 0)
+        grade = getattr(result, "grade", "")
+
         if "Overall Health Score" in self.cards:
-
-            grade_suffix = f" ({result.grade})" if getattr(result, "grade", None) else ""
-
-            self.cards["Overall Health Score"].setText(f"{result.score} / 100{grade_suffix}")
+            if pos_cnt == 0 or grade == "N/A":
+                self.cards["Overall Health Score"].setText("N/A")
+            else:
+                grade_suffix = f" ({grade})" if grade else ""
+                self.cards["Overall Health Score"].setText(f"{result.score} / 100{grade_suffix}")
 
         if "Diversification" in self.cards:
-
-            self.cards["Diversification"].setText(str(result.diversification_rating))
+            if pos_cnt == 0 or grade == "N/A":
+                self.cards["Diversification"].setText("N/A")
+            else:
+                self.cards["Diversification"].setText(str(result.diversification_rating))
 
         if "Concentration" in self.cards:
-
-            self.cards["Concentration"].setText(str(result.concentration_rating))
+            if pos_cnt == 0 or grade == "N/A":
+                self.cards["Concentration"].setText("N/A")
+            else:
+                self.cards["Concentration"].setText(str(result.concentration_rating))
 
         analytics = getattr(result, "analytics", None)
 
@@ -4050,6 +4061,21 @@ class PortfolioHealth(QWidget):
         title_box.addWidget(header_subtitle)
 
         root_layout.addLayout(title_box)
+
+        # Empty State Banner
+        self.empty_banner = QFrame()
+        self.empty_banner.setObjectName("metricCard")
+        self.empty_banner.setStyleSheet("QFrame#metricCard { background-color: #eff6ff; border: 1px solid #93c5fd; border-radius: 8px; }")
+        empty_banner_layout = QVBoxLayout(self.empty_banner)
+        empty_banner_layout.setContentsMargins(16, 12, 16, 12)
+        lbl_empty_hdr = QLabel("No active portfolio data")
+        lbl_empty_hdr.setStyleSheet("font-size: 16px; font-weight: 700; color: #1e3a8a;")
+        lbl_empty_sub = QLabel("Create or import a portfolio to evaluate portfolio health.")
+        lbl_empty_sub.setStyleSheet("font-size: 13px; color: #3b82f6;")
+        empty_banner_layout.addWidget(lbl_empty_hdr)
+        empty_banner_layout.addWidget(lbl_empty_sub)
+        self.empty_banner.hide()
+        root_layout.addWidget(self.empty_banner)
 
         # Metric Cards Grid Layout
 
