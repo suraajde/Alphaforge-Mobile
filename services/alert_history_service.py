@@ -34,6 +34,9 @@ class AlertHistory:
     entries: list[AlertHistoryEntry]
 
 
+from config.path_config import get_data_path
+
+
 class AlertHistoryService:
     """Service layer for persisting, appending, and querying alert history safely."""
 
@@ -41,7 +44,7 @@ class AlertHistoryService:
         if storage_path is not None:
             self.storage_path = Path(storage_path)
         else:
-            self.storage_path = Path("data/alerts/alert_history.json")
+            self.storage_path = get_data_path("alerts/alert_history.json")
 
     def _ensure_storage_exists(self) -> None:
         try:

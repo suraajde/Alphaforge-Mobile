@@ -98,7 +98,7 @@ def test_modified_file_reloads_from_disk():
 
 def test_missing_file_handled_safely():
     """Verify missing history storage file is handled safely."""
-    svc = PortfolioHealthHistoryService(storage_path="D:/ALPHAFORGE/non_existent_history.json")
+    svc = PortfolioHealthHistoryService(storage_path="non_existent_history.json")
     history = svc.get_history()
     assert history == []
 

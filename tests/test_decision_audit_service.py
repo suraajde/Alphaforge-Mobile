@@ -42,11 +42,7 @@ def scratch_dir():
 
     """Create a temporary directory for test storage, cleaned up after use."""
 
-    base = os.path.join("d:/ALPHAFORGE", "scratch")
-
-    os.makedirs(base, exist_ok=True)
-
-    d = tempfile.mkdtemp(dir=base)
+    d = tempfile.mkdtemp()
 
     yield d
 

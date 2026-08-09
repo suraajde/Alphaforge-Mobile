@@ -17,9 +17,7 @@ from services.portfolio_health_history_service import (
 
 @pytest.fixture
 def custom_tmp_dir():
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     yield Path(temp_dir)
     shutil.rmtree(temp_dir, ignore_errors=True)
 

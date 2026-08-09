@@ -88,6 +88,9 @@ def _safe_int(val: Any, default: int = 0) -> int:
         return default
 
 
+from config.path_config import get_data_path
+
+
 class PortfolioIntelligenceService:
     """Foundational service for the Portfolio Intelligence Layer.
 
@@ -95,7 +98,7 @@ class PortfolioIntelligenceService:
     Operates defensively without side effects on portfolio holdings or execution state.
     """
 
-    _DEFAULT_STORAGE = os.path.join("data", "intelligence", "portfolio_intelligence_history.json")
+    _DEFAULT_STORAGE = str(get_data_path("intelligence/portfolio_intelligence_history.json"))
 
     def __init__(
         self,

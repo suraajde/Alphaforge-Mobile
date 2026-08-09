@@ -136,6 +136,9 @@ def _safe_int(val: Any, default: int = 0) -> int:
         return default
 
 
+from config.path_config import get_data_path
+
+
 class Alpha12StabilityService:
     """Service for measuring long-term portfolio stability and persistence.
 
@@ -144,7 +147,7 @@ class Alpha12StabilityService:
     and factual persistence history.
     """
 
-    DEFAULT_STORAGE_PATH = os.path.join("data", "rebalancing", "alpha12_stability_history.json")
+    DEFAULT_STORAGE_PATH = str(get_data_path("rebalancing/alpha12_stability_history.json"))
 
     def __init__(
         self,

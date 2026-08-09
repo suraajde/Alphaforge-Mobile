@@ -96,6 +96,9 @@ def _empty_trail() -> DecisionAuditTrail:
 
 
 
+from config.path_config import get_data_path
+
+
 class DecisionAuditService:
 
     """Service for recording and persisting decision audit entries.
@@ -110,7 +113,7 @@ class DecisionAuditService:
 
 
 
-    _DEFAULT_STORAGE = os.path.join("data", "decisions", "decision_audit.json")
+    _DEFAULT_STORAGE = str(get_data_path("decisions/decision_audit.json"))
 
 
 

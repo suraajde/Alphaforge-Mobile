@@ -202,6 +202,9 @@ def _is_valid_position(pos: Any) -> bool:
 
 
 
+from config.path_config import get_data_path
+
+
 class DriftDetectionService:
 
     """Service for calculating target-vs-actual allocation drift and maintaining drift history.
@@ -216,7 +219,7 @@ class DriftDetectionService:
 
 
 
-    DEFAULT_HISTORY_PATH = os.path.join("data", "rebalancing", "drift_history.json")
+    DEFAULT_HISTORY_PATH = str(get_data_path("rebalancing/drift_history.json"))
 
 
 

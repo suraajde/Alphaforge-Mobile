@@ -950,11 +950,7 @@ def test_monitoring_empty_history_safe(qapp):
 
     from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -990,11 +986,7 @@ def test_monitoring_corrupt_history_safe(qapp):
 
     from services.portfolio_health_monitor_service import PortfolioHealthMonitorService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1088,11 +1080,7 @@ def test_change_detection_no_history_safe(qapp):
 
     from services.portfolio_health_history_service import PortfolioHealthHistoryService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1128,11 +1116,7 @@ def test_change_detection_single_snapshot_safe(qapp):
 
     from services.portfolio_health_history_service import PortfolioHealthHistoryService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1226,11 +1210,7 @@ def test_timeline_empty_timeline_safe(qapp):
 
     from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1268,11 +1248,7 @@ def test_timeline_single_snapshot_safe(qapp):
 
     from services.portfolio_health_timeline_service import PortfolioHealthTimelineService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1388,11 +1364,7 @@ def test_monitoring_dashboard_empty_dashboard_safe(qapp):
 
     from services.portfolio_health_monitor_dashboard_service import PortfolioHealthMonitoringDashboardService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 
@@ -1482,11 +1454,7 @@ def test_empty_alert_center_safe(qapp):
 
     from services.alert_center_service import AlertCenterService
 
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
 
     try:
 

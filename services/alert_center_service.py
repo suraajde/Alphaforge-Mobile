@@ -30,6 +30,9 @@ class AlertCenterState:
     alerts: list[PortfolioAlert]
 
 
+from config.path_config import get_data_path
+
+
 class AlertCenterService:
     """Service layer for persisting and querying portfolio alerts safely."""
 
@@ -37,7 +40,7 @@ class AlertCenterService:
         if storage_path is not None:
             self.storage_path = Path(storage_path)
         else:
-            self.storage_path = Path("data/alerts/portfolio_alerts.json")
+            self.storage_path = get_data_path("alerts/portfolio_alerts.json")
 
     def _ensure_storage_exists(self) -> None:
         try:

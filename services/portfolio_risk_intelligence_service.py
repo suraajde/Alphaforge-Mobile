@@ -145,12 +145,13 @@ def _safe_int(val: Any, default: int = 0) -> int:
         return default
 
 
+from config.path_config import get_data_path
+
+
 class PortfolioRiskIntelligenceService:
     """Service layer for performing factual risk assessment, scoring, and history tracking."""
 
-    _DEFAULT_STORAGE = (
-        Path(__file__).resolve().parent.parent / "data" / "intelligence" / "portfolio_risk_history.json"
-    )
+    _DEFAULT_STORAGE = get_data_path("intelligence/portfolio_risk_history.json")
 
     def __init__(
         self,

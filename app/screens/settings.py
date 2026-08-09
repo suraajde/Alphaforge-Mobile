@@ -146,6 +146,35 @@ class Settings(QWidget):
         safety_layout.addWidget(lbl_safety_text)
         root_layout.addWidget(safety_card)
 
+        # Section 5: Developer & Licensing Information
+        dev_card = QFrame()
+        dev_card.setObjectName("metricCard")
+        dev_layout = QVBoxLayout(dev_card)
+        dev_layout.setContentsMargins(16, 14, 16, 14)
+        dev_layout.setSpacing(8)
+
+        lbl_dev_title = QLabel("DEVELOPER & LICENSE INFORMATION")
+        lbl_dev_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
+
+        dev_info = (
+            "Created & Developed by Suraj Dev\n\n"
+            "Contact:\n"
+            "• Email: suraajde@gmail.com\n"
+            "• LinkedIn: https://www.linkedin.com/in/suraaj-de-81336932/\n"
+            "• GitHub: https://github.com/suraajde\n\n"
+            "License & Investment Disclaimer:\n"
+            "AlphaForge is analytical and educational software. Outputs are purely informational and analytical "
+            "and are not intended to constitute personalized investment, financial, or securities advice. "
+            "Users remain solely responsible for their investment decisions and independent research."
+        )
+        lbl_dev_body = QLabel(dev_info)
+        lbl_dev_body.setStyleSheet("font-size: 12px; color: #334155; line-height: 1.4;")
+        lbl_dev_body.setOpenExternalLinks(True)
+
+        dev_layout.addWidget(lbl_dev_title)
+        dev_layout.addWidget(lbl_dev_body)
+        root_layout.addWidget(dev_card)
+
         root_layout.addStretch()
         scroll.setWidget(content_widget)
         outer_layout.addWidget(scroll)

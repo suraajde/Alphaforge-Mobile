@@ -18,9 +18,7 @@ def test_service_instantiation():
 
 def test_empty_history():
     """Verify get_history returns empty AlertHistory when no file exists."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         empty_file = Path(temp_dir) / "empty_history.json"
         service = AlertHistoryService(storage_path=str(empty_file))
@@ -37,9 +35,7 @@ def test_empty_history():
 
 def test_save_and_load_history():
     """Verify save_history and load_history roundtrip."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         history_file = Path(temp_dir) / "history.json"
         service = AlertHistoryService(storage_path=str(history_file))
@@ -63,9 +59,7 @@ def test_save_and_load_history():
 
 def test_missing_history_file():
     """Verify graceful handling when history file is missing."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         missing_file = Path(temp_dir) / "nonexistent.json"
         service = AlertHistoryService(storage_path=str(missing_file))
@@ -79,9 +73,7 @@ def test_missing_history_file():
 
 def test_corrupt_history_file():
     """Verify graceful handling when history file is corrupt JSON."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         corrupt_file = Path(temp_dir) / "corrupt.json"
         corrupt_file.write_text("{invalid json", encoding="utf-8")
@@ -98,9 +90,7 @@ def test_corrupt_history_file():
 
 def test_latest_entry():
     """Verify get_latest returns the most recent entry."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         history_file = Path(temp_dir) / "history.json"
         service = AlertHistoryService(storage_path=str(history_file))
@@ -122,9 +112,7 @@ def test_latest_entry():
 
 def test_previous_entry():
     """Verify get_previous returns the second most recent entry."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         history_file = Path(temp_dir) / "history.json"
         service = AlertHistoryService(storage_path=str(history_file))
@@ -146,9 +134,7 @@ def test_previous_entry():
 
 def test_chronological_ordering():
     """Verify chronological ordering and earliest/latest timestamp calculation."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         history_file = Path(temp_dir) / "history.json"
         service = AlertHistoryService(storage_path=str(history_file))
@@ -170,9 +156,7 @@ def test_chronological_ordering():
 
 def test_defensive_exception_handling():
     """Verify defensive exception handling on corrupted state or broken storage."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         # Invalid directory path as file to force OS error
         invalid_path = Path(temp_dir) / "dir_as_file"

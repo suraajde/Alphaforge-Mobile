@@ -20,9 +20,7 @@ def test_service_instantiation():
 
 def test_empty_dashboard():
     """Verify build_dashboard returns empty dashboard when no alerts exist."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         empty_file = Path(temp_dir) / "empty.json"
         empty_file.write_text("[]", encoding="utf-8")
@@ -48,9 +46,7 @@ def test_empty_dashboard():
 
 def test_missing_alert_file():
     """Verify build_dashboard handles missing alert file gracefully."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         missing_file = Path(temp_dir) / "nonexistent_alerts.json"
         ac_svc = AlertCenterService(storage_path=str(missing_file))
@@ -66,9 +62,7 @@ def test_missing_alert_file():
 
 def test_corrupt_alert_file():
     """Verify build_dashboard handles corrupt JSON alert file gracefully."""
-    scratch_dir = Path("d:/ALPHAFORGE/scratch")
-    scratch_dir.mkdir(exist_ok=True, parents=True)
-    temp_dir = tempfile.mkdtemp(dir=scratch_dir)
+    temp_dir = tempfile.mkdtemp()
     try:
         corrupt_file = Path(temp_dir) / "corrupt.json"
         corrupt_file.write_text("{invalid json structure", encoding="utf-8")
