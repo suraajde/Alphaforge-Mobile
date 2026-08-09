@@ -14,6 +14,9 @@ from PySide6.QtWidgets import (
 )
 
 
+from core.version import APP_VERSION
+
+
 class Settings(QWidget):
     """Portfolio Administration and application configuration settings screen."""
 
@@ -65,7 +68,7 @@ class Settings(QWidget):
 
         sys_info = (
             "• Application Name: AlphaForge — AI Portfolio Construction Engine\n"
-            "• Release Version: v1.0.0-rc1 (Release Candidate Baseline)\n"
+            f"• Release Version: v{APP_VERSION} (Stable Release)\n"
             "• Target Release: Version 1.0 Stable Release (Chapter 20)\n"
             "• Architecture: Decoupled Service Architecture / PySide6 Framework\n"
             "• Runtime Engine: Python 3.14"

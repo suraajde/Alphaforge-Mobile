@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from core.version import APP_VERSION
 from services.alert_center_service import AlertCenterService
 from services.alpha12_stability_service import Alpha12StabilityService
 from services.portfolio_health_service import PortfolioHealthService
@@ -206,7 +207,7 @@ class Dashboard(QWidget):
             summary_str = (
                 f"• Active Positions: {pos_cnt} | Cash Allocation: {cash_pct:.1f}% | Largest Position: {largest_pos}\n"
                 f"• Diversification Rating: {div_rating} | Concentration Risk: {conc_rating}\n"
-                f"• System Status: Operational (Release Candidate v1.0.0-rc1)"
+                f"• System Status: Operational (v{APP_VERSION} Stable)"
             )
             lbl = QLabel(summary_str)
             lbl.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
