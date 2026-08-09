@@ -7,6 +7,7 @@ block_cipher = None
 
 added_files = [
     ('VERSION.md', '.'),
+    ('data/universe', 'data/universe'),
 ]
 
 if os.path.exists('resources'):

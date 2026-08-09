@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 
-from config.path_config import get_base_data_dir, get_data_path
+from config.path_config import get_base_data_dir, get_data_path, get_resource_path
 from core.version import APP_VERSION
 
 
@@ -57,31 +57,63 @@ class Settings(QWidget):
         header_layout.addWidget(subtitle_lbl)
         root_layout.addWidget(header_card)
 
-        # Section 1: System Info
+        # Section 1: System & Developer Info
         sys_card = QFrame()
         sys_card.setObjectName("metricCard")
         sys_layout = QVBoxLayout(sys_card)
         sys_layout.setContentsMargins(16, 14, 16, 14)
         sys_layout.setSpacing(8)
 
-        lbl_sys_title = QLabel("APPLICATION INFRASTRUCTURE")
+        lbl_sys_title = QLabel("APPLICATION & DEVELOPER INFORMATION")
         lbl_sys_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
 
         sys_info = (
             "• Application Name: AlphaForge — AI Portfolio Construction Engine\n"
             f"• Release Version: v{APP_VERSION} (Stable Release)\n"
             "• Release Status: Version 1.0.0 Stable Release (Chapter 20 Completed)\n"
-            "• Architecture: Decoupled Service Architecture / PySide6 Framework\n"
-            "• Runtime Engine: Python 3.14"
+            "• Developed By: Suraj Dev\n"
+            "• Contact Email: suraajde@gmail.com\n"
+            '• LinkedIn: <a href="https://www.linkedin.com/in/suraaj-de-81336932/">suraaj-de-81336932</a>\n'
+            '• GitHub: <a href="https://github.com/suraajde">github.com/suraajde</a>'
         )
         lbl_sys_body = QLabel(sys_info)
         lbl_sys_body.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
+        lbl_sys_body.setOpenExternalLinks(True)
 
         sys_layout.addWidget(lbl_sys_title)
         sys_layout.addWidget(lbl_sys_body)
         root_layout.addWidget(sys_card)
 
-        # Section 2: Alpha 12 Governance Parameters
+        # Section 2: License & Investment Disclaimer
+        lic_card = QFrame()
+        lic_card.setObjectName("metricCard")
+        lic_card.setStyleSheet("QFrame#metricCard { background-color: #f8fafc; border: 1px solid #cbd5e1; }")
+        lic_layout = QVBoxLayout(lic_card)
+        lic_layout.setContentsMargins(16, 14, 16, 14)
+        lic_layout.setSpacing(8)
+
+        lbl_lic_title = QLabel("PERSONAL USE LICENSE & INVESTMENT DISCLAIMER")
+        lbl_lic_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #0f172a;")
+
+        lic_info = (
+            "<b>Personal Use License:</b><br>"
+            "AlphaForge is provided under a personal use software license for individual analytical and research purposes. "
+            "It requires no activation keys, paid subscriptions, or online license server validation.<br><br>"
+            "<b>Educational Investment Disclaimer:</b><br>"
+            "AlphaForge is analytical and educational software. Its outputs are provided for informational and research purposes only "
+            "and do not constitute personalized investment, financial, legal, tax, or securities advice. "
+            "Users are solely responsible for their own investment decisions and should conduct their own research and, where appropriate, "
+            "consult a qualified financial professional before investing."
+        )
+        lbl_lic_body = QLabel(lic_info)
+        lbl_lic_body.setWordWrap(True)
+        lbl_lic_body.setStyleSheet("font-size: 12px; color: #334155; line-height: 1.5;")
+
+        lic_layout.addWidget(lbl_lic_title)
+        lic_layout.addWidget(lbl_lic_body)
+        root_layout.addWidget(lic_card)
+
+        # Section 3: Alpha 12 Governance Parameters
         gov_card = QFrame()
         gov_card.setObjectName("metricCard")
         gov_layout = QVBoxLayout(gov_card)
@@ -106,7 +138,7 @@ class Settings(QWidget):
         gov_layout.addWidget(lbl_gov_body)
         root_layout.addWidget(gov_card)
 
-        # Section 3: Data & Persistence Status
+        # Section 4: Data & Persistence Status
         data_card = QFrame()
         data_card.setObjectName("metricCard")
         data_layout = QVBoxLayout(data_card)
@@ -116,12 +148,14 @@ class Settings(QWidget):
         lbl_data_title = QLabel("DATA PERSISTENCE & STORAGE DIRECTORIES")
         lbl_data_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
 
+        resource_dir = get_resource_path("data/universe")
         base_dir = get_base_data_dir()
         data_info = (
-            f"• Base Data Directory: {base_dir}\n"
+            f"• Bundled Application Resources: {resource_dir}\n"
+            f"• User Writable Data Directory: {base_dir}\n"
             f"• Portfolio Intelligence Storage: {get_data_path('intelligence/portfolio_intelligence_history.json')}\n"
             f"• Alpha 12 Stability Storage: {get_data_path('rebalancing/alpha12_stability_history.json')}\n"
-            "• Persistence Architecture: Centralized CWD-Independent Path Resolver (Atomic Write & Non-blocking I/O)"
+            "• Persistence Architecture: Centralized PyInstaller-Safe Resource & Writable Path Resolution"
         )
         lbl_data_body = QLabel(data_info)
         lbl_data_body.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
@@ -130,7 +164,7 @@ class Settings(QWidget):
         data_layout.addWidget(lbl_data_body)
         root_layout.addWidget(data_card)
 
-        # Section 4: Operational Safety Notice
+        # Section 5: Operational Safety Notice
         safety_card = QFrame()
         safety_card.setObjectName("metricCard")
         safety_layout = QVBoxLayout(safety_card)
@@ -150,35 +184,6 @@ class Settings(QWidget):
         safety_layout.addWidget(lbl_safety_title)
         safety_layout.addWidget(lbl_safety_text)
         root_layout.addWidget(safety_card)
-
-        # Section 5: Developer & Licensing Information
-        dev_card = QFrame()
-        dev_card.setObjectName("metricCard")
-        dev_layout = QVBoxLayout(dev_card)
-        dev_layout.setContentsMargins(16, 14, 16, 14)
-        dev_layout.setSpacing(8)
-
-        lbl_dev_title = QLabel("DEVELOPER & LICENSE INFORMATION")
-        lbl_dev_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
-
-        dev_info = (
-            "Created & Developed by Suraj Dev\n\n"
-            "Contact:\n"
-            "• Email: suraajde@gmail.com\n"
-            "• LinkedIn: https://www.linkedin.com/in/suraaj-de-81336932/\n"
-            "• GitHub: https://github.com/suraajde\n\n"
-            "License & Investment Disclaimer:\n"
-            "AlphaForge is analytical and educational software. Outputs are purely informational and analytical "
-            "and are not intended to constitute personalized investment, financial, or securities advice. "
-            "Users remain solely responsible for their investment decisions and independent research."
-        )
-        lbl_dev_body = QLabel(dev_info)
-        lbl_dev_body.setStyleSheet("font-size: 12px; color: #334155; line-height: 1.4;")
-        lbl_dev_body.setOpenExternalLinks(True)
-
-        dev_layout.addWidget(lbl_dev_title)
-        dev_layout.addWidget(lbl_dev_body)
-        root_layout.addWidget(dev_card)
 
         root_layout.addStretch()
         scroll.setWidget(content_widget)

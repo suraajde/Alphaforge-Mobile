@@ -2,29 +2,11 @@ from pathlib import Path
 import csv
 import json
 
+from config.path_config import get_resource_path
+
 
 class UniverseService:
-
-    """
-    AlphaForge Production Universe Service
-
-    Responsibilities:
-    - Load the stock universe CSV
-    - Load universe metadata
-    - Validate MIDCAP / SMALLCAP categories
-    - Validate symbols and company names
-    - Handle enabled / disabled stocks
-    - Detect duplicate symbols
-    - Quarantine invalid rows
-    - Provide category counts and diagnostics
-    - Preserve backward compatibility with Research Radar
-
-    IMPORTANT:
-    Universe membership is research-universe metadata.
-    It must not be treated as permanently valid without
-    an identified source and as-of date.
-    """
-
+    # ...
     VALID_CATEGORIES = {
         "MIDCAP",
         "SMALLCAP",
@@ -58,45 +40,17 @@ class UniverseService:
         universe_file=None,
         metadata_file=None,
     ):
-
-        self.project_root = (
-            Path(__file__)
-            .resolve()
-            .parent
-            .parent
-        )
-
-        universe_dir = (
-            self.project_root
-            / "data"
-            / "universe"
-        )
+        self.project_root = get_resource_path("")
 
         if universe_file is None:
-
-            self.universe_file = (
-                universe_dir
-                / "stock_universe.csv"
-            )
-
+            self.universe_file = get_resource_path("data/universe/stock_universe.csv")
         else:
-
-            self.universe_file = Path(
-                universe_file
-            )
+            self.universe_file = Path(universe_file)
 
         if metadata_file is None:
-
-            self.metadata_file = (
-                universe_dir
-                / "universe_metadata.json"
-            )
-
+            self.metadata_file = get_resource_path("data/universe/universe_metadata.json")
         else:
-
-            self.metadata_file = Path(
-                metadata_file
-            )
+            self.metadata_file = Path(metadata_file)
 
     # --------------------------------------------------
     # BOOLEAN CONVERTER
