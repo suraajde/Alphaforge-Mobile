@@ -44,7 +44,7 @@ def test_settings_developer_and_disclaimer_content(qapp):
                 found_dev_name = True
             if "suraajde@gmail.com" in txt:
                 found_email = True
-            if "suraaj-de-81336932" in txt or "linkedin" in txt.lower():
+            if "https://in.linkedin.com/in/suraaj-de-81336932" in txt:
                 found_linkedin = True
             if "github.com/suraajde" in txt or "github" in txt.lower():
                 found_github = True

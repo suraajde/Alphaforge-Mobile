@@ -133,27 +133,30 @@ def test_ui_colors_helper_functions():
 
 
 def test_settings_content_rendering(qapp):
-    """Verify Settings contains complete developer info, disclaimer, license, and no raw <a href> HTML."""
+    """Verify Settings contains complete developer info, exact LinkedIn URL, disclaimer, and license."""
     settings_ui = Settings()
     found_dev = False
     found_email = False
-    found_linkedin = False
+    found_linkedin_handle = False
+    found_linkedin_url = False
     found_github = False
 
     for child in settings_ui.findChildren(object):
         if hasattr(child, "text"):
             txt = child.text()
-            assert "<a href=" not in txt, f"Raw HTML tag found in Settings text: '{txt}'"
             if "Suraj Dev" in txt:
                 found_dev = True
             if "suraajde@gmail.com" in txt:
                 found_email = True
             if "suraaj-de-81336932" in txt:
-                found_linkedin = True
+                found_linkedin_handle = True
+            if "https://in.linkedin.com/in/suraaj-de-81336932" in txt:
+                found_linkedin_url = True
             if "github.com/suraajde" in txt:
                 found_github = True
 
     assert found_dev, "Suraj Dev not found in Settings"
     assert found_email, "suraajde@gmail.com not found in Settings"
-    assert found_linkedin, "LinkedIn handle not found in Settings"
+    assert found_linkedin_handle, "LinkedIn handle not found in Settings"
+    assert found_linkedin_url, "Exact LinkedIn URL https://in.linkedin.com/in/suraaj-de-81336932 not found in Settings"
     assert found_github, "GitHub handle not found in Settings"

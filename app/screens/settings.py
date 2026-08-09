@@ -68,15 +68,16 @@ class Settings(QWidget):
         lbl_sys_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #1e293b;")
 
         sys_info = (
-            "• Application Name: AlphaForge — AI Portfolio Construction Engine\n"
-            f"• Release Version: v{APP_VERSION} (Stable Release)\n"
-            "• Release Status: Version 1.0.0 Stable Release\n"
-            "• Created & Developed By: Suraj Dev\n"
-            "• Email: suraajde@gmail.com\n"
-            "• LinkedIn: suraaj-de-81336932\n"
-            "• GitHub: github.com/suraajde"
+            "• Application Name: AlphaForge — AI Portfolio Construction Engine<br>"
+            f"• Release Version: v{APP_VERSION} (Stable Release)<br>"
+            "• Release Status: Version 1.0.0 Stable Release<br>"
+            "• Created & Developed By: Suraj Dev<br>"
+            "• Email: suraajde@gmail.com<br>"
+            '• LinkedIn: <a href="https://in.linkedin.com/in/suraaj-de-81336932" style="color: #2563eb; text-decoration: underline;">suraaj-de-81336932</a><br>'
+            '• GitHub: <a href="https://github.com/suraajde" style="color: #2563eb; text-decoration: underline;">github.com/suraajde</a>'
         )
         lbl_sys_body = QLabel(sys_info)
+        lbl_sys_body.setOpenExternalLinks(True)
         lbl_sys_body.setStyleSheet("font-size: 13px; color: #334155; line-height: 1.5;")
 
         sys_layout.addWidget(lbl_sys_title)
