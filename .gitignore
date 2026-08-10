@@ -49,3 +49,4 @@ dist/
 # Runtime persistence data
 data/intelligence/
 data/rebalancing/
+data/backups/

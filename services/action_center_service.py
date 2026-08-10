@@ -105,25 +105,24 @@ class ActionCenterService:
         deferred_vms: List[DeferredActionViewModel] = []
         rationale_list: List[str] = []
 
-        # Convert GovernanceAction items into DeferredActionViewModel / ApprovedActionViewModel & Rationale
+        # Convert GovernanceAction items into Rationale (and deferred_vms only if plan is absent)
         for g_act in gov_actions:
             sev_str = g_act.severity.value if hasattr(g_act.severity, "value") else str(g_act.severity)
             rationale_list.append(f"Governance Alert [{sev_str}]: {g_act.title} - {g_act.description}")
 
-            curr_sym = g_act.title
-            cand_sym = "-"
-
-            conf_val = 74.0 if sev_str == "WARNING" else (90.0 if sev_str == "WATCH" else 40.0)
-
-            deferred_vms.append(
-                DeferredActionViewModel(
-                    action=sev_str,
-                    current_holding=curr_sym,
-                    candidate_holding=cand_sym,
-                    reason=g_act.recommendation,
-                    confidence=conf_val,
+            if plan is None:
+                curr_sym = g_act.title
+                cand_sym = "-"
+                conf_val = 74.0 if sev_str == "WARNING" else (90.0 if sev_str == "WATCH" else 40.0)
+                deferred_vms.append(
+                    DeferredActionViewModel(
+                        action=sev_str,
+                        current_holding=curr_sym,
+                        candidate_holding=cand_sym,
+                        reason=g_act.recommendation,
+                        confidence=conf_val,
+                    )
                 )
-            )
 
         # 2. Process RebalancePlan data if provided
         turnover = 0.0

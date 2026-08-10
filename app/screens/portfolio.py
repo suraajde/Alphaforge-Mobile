@@ -1216,70 +1216,6 @@ class Portfolio(QWidget):
         root.addWidget(self.intelligence_frame)
 
         # --------------------------------------------------
-        # EMPTY STATE
-        # --------------------------------------------------
-
-        self.empty_frame = QFrame()
-
-        self.empty_layout = QVBoxLayout(
-            self.empty_frame
-        )
-
-        self.empty_layout.setAlignment(
-            Qt.AlignCenter
-        )
-
-        self.empty_layout.setSpacing(
-            10
-        )
-
-        self.empty_title = QLabel(
-            "No portfolio created yet."
-        )
-
-        self.empty_title.setObjectName(
-            "emptyTitle"
-        )
-
-        self.empty_title.setAlignment(
-            Qt.AlignCenter
-        )
-
-        self.empty_text = QLabel(
-            "Alpha 12 research selections are not holdings until "
-            "an investment recommendation is explicitly confirmed."
-        )
-
-        self.empty_text.setObjectName(
-            "emptyText"
-        )
-
-        self.empty_text.setWordWrap(
-            True
-        )
-
-        self.empty_text.setAlignment(
-            Qt.AlignCenter
-        )
-
-        self.empty_layout.addStretch()
-
-        self.empty_layout.addWidget(
-            self.empty_title
-        )
-
-        self.empty_layout.addWidget(
-            self.empty_text
-        )
-
-        self.empty_layout.addStretch()
-
-        root.addWidget(
-            self.empty_frame,
-            1,
-        )
-
-        # --------------------------------------------------
         # HOLDINGS
         # --------------------------------------------------
 
@@ -1405,6 +1341,13 @@ class Portfolio(QWidget):
         )
 
         self.holdings_frame.hide()
+
+        # --------------------------------------------------
+        # INVESTMENT ALLOCATION UI (NEW MONEY DEPLOYMENT)
+        # --------------------------------------------------
+        self.allocation_frame = self._build_investment_allocation_ui()
+        root.addWidget(self.allocation_frame)
+        self.allocation_frame.hide()
 
     def _show_recommendation_details(self, item) -> None:
         """Display the full recommendation in the detail panel when an item is clicked or selected.

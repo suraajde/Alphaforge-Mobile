@@ -286,6 +286,10 @@ class SIPOptimizationService:
                     rationale="No valid portfolio state available for SIP optimization analysis.",
                 )
 
+            # Unwrap nested state payload if state was loaded via load_state() wrapper dict
+            if "state" in state and isinstance(state["state"], dict):
+                state = state["state"]
+
             positions_dict = state.get("positions", {})
             if not isinstance(positions_dict, dict) or not positions_dict:
                 return _empty_result(

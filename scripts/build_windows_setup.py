@@ -143,8 +143,17 @@ if __name__ == "__main__":
         print(f"PyInstaller setup build output:\n{res.stdout}\n{res.stderr}")
         raise RuntimeError(f"Failed to build installer setup EXE: return code {res.returncode}")
 
+    # Create Release ZIP Archive
+    zip_target = dist_root / "AlphaForge-v1.0.0-Windows.zip"
+    print(f"Creating release ZIP archive at {zip_target}...")
+    if zip_target.exists():
+        zip_target.unlink()
+    shutil.make_archive(str(dist_root / "AlphaForge-v1.0.0-Windows"), 'zip', root_dir=dist_root, base_dir="AlphaForge-v1.0.0-Windows")
+
     print(f"SUCCESS: Installer created at {setup_exe}")
     print(f"Installer size: {setup_exe.stat().st_size / (1024*1024):.2f} MB")
+    print(f"ZIP Archive created at {zip_target}")
+    print(f"ZIP size: {zip_target.stat().st_size / (1024*1024):.2f} MB")
 
 if __name__ == "__main__":
     build_windows_setup_installer()
