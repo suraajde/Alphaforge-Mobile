@@ -4363,7 +4363,11 @@ class Portfolio(QWidget):
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric monthly investment amount.")
             return
 
-        svc = InvestmentAllocationService(price_provider=get_stock_data)
+        alpha12_prov = getattr(self, "alpha12_provider", None) or getattr(self, "_current_alpha12", None)
+        svc = InvestmentAllocationService(
+            price_provider=get_stock_data,
+            alpha12_provider=alpha12_prov,
+        )
         res = svc.allocate_monthly_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
@@ -4383,7 +4387,11 @@ class Portfolio(QWidget):
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric lump-sum investment amount.")
             return
 
-        svc = InvestmentAllocationService(price_provider=get_stock_data)
+        alpha12_prov = getattr(self, "alpha12_provider", None) or getattr(self, "_current_alpha12", None)
+        svc = InvestmentAllocationService(
+            price_provider=get_stock_data,
+            alpha12_provider=alpha12_prov,
+        )
         res = svc.allocate_lump_sum_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)

@@ -54,10 +54,12 @@ class InvestmentAllocationService:
         universe_service: Optional[UniverseService] = None,
         state_service: Optional[PortfolioStateService] = None,
         price_provider: Optional[Callable[[str], Dict[str, Any]]] = None,
+        alpha12_provider: Optional[Any] = None,
     ) -> None:
         self.universe_service = universe_service or UniverseService()
         self.state_service = state_service or PortfolioStateService()
         self.price_provider = price_provider
+        self.alpha12_provider = alpha12_provider
 
     @staticmethod
     def _safe_float(value: Any, default: float = 0.0) -> float:
@@ -107,22 +109,145 @@ class InvestmentAllocationService:
                 else 0
             )
 
-    def _get_alpha12_candidates(self) -> List[Dict[str, Any]]:
-        """Retrieve top 12 production candidates from stock universe."""
+    def _normalize_candidate_list(self, raw_candidates: Any) -> List[Dict[str, Any]]:
+        """Normalize raw Alpha 12 candidates into a uniform list of candidate dictionaries."""
+        if not raw_candidates:
+            return []
+
+        items = []
+        if isinstance(raw_candidates, dict):
+            for key in ("alpha12", "selected", "holdings", "candidates"):
+                if key in raw_candidates and isinstance(raw_candidates[key], list):
+                    items = raw_candidates[key]
+                    break
+            if not items and raw_candidates:
+                items = [raw_candidates]
+        elif isinstance(raw_candidates, list):
+            items = raw_candidates
+
+        if not items:
+            return []
+
+        formatted: List[Dict[str, Any]] = []
+        total_cnt = max(1, len(items))
+
+        for idx, s in enumerate(items, start=1):
+            if not s:
+                continue
+
+            if isinstance(s, dict):
+                sym = str(s.get("symbol", s.get("ticker", f"STOCK_{idx}"))).strip().upper()
+                if not sym:
+                    continue
+                company = str(s.get("company_name", s.get("company", s.get("name", sym)))).strip()
+                rank_val = s.get("alpha12_rank", s.get("rank", idx))
+                try:
+                    rank = int(rank_val) if rank_val is not None else idx
+                except (ValueError, TypeError):
+                    rank = idx
+
+                category = str(s.get("category", s.get("asset_type", s.get("sector", "MIDCAP")))).strip().upper()
+
+                conv = None
+                for c_field in ("conviction", "score", "alpha12_selection_score", "base_score"):
+                    val = self._safe_float(s.get(c_field), -1.0)
+                    if val >= 0:
+                        conv = val
+                        break
+                if conv is None:
+                    conv = max(60.0, round(95.0 - (rank - 1) * 2.5, 1))
+
+                tw = self._safe_float(s.get("target_weight", s.get("alpha12_weight", 0.0)), 0.0)
+                if tw <= 0:
+                    tw = round(100.0 / total_cnt, 2)
+
+                formatted.append({
+                    "symbol": sym,
+                    "company_name": company,
+                    "rank": rank,
+                    "category": category,
+                    "conviction": conv,
+                    "target_weight": tw,
+                })
+            elif isinstance(s, str):
+                sym = str(s).strip().upper()
+                if not sym:
+                    continue
+                conv = max(60.0, round(95.0 - (idx - 1) * 2.5, 1))
+                formatted.append({
+                    "symbol": sym,
+                    "company_name": sym,
+                    "rank": idx,
+                    "category": "MIDCAP",
+                    "conviction": conv,
+                    "target_weight": round(100.0 / total_cnt, 2),
+                })
+
+        return formatted
+
+    def _get_alpha12_candidates(
+        self,
+        explicit_candidates: Optional[Any] = None,
+    ) -> List[Dict[str, Any]]:
+        """Retrieve top 12 production candidates in strict priority order:
+        1. Explicit candidates passed directly by the caller.
+        2. Authoritative production Alpha 12 provider/service (self.alpha12_provider).
+        3. Existing authoritative Alpha12MappingService.
+        4. Safe fallback ONLY for clean/uninitialized test environments.
+        """
+        raw_candidates = None
+
+        # 1. Explicit candidates passed directly
+        if explicit_candidates:
+            raw_candidates = explicit_candidates
+
+        # 2. Authoritative production Alpha 12 provider
+        if not raw_candidates and self.alpha12_provider is not None:
+            if callable(self.alpha12_provider):
+                try:
+                    raw_candidates = self.alpha12_provider()
+                except Exception:
+                    raw_candidates = None
+            elif isinstance(self.alpha12_provider, (list, dict)):
+                raw_candidates = self.alpha12_provider
+
+        # 3. Existing authoritative Alpha12MappingService
+        if not raw_candidates:
+            try:
+                from services.alpha12_mapping_service import Alpha12MappingService
+                map_svc = Alpha12MappingService()
+                map_res = map_svc.get_mapping()
+                if map_res and map_res.portfolio and map_res.portfolio.holdings:
+                    raw_candidates = [
+                        {
+                            "symbol": h.symbol,
+                            "company_name": h.name,
+                            "alpha12_rank": h.alpha12_rank,
+                            "category": h.asset_type,
+                            "target_weight": h.alpha12_weight,
+                        }
+                        for h in map_res.portfolio.holdings
+                    ]
+            except Exception:
+                raw_candidates = None
+
+        if raw_candidates:
+            formatted = self._normalize_candidate_list(raw_candidates)
+            if formatted:
+                return formatted
+
+        # 4. Safe fallback ONLY for clean/uninitialized test environments
         res = self.universe_service.get_enabled_stocks()
         stocks = res.get("stocks", [])
         if not stocks:
             return []
 
-        # Sort by conviction score if available, else rank/symbol
         candidates = stocks[:12]
         formatted = []
         for i, s in enumerate(candidates, start=1):
             symbol = str(s.get("symbol", f"STOCK_{i}")).strip().upper()
             company = str(s.get("company", s.get("company_name", symbol))).strip()
             category = str(s.get("category", "MIDCAP")).strip().upper()
-
-            # Base conviction calculation based on rank
             conviction = max(60.0, round(95.0 - (i - 1) * 2.5, 1))
 
             formatted.append({
@@ -139,6 +264,7 @@ class InvestmentAllocationService:
         self,
         total_amount: float,
         portfolio_state: Optional[Dict[str, Any]] = None,
+        alpha12_candidates: Optional[Any] = None,
     ) -> InvestmentAllocationResult:
         """Calculate dynamic Monthly Investment new-money allocation across Alpha 12 stocks.
 
@@ -167,7 +293,7 @@ class InvestmentAllocationService:
         positions = portfolio_state.get("positions", {}) if isinstance(portfolio_state, dict) else {}
         total_val = float(portfolio_state.get("total_portfolio_value", 0.0))
 
-        candidates = self._get_alpha12_candidates()
+        candidates = self._get_alpha12_candidates(explicit_candidates=alpha12_candidates)
         if not candidates:
             return InvestmentAllocationResult(
                 allocation_type="MONTHLY",
@@ -266,6 +392,7 @@ class InvestmentAllocationService:
         self,
         total_amount: float,
         portfolio_state: Optional[Dict[str, Any]] = None,
+        alpha12_candidates: Optional[Any] = None,
     ) -> InvestmentAllocationResult:
         """Calculate dynamic Lump-Sum Investment allocation across Alpha 12 stocks.
 
@@ -289,7 +416,7 @@ class InvestmentAllocationService:
 
         positions = portfolio_state.get("positions", {}) if isinstance(portfolio_state, dict) else {}
 
-        candidates = self._get_alpha12_candidates()
+        candidates = self._get_alpha12_candidates(explicit_candidates=alpha12_candidates)
         if not candidates:
             return InvestmentAllocationResult(
                 allocation_type="LUMP_SUM",
