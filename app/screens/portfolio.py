@@ -4335,9 +4335,9 @@ class Portfolio(QWidget):
         self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #173b67; padding: 4px 0px;")
         layout.addWidget(self.lbl_alloc_summary)
 
-        self.alloc_table = QTableWidget(0, 10)
+        self.alloc_table = QTableWidget(0, 12)
         self.alloc_table.setHorizontalHeaderLabels([
-            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Target Weight", "Expected Weight", "Suggested Amount (₹)", "Allocation %", "Reason"
+            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Target Weight", "Expected Weight", "Price", "SIP Shares", "SIP Amount", "Allocation %", "Reason"
         ])
         self.alloc_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.alloc_table.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -4363,7 +4363,7 @@ class Portfolio(QWidget):
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric monthly investment amount.")
             return
 
-        svc = InvestmentAllocationService()
+        svc = InvestmentAllocationService(price_provider=get_stock_data)
         res = svc.allocate_monthly_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
@@ -4383,7 +4383,7 @@ class Portfolio(QWidget):
             QMessageBox.warning(self, "Invalid Amount", "Please enter a valid numeric lump-sum investment amount.")
             return
 
-        svc = InvestmentAllocationService()
+        svc = InvestmentAllocationService(price_provider=get_stock_data)
         res = svc.allocate_lump_sum_investment(amt)
         if res.total_allocated_amount <= 0:
             QMessageBox.warning(self, "Allocation Error", res.summary_rationale)
@@ -4395,7 +4395,14 @@ class Portfolio(QWidget):
         """Render InvestmentAllocationResult items into alloc_table."""
         from PySide6.QtWidgets import QTableWidgetItem
 
-        alloc_type = "Monthly Investment" if res.allocation_type == "MONTHLY" else "Lump-Sum Investment"
+        is_monthly = res.allocation_type == "MONTHLY"
+        alloc_type = "Monthly Investment" if is_monthly else "Lump-Sum Investment"
+        quantity_header = "SIP Shares" if is_monthly else "Shares to Buy"
+        amount_header = "SIP Amount" if is_monthly else "Investment"
+        self.alloc_table.setColumnCount(12)
+        self.alloc_table.setHorizontalHeaderLabels([
+            "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Target Weight", "Expected Weight", "Price", quantity_header, amount_header, "Allocation %", "Reason"
+        ])
         self.lbl_alloc_summary.setText(
             f"USER INPUT: {alloc_type} ₹{res.total_input_amount:,.2f}  |  ALPHAFORGE RECOMMENDATION: Recommended deployment: ₹{res.total_allocated_amount:,.2f}"
         )
@@ -4411,12 +4418,8 @@ class Portfolio(QWidget):
             self.alloc_table.setItem(i, 4, QTableWidgetItem(f"{item.current_weight_pct:.1f}%"))
             self.alloc_table.setItem(i, 5, QTableWidgetItem(f"{item.target_weight_pct:.1f}%"))
             self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.expected_weight_pct:.1f}%"))
-            self.alloc_table.setItem(i, 7, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
-            self.alloc_table.setItem(i, 8, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
-            self.alloc_table.setItem(i, 9, QTableWidgetItem(item.reason))
-
-        QMessageBox.warning(
-            self,
-            "AlphaForge Portfolio",
-            message,
-        )
+            self.alloc_table.setItem(i, 7, QTableWidgetItem(f"₹{item.reference_price:,.2f}"))
+            self.alloc_table.setItem(i, 8, QTableWidgetItem(str(item.quantity)))
+            self.alloc_table.setItem(i, 9, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
+            self.alloc_table.setItem(i, 10, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
+            self.alloc_table.setItem(i, 11, QTableWidgetItem(item.reason))

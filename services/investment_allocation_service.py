@@ -11,8 +11,9 @@ Scope Boundary:
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from services.universe_service import UniverseService
 from services.portfolio_state_service import PortfolioStateService
@@ -30,6 +31,8 @@ class AllocationItem:
     expected_weight_pct: float = 8.33
     suggested_amount: float = 0.0
     suggested_pct: float = 0.0
+    reference_price: float = 0.0
+    quantity: int = 0
     reason: str = ""
 
 
@@ -50,9 +53,59 @@ class InvestmentAllocationService:
         self,
         universe_service: Optional[UniverseService] = None,
         state_service: Optional[PortfolioStateService] = None,
+        price_provider: Optional[Callable[[str], Dict[str, Any]]] = None,
     ) -> None:
         self.universe_service = universe_service or UniverseService()
         self.state_service = state_service or PortfolioStateService()
+        self.price_provider = price_provider
+
+    @staticmethod
+    def _safe_float(value: Any, default: float = 0.0) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+    def _resolve_reference_price(
+        self,
+        symbol: str,
+        positions: Dict[str, Any],
+    ) -> float:
+        """Prefer the portfolio price, then use the UI-supplied market-price provider."""
+        pos_info = positions.get(symbol, {}) if isinstance(positions, dict) else {}
+        if isinstance(pos_info, dict):
+            for field_name in ("current_price", "price", "ltp"):
+                price = self._safe_float(pos_info.get(field_name), 0.0)
+                if price > 0:
+                    return round(price, 2)
+
+        if not callable(self.price_provider):
+            return 0.0
+
+        try:
+            market_data = self.price_provider(symbol)
+        except Exception:
+            return 0.0
+
+        if not isinstance(market_data, dict) or market_data.get("error"):
+            return 0.0
+
+        price = self._safe_float(market_data.get("price"), 0.0)
+        return round(price, 2) if price > 0 else 0.0
+
+    def _apply_reference_prices_and_quantities(
+        self,
+        allocations: List[AllocationItem],
+        positions: Dict[str, Any],
+    ) -> None:
+        """Attach executable whole-share quantities without changing monetary allocations."""
+        for item in allocations:
+            item.reference_price = self._resolve_reference_price(item.symbol, positions)
+            item.quantity = (
+                math.floor(item.suggested_amount / item.reference_price)
+                if item.reference_price > 0
+                else 0
+            )
 
     def _get_alpha12_candidates(self) -> List[Dict[str, Any]]:
         """Retrieve top 12 production candidates from stock universe."""
@@ -197,6 +250,8 @@ class InvestmentAllocationService:
             allocations[0].suggested_amount += diff
             allocations[0].suggested_pct = round(allocations[0].suggested_amount / total_amount * 100.0, 1)
 
+        self._apply_reference_prices_and_quantities(allocations, positions)
+
         total_alloc = sum(a.suggested_amount for a in allocations)
 
         return InvestmentAllocationResult(
@@ -305,6 +360,8 @@ class InvestmentAllocationService:
         if abs(diff) > 0.001 and allocations:
             allocations[0].suggested_amount += diff
             allocations[0].suggested_pct = round(allocations[0].suggested_amount / total_amount * 100.0, 1)
+
+        self._apply_reference_prices_and_quantities(allocations, positions)
 
         total_alloc = sum(a.suggested_amount for a in allocations)
 
