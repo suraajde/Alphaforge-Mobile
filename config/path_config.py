@@ -59,6 +59,12 @@ def get_data_path(relative_subpath: str) -> Path:
     """Resolve a relative subpath for writable user data (e.g., 'alerts/portfolio_alerts.json'),
     ensuring parent directories are created safely.
     """
+    if os.environ.get("ALPHAFORGE_DATA_DIR"):
+        base_dir = get_base_data_dir()
+        target = base_dir / relative_subpath
+        target.parent.mkdir(parents=True, exist_ok=True)
+        return target
+
     if not getattr(sys, "frozen", False):
         local_target = _PROJECT_ROOT / "data" / relative_subpath
         if local_target.exists():

@@ -84,6 +84,9 @@ def test_action_center_stale_data_eliminated(qapp, monkeypatch):
 
 def test_monthly_investment_allocation_exact_sum(monkeypatch):
     """Verify monthly investment allocation calculates exact total sum and dynamic weights."""
+    temp_dir = tempfile.mkdtemp()
+    monkeypatch.setenv("ALPHAFORGE_DATA_DIR", temp_dir)
+
     alloc_svc = InvestmentAllocationService()
 
     input_amount = 30000.0
@@ -100,6 +103,9 @@ def test_monthly_investment_allocation_exact_sum(monkeypatch):
 
 def test_lump_sum_investment_allocation_exact_sum(monkeypatch):
     """Verify lump-sum investment allocation calculates exact total sum."""
+    temp_dir = tempfile.mkdtemp()
+    monkeypatch.setenv("ALPHAFORGE_DATA_DIR", temp_dir)
+
     alloc_svc = InvestmentAllocationService()
 
     input_amount = 100000.0
