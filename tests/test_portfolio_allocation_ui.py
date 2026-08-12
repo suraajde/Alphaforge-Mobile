@@ -26,15 +26,15 @@ def test_monthly_allocation_exposes_whole_share_quantity_and_separate_amount():
     result = service.allocate_monthly_investment(30000.0, _empty_portfolio_state())
 
     assert result.allocation_type == "MONTHLY"
-    assert result.total_allocated_amount == 30000.0
-    assert sum(item.suggested_amount for item in result.allocations) == 30000.0
+    assert result.total_input_amount == 30000.0
+    assert result.total_allocated_amount <= 30000.0
+    assert sum(item.executable_amount for item in result.allocations) == result.total_allocated_amount
     assert result.allocations
 
     for item in result.allocations:
         assert item.reference_price > 0
         assert isinstance(item.quantity, int)
-        assert item.quantity == item.suggested_amount // item.reference_price
-        assert item.quantity != item.suggested_amount
+        assert item.quantity == item.executable_amount // item.reference_price
 
 
 def test_lump_sum_allocation_exposes_whole_share_quantity_and_separate_amount():
@@ -42,15 +42,15 @@ def test_lump_sum_allocation_exposes_whole_share_quantity_and_separate_amount():
     result = service.allocate_lump_sum_investment(100000.0, _empty_portfolio_state())
 
     assert result.allocation_type == "LUMP_SUM"
-    assert result.total_allocated_amount == 100000.0
-    assert sum(item.suggested_amount for item in result.allocations) == 100000.0
+    assert result.total_input_amount == 100000.0
+    assert result.total_allocated_amount <= 100000.0
+    assert sum(item.executable_amount for item in result.allocations) == result.total_allocated_amount
     assert result.allocations
 
     for item in result.allocations:
         assert item.reference_price > 0
         assert isinstance(item.quantity, int)
-        assert item.quantity == item.suggested_amount // item.reference_price
-        assert item.quantity != item.suggested_amount
+        assert item.quantity == item.executable_amount // item.reference_price
 
 
 def test_reference_price_and_quantity_do_not_change_alpha12_ranking_or_weighting():
@@ -64,7 +64,7 @@ def test_reference_price_and_quantity_do_not_change_alpha12_ranking_or_weighting
     assert [item.symbol for item in priced.allocations] == [item.symbol for item in unpriced.allocations]
     assert [item.alpha12_rank for item in priced.allocations] == [item.alpha12_rank for item in unpriced.allocations]
     assert [item.target_weight_pct for item in priced.allocations] == [item.target_weight_pct for item in unpriced.allocations]
-    assert [item.suggested_amount for item in priced.allocations] == [item.suggested_amount for item in unpriced.allocations]
+    assert [item.executable_amount for item in priced.allocations] == [round(item.quantity * item.reference_price, 2) for item in priced.allocations]
 
 
 def test_monthly_ui_renders_sip_shares_before_sip_amount(qapp):
@@ -80,8 +80,8 @@ def test_monthly_ui_renders_sip_shares_before_sip_amount(qapp):
     first = result.allocations[0]
     assert headers[7:10] == ["Price", "SIP Shares", "SIP Amount"]
     assert screen.alloc_table.item(0, 8).text() == str(first.quantity)
-    assert screen.alloc_table.item(0, 9).text() == f"₹{first.suggested_amount:,.2f}"
-    assert screen.alloc_table.item(0, 8).text() != f"{first.suggested_amount:,.2f}"
+    assert screen.alloc_table.item(0, 9).text() == f"₹{first.executable_amount:,.2f}"
+    assert screen.alloc_table.item(0, 8).text() != f"{first.executable_amount:,.2f}"
 
 
 def test_lump_sum_ui_renders_shares_to_buy_before_investment(qapp):
@@ -97,8 +97,8 @@ def test_lump_sum_ui_renders_shares_to_buy_before_investment(qapp):
     first = result.allocations[0]
     assert headers[7:10] == ["Price", "Shares to Buy", "Investment"]
     assert screen.alloc_table.item(0, 8).text() == str(first.quantity)
-    assert screen.alloc_table.item(0, 9).text() == f"₹{first.suggested_amount:,.2f}"
-    assert screen.alloc_table.item(0, 8).text() != f"{first.suggested_amount:,.2f}"
+    assert screen.alloc_table.item(0, 9).text() == f"₹{first.executable_amount:,.2f}"
+    assert screen.alloc_table.item(0, 8).text() != f"{first.executable_amount:,.2f}"
 
 
 def test_investment_allocation_uses_authoritative_alpha12_provider():
@@ -152,9 +152,11 @@ def test_investment_allocation_uses_authoritative_alpha12_provider():
     assert not (set(monthly_symbols) & stale_symbols)
     assert not (set(lump_symbols) & stale_symbols)
 
-    # F. Mathematics check: amounts sum to input total
-    assert sum(item.suggested_amount for item in monthly_res.allocations) == 30000.0
-    assert sum(item.suggested_amount for item in lump_res.allocations) == 100000.0
+    # F. Mathematics check: amounts sum to executable total and do not exceed user input
+    assert sum(item.executable_amount for item in monthly_res.allocations) == monthly_res.total_allocated_amount
+    assert monthly_res.total_allocated_amount <= 30000.0
+    assert sum(item.executable_amount for item in lump_res.allocations) == lump_res.total_allocated_amount
+    assert lump_res.total_allocated_amount <= 100000.0
 
 
 def test_investment_allocation_supports_explicit_alpha12_candidates_override():

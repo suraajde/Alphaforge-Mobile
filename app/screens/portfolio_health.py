@@ -138,11 +138,11 @@ class PortfolioHealth(QWidget):
         portfolio_risk_intelligence_service: Optional[PortfolioRiskIntelligenceService] = None,
         alpha12_mapping_service: Optional[Alpha12MappingService] = None,
         alpha12_stability_service: Optional[Alpha12StabilityService] = None,
+        alpha12_provider: Optional[Any] = None,
         parent: Optional[QWidget] = None,
-
     ) -> None:
-
         super().__init__(parent)
+        self.alpha12_provider = alpha12_provider
 
         self.history_service = history_service if history_service is not None else PortfolioHealthHistoryService()
 
@@ -237,8 +237,14 @@ class PortfolioHealth(QWidget):
         self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
         self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
         self.portfolio_risk_intelligence_service = portfolio_risk_intelligence_service if portfolio_risk_intelligence_service is not None else PortfolioRiskIntelligenceService()
-        self.alpha12_mapping_service = alpha12_mapping_service if alpha12_mapping_service is not None else Alpha12MappingService()
-        self.alpha12_stability_service = alpha12_stability_service if alpha12_stability_service is not None else Alpha12StabilityService()
+        self.alpha12_mapping_service = alpha12_mapping_service if alpha12_mapping_service is not None else Alpha12MappingService(alpha12_provider=self.alpha12_provider)
+        self.alpha12_stability_service = alpha12_stability_service if alpha12_stability_service is not None else Alpha12StabilityService(alpha12_mapping_service=self.alpha12_mapping_service)
+
+    def set_alpha12_provider(self, provider: Any) -> None:
+        """Set authoritative Alpha 12 provider on PortfolioHealth screen and mapping service."""
+        self.alpha12_provider = provider
+        if getattr(self, "alpha12_mapping_service", None) is not None:
+            self.alpha12_mapping_service._alpha12_provider = provider
 
         self.service = service if service is not None else PortfolioHealthService(
 
@@ -1353,9 +1359,8 @@ class PortfolioHealth(QWidget):
             return
 
         try:
-
-            res = self.alpha12_mapping_service.get_mapping()
-
+            alpha12_src = self.alpha12_provider() if callable(getattr(self, "alpha12_provider", None)) else getattr(self, "alpha12_provider", None)
+            res = self.alpha12_mapping_service.get_mapping(alpha12_input=alpha12_src)
             self._update_alpha12_mapping_ui(res)
 
         except Exception:

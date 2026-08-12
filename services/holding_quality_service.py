@@ -303,6 +303,91 @@ class HoldingQualityService:
                 evidence=[],
             )
 
+    def assess_equity_holding(self, holding_data: Any) -> HoldingQuality:
+        """Provide an equity-specific descriptive assessment path using factual fundamental metrics/scores."""
+        try:
+            sym = str(self._extract_field(holding_data, "symbol", "") or self._extract_field(holding_data, "ticker", "") or "").strip().upper()
+            nm = str(self._extract_field(holding_data, "company_name", "") or self._extract_field(holding_data, "name", "") or sym).strip()
+            raw_atype = str(self._extract_field(holding_data, "asset_type", "") or self._extract_field(holding_data, "category", "EQUITY")).strip().upper()
+            atype = raw_atype if raw_atype and raw_atype not in ("UNKNOWN", "") else "EQUITY"
+
+            evidence: list[str] = []
+            score_points = 0.0
+            has_valid_metrics = False
+
+            # Priority 1: Check direct quality / fundamental score or conviction carried on holding_data
+            for score_field in ("quality_score", "fundamental_score", "score", "alpha12_selection_score", "base_score", "conviction"):
+                score_val = self._extract_field(holding_data, score_field, None)
+                if score_val is not None:
+                    s_float = _safe_float(score_val, -1.0)
+                    if s_float >= 0.0:
+                        has_valid_metrics = True
+                        score_points = s_float
+                        field_name_pretty = score_field.replace("_", " ").title()
+                        evidence.append(f"{field_name_pretty}: {s_float:.1f}")
+                        break
+
+            # Priority 2: Use existing fundamental score service if explicit score was not present
+            if not has_valid_metrics and isinstance(holding_data, dict):
+                try:
+                    from services.fundamental_score_service import calculate_fundamental_score
+                    fs_res = calculate_fundamental_score(holding_data)
+                    if isinstance(fs_res, dict) and fs_res.get("fundamental_score") is not None:
+                        f_score = _safe_float(fs_res.get("fundamental_score"), -1.0)
+                        if f_score >= 0.0:
+                            has_valid_metrics = True
+                            score_points = f_score
+                            evidence.append(f"Fundamental Score: {f_score:.1f}")
+                except Exception:
+                    pass
+
+            # Priority 3: Insufficient valid metrics -> Return UNAVAILABLE and N/A
+            if not has_valid_metrics:
+                return HoldingQuality(
+                    symbol=sym,
+                    name=nm,
+                    asset_type=atype,
+                    quality_score=0.0,
+                    quality_grade="N/A",
+                    assessment_status="UNAVAILABLE",
+                    rationale="Insufficient fundamental metadata or Alpha 12 conviction score available for equity quality assessment.",
+                    evidence=[],
+                )
+
+            final_score = float(min(100.0, max(0.0, score_points)))
+            if final_score >= 80.0:
+                grade = "A"
+            elif final_score >= 70.0:
+                grade = "B"
+            elif final_score >= 60.0:
+                grade = "C"
+            else:
+                grade = "D"
+
+            rationale_str = f"Assessed equity holding based on available fundamental metrics: {', '.join(evidence)}."
+
+            return HoldingQuality(
+                symbol=sym,
+                name=nm,
+                asset_type=atype,
+                quality_score=round(final_score, 1),
+                quality_grade=grade,
+                assessment_status="ASSESSED",
+                rationale=rationale_str,
+                evidence=evidence,
+            )
+        except Exception:
+            return HoldingQuality(
+                symbol="UNKNOWN",
+                name="UNKNOWN",
+                asset_type="EQUITY",
+                quality_score=0.0,
+                quality_grade="N/A",
+                assessment_status="UNAVAILABLE",
+                rationale="Error occurred during equity quality assessment.",
+                evidence=[],
+            )
+
     def assess_single_holding(self, holding_data: Any) -> HoldingQuality:
         """Assess a single holding record based on its asset type and available metadata."""
         if holding_data is None or isinstance(holding_data, (int, float, str, bool)):
@@ -337,15 +422,7 @@ class HoldingQualityService:
             elif atype in self.ETF_TYPES or "ETF" in atype:
                 return self.assess_etf_holding(holding_data)
             else:
-                return HoldingQuality(
-                    symbol=sym,
-                    name=nm,
-                    asset_type=atype,
-                    quality_score=0.0,
-                    quality_grade="N/A",
-                    assessment_status="UNSUPPORTED",
-                    rationale=f"Asset type '{atype}' is unsupported for fund/ETF quality assessment.",
-                )
+                return self.assess_equity_holding(holding_data)
         except Exception:
             return HoldingQuality(
                 symbol="UNKNOWN",

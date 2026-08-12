@@ -45,6 +45,20 @@ class PortfolioHealthMonitorService:
 
             storage_path = getattr(self.history_service, "storage_path", None)
             if storage_path is None or not os.path.exists(storage_path):
+                try:
+                    from services.portfolio_state_service import PortfolioStateService
+                    st_svc = PortfolioStateService()
+                    st = st_svc.load_state()
+                    if isinstance(st, dict):
+                        pos = st.get("positions") or (st.get("state", {}).get("positions") if isinstance(st.get("state"), dict) else None)
+                        if pos and isinstance(pos, dict) and len(pos) >= 1:
+                            from services.portfolio_health_service import PortfolioHealthService
+                            ph_svc = PortfolioHealthService(history_service=self.history_service)
+                            ph_svc.evaluate()
+                except Exception:
+                    pass
+
+            if storage_path is None or not os.path.exists(storage_path):
                 return default_state
 
             # Verify file read safety (e.g. corrupt JSON or unreadable file)
@@ -69,6 +83,21 @@ class PortfolioHealthMonitorService:
                 return default_state
 
             history = self.history_service.get_history()
+
+            if not history:
+                try:
+                    from services.portfolio_state_service import PortfolioStateService
+                    st_svc = PortfolioStateService()
+                    st = st_svc.load_state()
+                    if isinstance(st, dict):
+                        pos = st.get("positions") or (st.get("state", {}).get("positions") if isinstance(st.get("state"), dict) else None)
+                        if pos and isinstance(pos, dict) and len(pos) >= 1:
+                            from services.portfolio_health_service import PortfolioHealthService
+                            ph_svc = PortfolioHealthService(history_service=self.history_service)
+                            ph_svc.evaluate()
+                            history = self.history_service.get_history()
+                except Exception:
+                    pass
 
             if not history:
                 return PortfolioHealthMonitoringState(

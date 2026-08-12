@@ -118,7 +118,9 @@ class MainWindow(QMainWindow):
     def portfolio_health(self):
         if self._portfolio_health is None:
             from app.screens.portfolio_health import PortfolioHealth
-            self._portfolio_health = PortfolioHealth()
+            self._portfolio_health = PortfolioHealth(
+                alpha12_provider=self._current_alpha12
+            )
             self.pages.addWidget(self._portfolio_health)
         return self._portfolio_health
 
@@ -134,7 +136,11 @@ class MainWindow(QMainWindow):
     def watchtower(self):
         if self._watchtower is None:
             from app.screens.watchtower import Watchtower
-            self._watchtower = Watchtower()
+            from services.alpha12_mapping_service import Alpha12MappingService
+            from services.alpha12_stability_service import Alpha12StabilityService
+            m_svc = Alpha12MappingService(alpha12_provider=self._current_alpha12)
+            s_svc = Alpha12StabilityService(alpha12_mapping_service=m_svc)
+            self._watchtower = Watchtower(stability_service=s_svc)
             self.pages.addWidget(self._watchtower)
         return self._watchtower
 

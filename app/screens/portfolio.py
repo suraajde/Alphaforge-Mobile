@@ -4411,9 +4411,14 @@ class Portfolio(QWidget):
         self.alloc_table.setHorizontalHeaderLabels([
             "Alpha 12 Rank", "Symbol", "Company Name", "Conviction", "Current Weight", "Target Weight", "Expected Weight", "Price", quantity_header, amount_header, "Allocation %", "Reason"
         ])
-        self.lbl_alloc_summary.setText(
-            f"USER INPUT: {alloc_type} ₹{res.total_input_amount:,.2f}  |  ALPHAFORGE RECOMMENDATION: Recommended deployment: ₹{res.total_allocated_amount:,.2f}"
+        residual_cash = max(0.0, round(res.total_input_amount - res.total_allocated_amount, 2))
+        summary_text = (
+            f"USER INPUT: {alloc_type} ₹{res.total_input_amount:,.2f}  |  "
+            f"ALPHAFORGE RECOMMENDATION: Recommended deployment: ₹{res.total_allocated_amount:,.2f}"
         )
+        if residual_cash > 0:
+            summary_text += f"  |  Unallocated Cash: ₹{residual_cash:,.2f}"
+        self.lbl_alloc_summary.setText(summary_text)
         self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #15803d; padding: 4px 0px;")
 
         self.alloc_table.setRowCount(0)
@@ -4428,6 +4433,6 @@ class Portfolio(QWidget):
             self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.expected_weight_pct:.1f}%"))
             self.alloc_table.setItem(i, 7, QTableWidgetItem(f"₹{item.reference_price:,.2f}"))
             self.alloc_table.setItem(i, 8, QTableWidgetItem(str(item.quantity)))
-            self.alloc_table.setItem(i, 9, QTableWidgetItem(f"₹{item.suggested_amount:,.2f}"))
+            self.alloc_table.setItem(i, 9, QTableWidgetItem(f"₹{item.executable_amount:,.2f}"))
             self.alloc_table.setItem(i, 10, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
             self.alloc_table.setItem(i, 11, QTableWidgetItem(item.reason))

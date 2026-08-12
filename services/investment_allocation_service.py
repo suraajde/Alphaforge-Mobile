@@ -33,6 +33,7 @@ class AllocationItem:
     suggested_pct: float = 0.0
     reference_price: float = 0.0
     quantity: int = 0
+    executable_amount: float = 0.0
     reason: str = ""
 
 
@@ -95,19 +96,39 @@ class InvestmentAllocationService:
         price = self._safe_float(market_data.get("price"), 0.0)
         return round(price, 2) if price > 0 else 0.0
 
-    def _apply_reference_prices_and_quantities(
+    def _reconcile_whole_shares(
         self,
+        total_amount: float,
         allocations: List[AllocationItem],
         positions: Dict[str, Any],
-    ) -> None:
-        """Attach executable whole-share quantities without changing monetary allocations."""
+    ) -> float:
+        """Convert nominal target allocations to executable whole-share quantities
+        and update executable_amount to equal quantity * reference_price when prices exist.
+
+        Does NOT automatically redistribute residual cash.
+        Returns total_allocated_amount (sum of executable amounts).
+        """
+        has_prices = False
         for item in allocations:
             item.reference_price = self._resolve_reference_price(item.symbol, positions)
-            item.quantity = (
-                math.floor(item.suggested_amount / item.reference_price)
-                if item.reference_price > 0
-                else 0
-            )
+            if item.reference_price > 0:
+                has_prices = True
+                item.quantity = math.floor(item.suggested_amount / item.reference_price)
+                item.executable_amount = round(item.quantity * item.reference_price, 2)
+            else:
+                item.quantity = 0
+                item.executable_amount = item.suggested_amount
+
+        if not has_prices:
+            for item in allocations:
+                item.executable_amount = item.suggested_amount
+            return sum(item.suggested_amount for item in allocations)
+
+        for item in allocations:
+            item.suggested_pct = round((item.executable_amount / total_amount * 100.0), 1) if total_amount > 0 else 0.0
+
+        return round(sum(item.executable_amount for item in allocations), 2)
+
 
     def _normalize_candidate_list(self, raw_candidates: Any) -> List[Dict[str, Any]]:
         """Normalize raw Alpha 12 candidates into a uniform list of candidate dictionaries."""
@@ -370,22 +391,22 @@ class InvestmentAllocationService:
                 )
             )
 
-        # Exact adjustments if rounding created a tiny mismatch
-        diff = total_amount - sum(a.suggested_amount for a in allocations)
-        if abs(diff) > 0.001 and allocations:
-            allocations[0].suggested_amount += diff
-            allocations[0].suggested_pct = round(allocations[0].suggested_amount / total_amount * 100.0, 1)
+        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions)
+        residual_cash = round(total_amount - total_alloc, 2)
 
-        self._apply_reference_prices_and_quantities(allocations, positions)
-
-        total_alloc = sum(a.suggested_amount for a in allocations)
+        summary_rat = (
+            f"NEW MONEY DEPLOYMENT: Monthly investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates without selling incumbents. "
+            f"Executable deployment: ₹{total_alloc:,.2f}."
+        )
+        if residual_cash > 0:
+            summary_rat += f" Unallocated residual cash: ₹{residual_cash:,.2f}."
 
         return InvestmentAllocationResult(
             allocation_type="MONTHLY",
             total_input_amount=total_amount,
             total_allocated_amount=round(total_alloc, 2),
             allocations=allocations,
-            summary_rationale=f"NEW MONEY DEPLOYMENT: Monthly investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates without selling incumbents.",
+            summary_rationale=summary_rat,
         )
 
     def allocate_lump_sum_investment(
@@ -483,19 +504,20 @@ class InvestmentAllocationService:
                 )
             )
 
-        diff = total_amount - sum(a.suggested_amount for a in allocations)
-        if abs(diff) > 0.001 and allocations:
-            allocations[0].suggested_amount += diff
-            allocations[0].suggested_pct = round(allocations[0].suggested_amount / total_amount * 100.0, 1)
+        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions)
+        residual_cash = round(total_amount - total_alloc, 2)
 
-        self._apply_reference_prices_and_quantities(allocations, positions)
-
-        total_alloc = sum(a.suggested_amount for a in allocations)
+        summary_rat = (
+            f"NEW MONEY DEPLOYMENT: Lump-sum investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates. "
+            f"Executable deployment: ₹{total_alloc:,.2f}."
+        )
+        if residual_cash > 0:
+            summary_rat += f" Unallocated residual cash: ₹{residual_cash:,.2f}."
 
         return InvestmentAllocationResult(
             allocation_type="LUMP_SUM",
             total_input_amount=total_amount,
             total_allocated_amount=round(total_alloc, 2),
             allocations=allocations,
-            summary_rationale=f"NEW MONEY DEPLOYMENT: Lump-sum investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates.",
+            summary_rationale=summary_rat,
         )
