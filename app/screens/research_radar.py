@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
     QWidget,
@@ -14,7 +15,8 @@ from PySide6.QtWidgets import (
 )
 
 from services.universe_service import UniverseService
-from services.production_radar_pipeline import ProductionRadarPipeline
+from services.production_radar_pipeline import ProductionRadarPipeline, load_production_radar_snapshot
+
 
 
 # ==========================================================
@@ -512,10 +514,58 @@ class ResearchRadar(QWidget):
         )
 
         # ==================================================
-        # INITIAL UNIVERSE LOAD
+        # INITIAL UNIVERSE LOAD & PERSISTED SNAPSHOT RESTORE
         # ==================================================
 
         self.load_universe_summary()
+        self.restore_persisted_snapshot()
+
+
+    # ======================================================
+    # RESTORE PERSISTED SNAPSHOT
+    # ======================================================
+
+    def restore_persisted_snapshot(self) -> bool:
+        """Automatically load and display the last valid persisted production radar snapshot."""
+        try:
+            snapshot = load_production_radar_snapshot()
+            if not snapshot:
+                self.status_label.setText(
+                    "Data Status: UNAVAILABLE | No persisted Production Radar snapshot. Click 'Run Production Radar' to scan."
+                )
+                return False
+
+            self.last_result = snapshot
+            data_status = snapshot.get("data_status", "READY")
+            ts_str = snapshot.get("timestamp", "N/A")
+            if ts_str != "N/A":
+                try:
+                    dt = datetime.fromisoformat(ts_str)
+                    ts_display = dt.strftime("%Y-%m-%d %H:%M UTC")
+                except Exception:
+                    ts_display = ts_str
+            else:
+                ts_display = "N/A"
+
+            self.scan_finished(snapshot)
+
+            universe_count = snapshot.get("universe_count", 0)
+            candidate_count = snapshot.get("candidate_count", 0)
+            processed_count = snapshot.get("processed_count", 0)
+            ranked = snapshot.get("ranked", [])
+            error_count = snapshot.get("error_count", 0)
+
+            self.status_label.setText(
+                f"Last Production Radar: {ts_display} | Data Status: {data_status} | "
+                f"Universe {universe_count} → Pre-screen {candidate_count} → Deep analyzed {processed_count} → Top {len(ranked)} | Errors {error_count}"
+            )
+            self.progress_bar.setValue(candidate_count)
+            self.progress_bar.setFormat(f"Production Radar complete ({data_status})")
+            return True
+        except Exception as exc:
+            self.status_label.setText(f"Snapshot restore warning: {exc}")
+            return False
+
 
 
     # ======================================================

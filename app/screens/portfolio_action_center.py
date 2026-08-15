@@ -33,9 +33,19 @@ from services.rebalance_orchestrator_service import RebalancePlan
 class PortfolioActionCenter(QWidget):
     """User-facing review center for AlphaForge governance decisions and rebalance plans."""
 
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(
+        self,
+        action_center_service: Optional[ActionCenterService] = None,
+        alpha12_provider: Optional[Any] = None,
+        parent: Optional[QWidget] = None,
+    ) -> None:
         super().__init__(parent)
-        self.service = ActionCenterService()
+        self.alpha12_provider = alpha12_provider
+        self.service = (
+            action_center_service
+            if action_center_service is not None
+            else ActionCenterService(alpha12_provider=alpha12_provider)
+        )
         self._build_ui()
 
     def _build_ui(self) -> None:

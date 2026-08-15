@@ -69,8 +69,13 @@ class ActionCenterViewModel:
 class ActionCenterService:
     """Service that integrates GovernancePipelineService outputs and RebalancePlan data into UI View Models."""
 
-    def __init__(self, governance_pipeline: Optional[GovernancePipelineService] = None) -> None:
+    def __init__(
+        self,
+        governance_pipeline: Optional[GovernancePipelineService] = None,
+        alpha12_provider: Optional[Any] = None,
+    ) -> None:
         self.governance_pipeline = governance_pipeline or GovernancePipelineService()
+        self.alpha12_provider = alpha12_provider
 
     def build_view_model(
         self,
@@ -235,9 +240,38 @@ class ActionCenterService:
                 })
 
         if alpha12_candidates is None:
-            res = UniverseService().get_enabled_stocks()
-            stocks = res.get("stocks", []) if isinstance(res, dict) else []
-            alpha12_candidates = stocks[:12]
+            if self.alpha12_provider is not None:
+                if callable(self.alpha12_provider):
+                    try:
+                        alpha12_candidates = self.alpha12_provider()
+                    except Exception:
+                        alpha12_candidates = None
+                elif isinstance(self.alpha12_provider, (list, dict)):
+                    alpha12_candidates = self.alpha12_provider
+
+            if not alpha12_candidates:
+                try:
+                    from services.alpha12_mapping_service import Alpha12MappingService
+                    map_res = Alpha12MappingService(alpha12_provider=self.alpha12_provider).get_mapping()
+                    if map_res and map_res.portfolio and map_res.portfolio.holdings:
+                        alpha12_candidates = [
+                            {
+                                "symbol": h.symbol,
+                                "name": h.name,
+                                "alpha12_rank": h.alpha12_rank,
+                                "score": max(60.0, 95.0 - ((h.alpha12_rank or 1) - 1) * 2.5),
+                                "conviction": 80.0,
+                                "sector": getattr(h, "asset_type", "General"),
+                            }
+                            for h in map_res.portfolio.holdings
+                        ]
+                except Exception:
+                    alpha12_candidates = None
+
+            if not alpha12_candidates:
+                res = UniverseService().get_enabled_stocks()
+                stocks = res.get("stocks", []) if isinstance(res, dict) else []
+                alpha12_candidates = stocks[:12]
 
         candidates = []
         for i, cand in enumerate(alpha12_candidates, start=1):

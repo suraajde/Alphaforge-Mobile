@@ -157,10 +157,19 @@ class Alpha12StabilityService:
         storage_path: Optional[str] = None,
     ) -> None:
         """Initialize Alpha12StabilityService with optional dependencies."""
-        self._alpha12_mapping_service = alpha12_mapping_service
+        if alpha12_mapping_service is not None:
+            self._alpha12_mapping_service = alpha12_mapping_service
+        else:
+            try:
+                from services.alpha12_mapping_service import Alpha12MappingService
+                self._alpha12_mapping_service = Alpha12MappingService()
+            except Exception:
+                self._alpha12_mapping_service = None
+
         self._alpha12_replacement_governance_service = alpha12_replacement_governance_service
         self._portfolio_health_service = portfolio_health_service
         self._storage_path = storage_path or self.DEFAULT_STORAGE_PATH
+
 
     def _get_mapping(self, provided_mapping: Optional[Any] = None) -> Optional[Any]:
         """Safely retrieve Alpha 12 mapping container."""
@@ -192,12 +201,15 @@ class Alpha12StabilityService:
                 pass
         return None
 
+
+
     def analyze_stability(
         self,
         alpha12_mapping: Optional[Any] = None,
         governance_result: Optional[Any] = None,
         health_result: Optional[Any] = None,
         now_timestamp: Optional[str] = None,
+        auto_save: bool = True,
     ) -> Alpha12StabilityResult:
         """Perform long-term portfolio stability evaluation defensively."""
         try:
@@ -255,8 +267,22 @@ class Alpha12StabilityService:
             turnover_efficiency = round(max(0.0, (100.0 - turnover_rate) / 100.0), 2)
 
             # Holding Persistence & Tenure
-            persistent_count = mapped_holdings
-            avg_tenure = 12.0 if mapped_holdings > 0 else 0.0
+            history = self.load_history()
+            entries = history.entries if history and isinstance(history.entries, list) else []
+
+            if entries and len(entries) >= 2:
+                past_counts = [e.persistent_holdings for e in entries if e.persistent_holdings > 0]
+                persistent_count = min(past_counts) if past_counts else mapped_holdings
+                try:
+                    dt_start = datetime.fromisoformat(entries[0].timestamp.replace("Z", "+00:00"))
+                    dt_end = datetime.fromisoformat(entries[-1].timestamp.replace("Z", "+00:00"))
+                    elapsed_days = max(0, (dt_end - dt_start).days)
+                    avg_tenure = round(elapsed_days / 30.4375, 1)
+                except Exception:
+                    avg_tenure = 0.0
+            else:
+                persistent_count = mapped_holdings
+                avg_tenure = 0.0
 
             # Calculate Stability Score (0 - 100)
             # Base score: 100.0
@@ -293,13 +319,14 @@ class Alpha12StabilityService:
                 stability_rating = "UNSTABLE"
                 assessment_status = "UNSTABLE"
 
-            ts = now_timestamp or datetime.now(timezone.utc).isoformat()
+            ts = now_timestamp or getattr(mapping_res, "analysis_timestamp", None) or datetime.now(timezone.utc).isoformat()
 
             evidence = [
-                f"Portfolio Stability Score: {stability_score:.1f}/100 ({stability_rating})",
-                f"Projected Turnover Rate: {turnover_rate:.1f}% ({churn_risk} churn risk)",
-                f"Candidate Churn Prevention Ratio: {churn_prevention_ratio:.1f}% ({unnecessary_swaps_prevented} swaps prevented)",
-                f"Mapped Holding Persistence: {mapped_holdings} of {total_holdings} holdings active",
+                f"Stability Score: {stability_score}/100",
+                f"Stability Rating: {stability_rating}",
+                f"Turnover Rate: {turnover_rate:.1f}%",
+                f"Churn Prevention Ratio: {churn_prevention_ratio:.1f}%",
+                f"Mapped Holdings: {mapped_holdings}/{total_holdings}",
             ]
 
             rat = f"Portfolio demonstrates {stability_rating.lower().replace('_', ' ')} stability with {turnover_rate:.1f}% turnover rate and {churn_prevention_ratio:.1f}% churn prevention ratio."
@@ -328,11 +355,11 @@ class Alpha12StabilityService:
                 evidence=evidence,
             )
 
-            # Persist snapshot entry into history
-            self.record_history(result, timestamp=ts)
-
-            # Refresh persistence history in returned container
-            result.persistence_history = self.load_history()
+            if auto_save:
+                # Persist snapshot entry into history
+                self.record_history(result, timestamp=ts)
+                # Refresh persistence history in returned container
+                result.persistence_history = self.load_history()
 
             return result
 
@@ -347,12 +374,14 @@ class Alpha12StabilityService:
         alpha12_mapping: Optional[Any] = None,
         governance_result: Optional[Any] = None,
         health_result: Optional[Any] = None,
+        auto_save: bool = True,
     ) -> Alpha12StabilityResult:
         """Alias interface for retrieving Alpha 12 stability analysis."""
         return self.analyze_stability(
             alpha12_mapping=alpha12_mapping,
             governance_result=governance_result,
             health_result=health_result,
+            auto_save=auto_save,
         )
 
     # -----------------------------------------------------------------------

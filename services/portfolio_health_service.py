@@ -631,10 +631,11 @@ class PortfolioHealthService:
         snapshot: Optional[PortfolioHealthSnapshot] = None,
 
         previous: Optional[PortfolioHealthResult] = None,
-
+        auto_save: bool = True,
     ) -> PortfolioHealthResult:
 
-        """Calculates portfolio health score framework and returns PortfolioHealthResult.
+
+        """Evaluates portfolio health snapshot deterministically.
 
         Scoring Factors (Max = 100):
 
@@ -829,34 +830,32 @@ class PortfolioHealthService:
         )
 
         if previous is None and self._history_service is not None:
-
             try:
-
                 latest = self._history_service.get_latest()
-
                 if latest is not None:
-
                     previous = PortfolioHealthResult(
-
                         score=latest.score,
-
                         grade=latest.grade,
-
                         diversification_rating=latest.diversification_rating,
-
                         concentration_rating=latest.concentration_rating,
-
                         position_count=latest.position_count,
-
                         largest_position_weight_pct=latest.largest_position_weight_pct,
-
                         cash_allocation_pct=latest.cash_allocation_pct,
-
                     )
-
             except Exception:
-
                 previous = None
+
+        if auto_save and self._history_service is not None and hasattr(self._history_service, "save_snapshot"):
+            try:
+                history = self._history_service.get_history() if hasattr(self._history_service, "get_history") else []
+                if pos_count > 0 or not history:
+                    self._history_service.save_snapshot(res)
+            except Exception:
+                pass
+
+
+
+
 
         res.trend = self.evaluate_trend(res, previous=previous)
 

@@ -28,7 +28,7 @@ def test_service_initialization(tmp_storage_path):
     """Verify service initializes with default and custom arguments."""
     svc = Alpha12StabilityService(storage_path=tmp_storage_path)
     assert svc._storage_path == tmp_storage_path
-    assert svc._alpha12_mapping_service is None
+    assert svc._alpha12_mapping_service is not None
     assert svc._alpha12_replacement_governance_service is None
 
 
@@ -49,13 +49,18 @@ def test_default_dataclass_values():
 
 
 def test_none_input(tmp_storage_path):
-    """Verify service handles None inputs gracefully returning safe fallback."""
-    svc = Alpha12StabilityService(storage_path=tmp_storage_path)
+    """Verify service handles None inputs gracefully, using auto-initialized mapping service when provided mapping is None."""
+    class EmptyMappingService:
+        def get_mapping(self):
+            return None
+
+    svc = Alpha12StabilityService(alpha12_mapping_service=EmptyMappingService(), storage_path=tmp_storage_path)
     res = svc.analyze_stability(None, None, None)
     assert isinstance(res, Alpha12StabilityResult)
     assert res.analysis_status == "UNAVAILABLE"
     assert res.stability_metrics is not None
     assert res.stability_metrics.stability_score == 0.0
+
 
 
 def test_empty_portfolio(tmp_storage_path):

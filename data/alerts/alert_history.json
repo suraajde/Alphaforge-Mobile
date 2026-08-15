@@ -1,7 +1,7 @@
 [
   {
     "alert_id": "gen_mon_unavailable",
-    "timestamp": "2026-08-07 22:05",
+    "timestamp": "2026-08-14 22:12",
     "alert_type": "MONITORING_STATUS",
     "severity": "HIGH",
     "title": "Monitoring unavailable",
@@ -10,7 +10,7 @@
   },
   {
     "alert_id": "gen_mon_ready",
-    "timestamp": "2026-08-07 22:05",
+    "timestamp": "2026-08-14 22:24",
     "alert_type": "MONITORING_STATUS",
     "severity": "INFO",
     "title": "Monitoring ready",
@@ -18,8 +18,17 @@
     "status": "ACTIVE"
   },
   {
+    "alert_id": "gen_timeline_updated",
+    "timestamp": "2026-08-14 22:24",
+    "alert_type": "TIMELINE_UPDATED",
+    "severity": "LOW",
+    "title": "Portfolio history updated",
+    "description": "1 timeline snapshot entries available.",
+    "status": "ACTIVE"
+  },
+  {
     "alert_id": "gen_changes_detected",
-    "timestamp": "2026-08-07 22:05",
+    "timestamp": "2026-08-15 10:18",
     "alert_type": "CHANGE_DETECTED",
     "severity": "MEDIUM",
     "title": "Portfolio changes detected",
@@ -28,20 +37,11 @@
   },
   {
     "alert_id": "gen_score_changed",
-    "timestamp": "2026-08-07 22:05",
+    "timestamp": "2026-08-15 10:18",
     "alert_type": "HEALTH_SCORE_CHANGED",
     "severity": "MEDIUM",
     "title": "Portfolio health score changed",
     "description": "Portfolio health score updated across snapshots.",
-    "status": "ACTIVE"
-  },
-  {
-    "alert_id": "gen_timeline_updated",
-    "timestamp": "2026-08-07 22:05",
-    "alert_type": "TIMELINE_UPDATED",
-    "severity": "LOW",
-    "title": "Portfolio history updated",
-    "description": "3 timeline snapshot entries available.",
     "status": "ACTIVE"
   },
   {

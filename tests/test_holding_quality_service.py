@@ -155,12 +155,12 @@ def test_assess_etf_holding_missing_metadata():
 def test_unsupported_asset_type():
     svc = HoldingQualityService()
     stock = {
-        "symbol": "RELIANCE",
-        "name": "Reliance Industries Ltd",
-        "asset_type": "EQUITY",
+        "symbol": "CRYPTO_TOKEN",
+        "name": "Crypto Token",
+        "asset_type": "CRYPTO",
     }
     hq = svc.assess_single_holding(stock)
-    assert hq.symbol == "RELIANCE"
+    assert hq.symbol == "CRYPTO_TOKEN"
     assert hq.assessment_status == "UNSUPPORTED"
     assert hq.quality_score == 0.0
     assert hq.quality_grade == "N/A"

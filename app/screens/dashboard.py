@@ -184,8 +184,18 @@ class Dashboard(QWidget):
                 self.lbl_stab_val.setText("N/A")
                 return
 
-            res = self.alpha12_stability_service.get_stability()
+            res = self.alpha12_stability_service.get_stability(auto_save=False)
             metrics = getattr(res, "stability_metrics", None)
+            if metrics is None or getattr(metrics, "assessment_status", "UNAVAILABLE") == "UNAVAILABLE":
+                try:
+                    from services.alpha12_mapping_service import Alpha12MappingService
+                    map_res = Alpha12MappingService().get_mapping()
+                    res = self.alpha12_stability_service.get_stability(alpha12_mapping=map_res, auto_save=False)
+                    metrics = getattr(res, "stability_metrics", None)
+                except Exception:
+                    pass
+
+
             if metrics is not None and getattr(metrics, "assessment_status", "UNAVAILABLE") != "UNAVAILABLE":
                 score = getattr(metrics, "stability_score", 0.0)
                 rating = getattr(metrics, "stability_rating", "MODERATE")
@@ -194,6 +204,7 @@ class Dashboard(QWidget):
                 self.lbl_stab_val.setText("N/A")
         except Exception:
             self.lbl_stab_val.setText("N/A")
+
 
     def _load_alerts_summary(self) -> None:
         try:

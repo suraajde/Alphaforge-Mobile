@@ -101,12 +101,13 @@ class InvestmentAllocationService:
         total_amount: float,
         allocations: List[AllocationItem],
         positions: Dict[str, Any],
+        scores_by_symbol: Optional[Dict[str, float]] = None,
     ) -> float:
-        """Convert nominal target allocations to executable whole-share quantities
-        and update executable_amount to equal quantity * reference_price when prices exist.
-
-        Does NOT automatically redistribute residual cash.
-        Returns total_allocated_amount (sum of executable amounts).
+        """Convert nominal target allocations to executable whole-share quantities,
+        update executable_amount to equal quantity * reference_price when prices exist,
+        and intelligently redistribute residual cash among eligible candidates in order
+        of candidate priority score so that executable_amount <= total_amount while
+        minimizing unallocated residual cash.
         """
         has_prices = False
         for item in allocations:
@@ -123,6 +124,38 @@ class InvestmentAllocationService:
             for item in allocations:
                 item.executable_amount = item.suggested_amount
             return sum(item.suggested_amount for item in allocations)
+
+        current_allocated = round(sum(item.executable_amount for item in allocations), 2)
+        remaining_cash = round(total_amount - current_allocated, 2)
+
+        # Intelligent Residual Cash Redistribution with Concentration Safety
+        if remaining_cash > 0:
+            scores = scores_by_symbol or {}
+            sorted_items = sorted(
+                allocations,
+                key=lambda it: (scores.get(it.symbol, 0.0), -it.alpha12_rank if it.alpha12_rank else 0),
+                reverse=True,
+            )
+
+            changed = True
+            while remaining_cash > 0 and changed:
+                changed = False
+                for item in sorted_items:
+                    price = item.reference_price
+                    if price > 0 and price <= remaining_cash + 0.001:
+                        new_executable = round((item.quantity + 1) * price, 2)
+                        conc_pct = (new_executable / total_amount * 100.0) if total_amount > 0 else 0.0
+                        # Prevent stacking excessive extra shares if concentration exceeds 30% (unless initial 1 share)
+                        if item.quantity >= 1 and conc_pct > 30.0:
+                            continue
+
+                        item.quantity += 1
+                        item.executable_amount = round(item.quantity * price, 2)
+                        remaining_cash = round(remaining_cash - price, 2)
+                        changed = True
+                        if remaining_cash <= 0.001:
+                            break
+
 
         for item in allocations:
             item.suggested_pct = round((item.executable_amount / total_amount * 100.0), 1) if total_amount > 0 else 0.0
@@ -391,7 +424,8 @@ class InvestmentAllocationService:
                 )
             )
 
-        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions)
+        scores_by_symbol = {cand["symbol"]: score for cand, curr_weight, score in raw_scores}
+        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions, scores_by_symbol=scores_by_symbol)
         residual_cash = round(total_amount - total_alloc, 2)
 
         summary_rat = (
@@ -504,7 +538,8 @@ class InvestmentAllocationService:
                 )
             )
 
-        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions)
+        scores_by_symbol = {cand["symbol"]: score for cand, curr_weight, score in raw_scores}
+        total_alloc = self._reconcile_whole_shares(total_amount, allocations, positions, scores_by_symbol=scores_by_symbol)
         residual_cash = round(total_amount - total_alloc, 2)
 
         summary_rat = (

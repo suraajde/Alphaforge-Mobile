@@ -434,10 +434,12 @@ def test_insights_deterioration_percentage_calculated_correctly(temp_storage):
 def test_insights_neutral_percentage_calculated_correctly(temp_storage):
     """TEST 4: Neutral percentage calculated correctly."""
     service = PortfolioHealthHistoryService(storage_path=temp_storage)
-    for s in [80, 80, 84, 84, 82]:
-        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, 5.0))
+    cash_pcts = [5.0, 6.0, 7.0, 8.0, 9.0]
+    for s, c in zip([80, 80, 84, 84, 82], cash_pcts):
+        service.save_snapshot(PortfolioHealthResult(s, "B", "GOOD", "LOW", 10, 10.0, c))
     insights = service.get_historical_insights()
     assert insights.neutral_percentage == 50.0
+
 
 
 def test_insights_consistency_score_calculated_correctly(temp_storage):

@@ -67,8 +67,8 @@ class PortfolioHealthHistoryService:
 
     def __init__(self, storage_path: Optional[str] = None) -> None:
         if storage_path is None:
-            base_dir = Path(__file__).resolve().parent.parent
-            storage_path = os.path.join(base_dir, "data", "portfolio_health", "portfolio_health_history.json")
+            from config.path_config import get_data_path
+            storage_path = str(get_data_path("portfolio_health/portfolio_health_history.json"))
         self.storage_path = storage_path
         self._cached_mtime: Optional[float] = None
         self._cached_entries: list[PortfolioHealthHistoryEntry] = []
@@ -108,6 +108,22 @@ class PortfolioHealthHistoryService:
             )
 
             history = self.get_history()
+
+            # Deduplication: do not append duplicate snapshot if metrics are identical to latest entry
+            if history:
+                latest = history[-1]
+                if (
+                    latest.score == score
+                    and latest.grade == grade
+                    and latest.diversification_rating == div_rating
+                    and latest.concentration_rating == conc_rating
+                    and latest.position_count == pos_count
+                    and latest.largest_position == largest_pos
+                    and abs(latest.largest_position_weight_pct - largest_weight) < 0.01
+                    and abs(latest.cash_allocation_pct - cash_pct) < 0.01
+                ):
+                    return latest
+
             history.append(entry)
 
             self._ensure_directory()

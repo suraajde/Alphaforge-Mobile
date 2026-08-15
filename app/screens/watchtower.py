@@ -144,17 +144,31 @@ class Watchtower(QWidget):
         try:
             dash = self.monitoring_dashboard_service.build_dashboard()
             status = getattr(dash, "monitoring_status", "UNAVAILABLE")
+            snapshots = getattr(dash, "total_snapshots", 0)
+
+            if snapshots == 0 or status == "UNAVAILABLE":
+                try:
+                    from services.portfolio_health_service import PortfolioHealthService
+                    h_svc = PortfolioHealthService(history_service=self.monitoring_dashboard_service.history_service)
+                    h_svc.evaluate(auto_save=True)
+                    dash = self.monitoring_dashboard_service.build_dashboard()
+                    status = getattr(dash, "monitoring_status", "READY")
+                    snapshots = getattr(dash, "total_snapshots", 0)
+                except Exception:
+                    pass
+
+
             score = getattr(dash, "latest_score", 0)
             grade = getattr(dash, "latest_grade", "N/A")
-            snapshots = getattr(dash, "total_snapshots", 0)
             changes = getattr(dash, "total_detected_changes", 0)
             latest_time = getattr(dash, "latest_snapshot_time", None) or "N/A"
 
             info_str = (
                 f"Surveillance Status: {status} | Total Snapshots Tracked: {snapshots}\n"
-                f"Latest Portfolio Health Score: {score} (Grade {grade}) | Total Changes Detected: {changes}\n"
-                f"Latest Snapshot Time: {latest_time}"
+                f"Latest Persisted Watchtower Snapshot: {score}/100 (Grade {grade}) | Total Changes Detected: {changes}\n"
+                f"Snapshot Timestamp: {latest_time} (Source: Watchtower Snapshot History)"
             )
+
             lbl = QLabel(info_str)
             lbl.setStyleSheet("font-size: 13px; color: #1e293b; font-weight: 600;")
             self.mon_container.addWidget(lbl)
@@ -162,6 +176,7 @@ class Watchtower(QWidget):
             err_lbl = QLabel("Portfolio health surveillance state unavailable.")
             err_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
             self.mon_container.addWidget(err_lbl)
+
 
     def _load_alert_surveillance(self) -> None:
         self._clear_layout(self.alert_container)
@@ -187,8 +202,9 @@ class Watchtower(QWidget):
     def _load_stability_surveillance(self) -> None:
         self._clear_layout(self.stab_container)
         try:
-            res = self.stability_service.get_stability()
+            res = self.stability_service.get_stability(auto_save=False)
             status = getattr(res, "analysis_status", "UNAVAILABLE")
+
             metrics = getattr(res, "stability_metrics", None)
             if metrics is not None and getattr(metrics, "assessment_status", "UNAVAILABLE") != "UNAVAILABLE":
                 score = getattr(metrics, "stability_score", 0.0)

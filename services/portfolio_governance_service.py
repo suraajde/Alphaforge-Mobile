@@ -255,18 +255,37 @@ class PortfolioGovernanceService:
         """
         durations = holding_durations or {}
         evaluations: List[GovernanceEvaluation] = []
+        owned_symbols = {str(h.get("symbol", "")).upper() for h in current_holdings if h.get("symbol")}
 
         for curr in current_holdings:
             symbol = str(curr.get("symbol", "")).upper()
             days_held = durations.get(symbol, 0)
 
-            # Find best candidate not already in holdings
+            # Find best candidate not already in portfolio holdings
             matching_candidates = [
                 cand for cand in candidate_pool
-                if str(cand.get("symbol", "")).upper() != symbol
+                if str(cand.get("symbol", "")).upper() not in owned_symbols
             ]
 
             if not matching_candidates:
+                # No unowned challenger available -> Incumbent remains HOLD
+                evaluations.append(
+                    GovernanceEvaluation(
+                        current_symbol=symbol,
+                        candidate_symbol="-",
+                        decision=GovernanceDecision.HOLD,
+                        current_score=float(curr.get("score", curr.get("composite_score", 0.0))),
+                        candidate_score=0.0,
+                        score_delta=0.0,
+                        is_cooling_active=days_held < self.config.cooling_period_days,
+                        holding_days=days_held,
+                        conviction_delta=0.0,
+                        incumbent_bonus_applied=self.config.incumbent_bonus_score,
+                        reasons=["No unowned challenger available in candidate pool."],
+                        audit_trail=[f"Hold {symbol}: All candidate pool stocks are already held in portfolio."],
+                        replacement_justification=f"Hold {symbol}: Core portfolio incumbent. No external challenger present.",
+                    )
+                )
                 continue
 
             best_candidate = matching_candidates[0]

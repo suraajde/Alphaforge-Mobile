@@ -1,9 +1,82 @@
-from __future__ import annotations
+import json
+import os
+from datetime import datetime, timezone
+from pathlib import Path
+from config.path_config import get_data_path
 
 from services.universe_service import UniverseService
 from services.production_screen_service import ProductionScreenService
 from services.production_scan_orchestrator import ProductionScanOrchestrator
 from services.alpha12_selection_service import Alpha12SelectionService
+
+SNAPSHOT_PATH_RELATIVE = "cache/production_radar_snapshot.json"
+ALPHA12_PATH_RELATIVE = "alpha12/alpha12_portfolio.json"
+
+
+def save_production_radar_snapshot(result: dict) -> bool:
+    """Persist complete authoritative production radar result and Alpha 12 snapshot to disk."""
+    if not isinstance(result, dict) or result.get("status") != "OK":
+        return False
+    try:
+        timestamp = datetime.now(timezone.utc).isoformat()
+        snapshot_payload = dict(result)
+        snapshot_payload["timestamp"] = timestamp
+        snapshot_payload["data_status"] = "READY"
+
+        target_path = get_data_path(SNAPSHOT_PATH_RELATIVE)
+        temp_path = target_path.with_suffix(".json.tmp")
+        with open(temp_path, "w", encoding="utf-8") as f:
+            json.dump(snapshot_payload, f, indent=2)
+        os.replace(temp_path, target_path)
+
+        # Also persist alpha12_portfolio.json for Alpha12MappingService & downstream services
+        alpha12 = result.get("alpha12", [])
+        if isinstance(alpha12, list):
+            alpha12_path = get_data_path(ALPHA12_PATH_RELATIVE)
+            alpha12_temp = alpha12_path.with_suffix(".json.tmp")
+            alpha12_payload = {
+                "alpha12": alpha12,
+                "timestamp": timestamp,
+                "count": len(alpha12),
+            }
+            with open(alpha12_temp, "w", encoding="utf-8") as f:
+                json.dump(alpha12_payload, f, indent=2)
+            os.replace(alpha12_temp, alpha12_path)
+
+        return True
+    except Exception:
+        return False
+
+
+def load_production_radar_snapshot() -> dict | None:
+    """Load the last valid persisted production radar result snapshot."""
+    try:
+        target_path = get_data_path(SNAPSHOT_PATH_RELATIVE)
+        if not target_path.exists():
+            return None
+        with open(target_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict) or data.get("status") != "OK":
+            return None
+
+        # Calculate freshness governance status
+        ts_str = data.get("timestamp")
+        data_status = "READY"
+        if ts_str:
+            try:
+                dt = datetime.fromisoformat(ts_str)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                age_hours = (datetime.now(timezone.utc) - dt).total_seconds() / 3600.0
+                if age_hours > 24:
+                    data_status = "STALE"
+            except Exception:
+                data_status = "READY"
+        data["data_status"] = data_status
+        return data
+    except Exception:
+        return None
+
 
 
 class ProductionRadarPipeline:
@@ -1014,7 +1087,10 @@ class ProductionRadarPipeline:
 
             })
 
+        save_production_radar_snapshot(result)
+
         return result
+
 
 
 # ==========================================================

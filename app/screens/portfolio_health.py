@@ -240,12 +240,6 @@ class PortfolioHealth(QWidget):
         self.alpha12_mapping_service = alpha12_mapping_service if alpha12_mapping_service is not None else Alpha12MappingService(alpha12_provider=self.alpha12_provider)
         self.alpha12_stability_service = alpha12_stability_service if alpha12_stability_service is not None else Alpha12StabilityService(alpha12_mapping_service=self.alpha12_mapping_service)
 
-    def set_alpha12_provider(self, provider: Any) -> None:
-        """Set authoritative Alpha 12 provider on PortfolioHealth screen and mapping service."""
-        self.alpha12_provider = provider
-        if getattr(self, "alpha12_mapping_service", None) is not None:
-            self.alpha12_mapping_service._alpha12_provider = provider
-
         self.service = service if service is not None else PortfolioHealthService(
 
             history_service=self.history_service,
@@ -311,6 +305,13 @@ class PortfolioHealth(QWidget):
 
         self.refresh_data()
 
+    def set_alpha12_provider(self, provider: Any) -> None:
+        """Set authoritative Alpha 12 provider on PortfolioHealth screen and mapping service."""
+        self.alpha12_provider = provider
+        if getattr(self, "alpha12_mapping_service", None) is not None:
+            self.alpha12_mapping_service._alpha12_provider = provider
+
+
     def refresh_data(self) -> None:
 
         """Fetch and bind live portfolio health snapshot, evaluation, and history data."""
@@ -332,16 +333,15 @@ class PortfolioHealth(QWidget):
                     pass
 
             if hasattr(self.service, "evaluate"):
-
                 try:
-
-                    result = self.service.evaluate(snapshot)
-
+                    try:
+                        result = self.service.evaluate(snapshot, auto_save=False)
+                    except TypeError:
+                        result = self.service.evaluate(snapshot)
                     self.load_result(result)
-
                 except Exception:
-
                     pass
+
 
         self.load_history()
 
@@ -771,12 +771,10 @@ class PortfolioHealth(QWidget):
                 lo_score = getattr(result, "lowest_quality_score", 0.0)
 
                 summary_str = (
-
-                    f"Total Holdings: {tot} | Assessed Holdings: {assessed} | Unassessed Holdings: {unassessed}\n"
-
+                    f"Holding Quality Coverage: {assessed}/{tot} assessed ({unassessed} unassessed)\n"
                     f"Average Quality Score: {avg_score:.1f} | Highest Quality Score: {hi_score:.1f} | Lowest Quality Score: {lo_score:.1f}"
-
                 )
+
 
                 summ_lbl = QLabel(summary_str)
 
@@ -1510,10 +1508,11 @@ class PortfolioHealth(QWidget):
         if getattr(self, "alpha12_stability_service", None) is None:
             return
         try:
-            res = self.alpha12_stability_service.get_stability()
+            res = self.alpha12_stability_service.get_stability(auto_save=False)
             self._update_alpha12_stability_ui(res)
         except Exception:
             pass
+
 
     def _update_alpha12_stability_ui(self, result: Any) -> None:
         if hasattr(self, "alpha12_stability_container"):
@@ -4138,11 +4137,18 @@ class PortfolioHealth(QWidget):
 
         breakdown_layout.setSpacing(8)
 
-        lbl_breakdown_header = QLabel("Health Score Breakdown")
+        lbl_breakdown_header = QLabel("Structural Portfolio Health Score Breakdown")
 
         lbl_breakdown_header.setObjectName("sectionHeader")
 
         breakdown_layout.addWidget(lbl_breakdown_header)
+
+        lbl_live_notice = QLabel("Calculation Mode: Live Portfolio State Calculation (Structural Rules: Diversification, Concentration, Cash). Fundamental holding quality is reported independently below.")
+
+        lbl_live_notice.setStyleSheet("font-size: 12px; color: #475569; font-style: italic; margin-bottom: 4px;")
+
+        breakdown_layout.addWidget(lbl_live_notice)
+
 
         self.lbl_breakdown_div = QLabel("Diversification: - / 40")
 

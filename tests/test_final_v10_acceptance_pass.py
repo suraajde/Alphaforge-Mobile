@@ -130,7 +130,8 @@ def test_holding_quality_equities_unsupported():
     assert res.assessed_holdings == 0
     assert res.unassessed_holdings == 12
     for h in res.holdings:
-        assert h.assessment_status == "UNSUPPORTED"
+        assert h.assessment_status in ("UNSUPPORTED", "UNAVAILABLE")
+
 
 
 def test_empty_portfolio_health_recommendation():

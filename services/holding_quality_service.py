@@ -421,8 +421,19 @@ class HoldingQualityService:
                 return self.assess_fund_holding(holding_data)
             elif atype in self.ETF_TYPES or "ETF" in atype:
                 return self.assess_etf_holding(holding_data)
-            else:
+            elif atype in ("EQUITY", "STOCK", "EQUITIES") or not atype:
                 return self.assess_equity_holding(holding_data)
+            else:
+                return HoldingQuality(
+                    symbol=sym,
+                    name=nm,
+                    asset_type=atype,
+                    quality_score=0.0,
+                    quality_grade="N/A",
+                    assessment_status="UNSUPPORTED",
+                    rationale=f"Unsupported asset type '{atype}' for quality assessment.",
+                    evidence=[],
+                )
         except Exception:
             return HoldingQuality(
                 symbol="UNKNOWN",

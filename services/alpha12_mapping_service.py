@@ -111,15 +111,19 @@ def _normalize_symbol(sym: Any) -> str:
     return str(sym).strip().upper()
 
 
+def _clean_symbol(sym: Any) -> str:
+    """Normalize symbol identifier ONLY for comparison matching (stripping whitespace, casing, .NS, .BO, -EQ). Does NOT alter stored symbol."""
+    if not sym:
+        return ""
+    s = str(sym).strip().upper()
+    for suffix in (".NS", ".BO", "-EQ"):
+        if s.endswith(suffix):
+            s = s[:-len(suffix)].strip()
+    return s
+
+
 class Alpha12MappingService:
     """Service layer for establishing factual mapping between Alpha 12 portfolio and current portfolio positions."""
-
-    _DEFAULT_STORAGE = (
-        Path(__file__).resolve().parent.parent / "data" / "alpha12" / "alpha12_mapping_history.json"
-    )
-    _DEFAULT_SOURCE_FILE = (
-        Path(__file__).resolve().parent.parent / "data" / "alpha12" / "alpha12_portfolio.json"
-    )
 
     def __init__(
         self,
@@ -130,11 +134,16 @@ class Alpha12MappingService:
         alpha12_provider: Optional[Any] = None,
     ) -> None:
         """Initialize Alpha12MappingService with Pattern A optional dependencies."""
+        from config.path_config import get_data_path
         self._portfolio_service = portfolio_service
         self._portfolio_intelligence_service = portfolio_intelligence_service
         self._rebalancing_service = rebalancing_service
-        self._storage_path = Path(storage_path) if storage_path is not None else self._DEFAULT_STORAGE
+        self._storage_path = Path(storage_path) if storage_path is not None else get_data_path("alpha12/alpha12_mapping_history.json")
         self._alpha12_provider = alpha12_provider
+
+    def _get_source_file_path(self) -> Path:
+        from config.path_config import get_data_path
+        return get_data_path("alpha12/alpha12_portfolio.json")
 
     def _get_portfolio_state(self) -> Optional[dict]:
         """Safely load current portfolio state dictionary."""
@@ -179,7 +188,7 @@ class Alpha12MappingService:
             return None
 
     def _load_alpha12_source(self, source_input: Optional[Any] = None) -> Optional[list[dict]]:
-        """Load Alpha 12 portfolio source data defensively from input, provider, file, portfolio state, or universe fallback."""
+        """Load Alpha 12 portfolio source data defensively from input, provider, file, snapshot, portfolio state, or universe fallback."""
         if source_input is not None:
             if isinstance(source_input, list):
                 return source_input
@@ -204,31 +213,42 @@ class Alpha12MappingService:
                 raw = self._alpha12_provider
 
             if raw is not None:
-                if isinstance(raw, list):
+                if isinstance(raw, list) and len(raw) > 0:
                     return raw
                 elif isinstance(raw, dict):
-                    if "alpha12" in raw and isinstance(raw["alpha12"], list):
+                    if "alpha12" in raw and isinstance(raw["alpha12"], list) and len(raw["alpha12"]) > 0:
                         return raw["alpha12"]
-                    elif "holdings" in raw and isinstance(raw["holdings"], list):
+                    elif "holdings" in raw and isinstance(raw["holdings"], list) and len(raw["holdings"]) > 0:
                         return raw["holdings"]
-                    elif "selected" in raw and isinstance(raw["selected"], list):
+                    elif "selected" in raw and isinstance(raw["selected"], list) and len(raw["selected"]) > 0:
                         return raw["selected"]
 
         # 2. Try dedicated source file if present
-        if self._DEFAULT_SOURCE_FILE.exists():
+        source_file = self._get_source_file_path()
+        if source_file.exists():
             try:
-                content = self._DEFAULT_SOURCE_FILE.read_text(encoding="utf-8").strip()
+                content = source_file.read_text(encoding="utf-8").strip()
                 if content:
                     data = json.loads(content)
-                    if isinstance(data, list):
+                    if isinstance(data, list) and len(data) > 0:
                         return data
                     elif isinstance(data, dict):
-                        if "alpha12" in data and isinstance(data["alpha12"], list):
+                        if "alpha12" in data and isinstance(data["alpha12"], list) and len(data["alpha12"]) > 0:
                             return data["alpha12"]
-                        elif "holdings" in data and isinstance(data["holdings"], list):
+                        elif "holdings" in data and isinstance(data["holdings"], list) and len(data["holdings"]) > 0:
                             return data["holdings"]
             except Exception:
                 pass
+
+        # 3. Try loading from production_radar_snapshot
+        try:
+            from services.production_radar_pipeline import load_production_radar_snapshot
+            snapshot = load_production_radar_snapshot()
+            if isinstance(snapshot, dict) and snapshot.get("alpha12") and isinstance(snapshot["alpha12"], list):
+                return snapshot["alpha12"]
+        except Exception:
+            pass
+
 
         # 3. Check existing portfolio state positions with alpha12_rank
         state = self._get_portfolio_state()
@@ -336,10 +356,17 @@ class Alpha12MappingService:
         alpha12_holdings: list[dict],
         portfolio_positions: dict[str, dict],
     ) -> list[Alpha12HoldingMapping]:
-        """Match Alpha 12 holdings against portfolio positions primarily by exact normalized symbol."""
+        """Match Alpha 12 holdings against portfolio positions primarily by symbol comparison."""
         mappings: list[Alpha12HoldingMapping] = []
         if not alpha12_holdings:
             return mappings
+
+        # Build clean symbol lookup map for resilient matching without mutating stored symbols
+        clean_portfolio_map: dict[str, dict] = {}
+        for p_key, p_val in portfolio_positions.items():
+            c_key = _clean_symbol(p_val.get("symbol", p_key))
+            if c_key and c_key not in clean_portfolio_map:
+                clean_portfolio_map[c_key] = p_val
 
         for item in alpha12_holdings:
             sym = item.get("symbol", "")
@@ -351,15 +378,20 @@ class Alpha12MappingService:
             a_weight = item.get("alpha12_weight")
             atype = item.get("asset_type", "EQUITY")
 
-            match = portfolio_positions.get(sym)
+            clean_sym = _clean_symbol(sym)
+            match = portfolio_positions.get(sym) or clean_portfolio_map.get(clean_sym)
 
             if match is not None:
+                p_sym = match.get("symbol", sym)
                 c_weight = match.get("current_weight")
                 c_value = match.get("current_value")
                 p_name = match.get("name", name)
 
                 evidence = [
-                    f"Exact symbol match: {sym}",
+                    f"Alpha 12 symbol: {sym}",
+                    f"Portfolio symbol: {p_sym}",
+                    "Mapping result: MAPPED",
+                    f"Mapping reason: Symbol match between Alpha 12 ({sym}) and Portfolio ({p_sym}).",
                     f"Alpha 12 Rank: #{a_rank}" if a_rank is not None else "Alpha 12 Rank: Unranked",
                 ]
                 if a_weight is not None:
@@ -388,7 +420,10 @@ class Alpha12MappingService:
                 )
             else:
                 evidence = [
-                    f"Alpha 12 holding {sym} is not held in current portfolio",
+                    f"Alpha 12 symbol: {sym}",
+                    "Portfolio symbol: None",
+                    "Mapping result: UNMAPPED",
+                    f"Mapping reason: Alpha 12 holding {sym} is not held in current portfolio.",
                     f"Alpha 12 Rank: #{a_rank}" if a_rank is not None else "Alpha 12 Rank: Unranked",
                 ]
                 if a_weight is not None:
@@ -411,6 +446,7 @@ class Alpha12MappingService:
                         source="ALPHA12_SOURCE",
                     )
                 )
+
 
         # Deterministic sorting: alpha12_rank asc (None ranks last), then symbol asc
         def sort_key(h: Alpha12HoldingMapping):
@@ -491,6 +527,9 @@ class Alpha12MappingService:
                 state = state_input
             else:
                 state = self._get_portfolio_state()
+
+            if isinstance(state, dict) and "state" in state and isinstance(state["state"], dict):
+                state = state["state"]
 
             portfolio_positions: dict[str, dict] = {}
             if isinstance(state, dict) and "positions" in state and isinstance(state["positions"], dict):
