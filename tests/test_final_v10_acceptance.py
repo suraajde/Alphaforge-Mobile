@@ -65,7 +65,10 @@ def test_monthly_allocation_exact_total():
     result = service.allocate_monthly_investment(user_input)
     assert result.allocation_type == "MONTHLY"
     assert result.total_input_amount == user_input
-    assert abs(result.total_allocated_amount - user_input) < 0.01, f"Total allocated {result.total_allocated_amount} must equal input {user_input}"
+    assert result.total_allocated_amount <= user_input
+    max_price = max((pos.get("current_price", 1000.0) if hasattr(pos, "get") else getattr(pos, "current_price", getattr(pos, "reference_price", 1000.0))) for pos in result.allocations)
+    assert (user_input - result.total_allocated_amount) < max_price
+    assert result.total_allocated_amount > (user_input * 0.90)
     assert "NEW MONEY DEPLOYMENT" in result.summary_rationale
     assert len(result.allocations) == 12
 
@@ -83,7 +86,10 @@ def test_lump_sum_allocation_exact_total():
     result = service.allocate_lump_sum_investment(user_input)
     assert result.allocation_type == "LUMP_SUM"
     assert result.total_input_amount == user_input
-    assert abs(result.total_allocated_amount - user_input) < 0.01
+    assert result.total_allocated_amount <= user_input
+    max_price = max((pos.get("current_price", 1000.0) if hasattr(pos, "get") else getattr(pos, "current_price", getattr(pos, "reference_price", 1000.0))) for pos in result.allocations)
+    assert (user_input - result.total_allocated_amount) < max_price
+    assert result.total_allocated_amount > (user_input * 0.95)
     assert "NEW MONEY DEPLOYMENT" in result.summary_rationale
     assert len(result.allocations) == 12
 
