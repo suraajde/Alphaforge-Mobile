@@ -1,13 +1,13 @@
 [
   {
-    "timestamp": "2026-08-14T16:54:04.068391+00:00",
+    "timestamp": "2026-08-28T15:29:28.965193+00:00",
     "score": 90,
     "grade": "A",
     "diversification_rating": "GOOD",
     "concentration_rating": "MODERATE",
     "position_count": 12,
-    "largest_position_weight_pct": 10.34,
-    "cash_allocation_pct": 0.85,
+    "largest_position_weight_pct": 10.42,
+    "cash_allocation_pct": 0.87,
     "largest_position": "N/A"
   }
 ]

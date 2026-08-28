@@ -1,7 +1,7 @@
 [
   {
     "alert_id": "gen_mon_unavailable",
-    "timestamp": "2026-08-14 22:12",
+    "timestamp": "2026-08-28 20:59",
     "alert_type": "MONITORING_STATUS",
     "severity": "HIGH",
     "title": "Monitoring unavailable",
@@ -10,7 +10,7 @@
   },
   {
     "alert_id": "gen_mon_ready",
-    "timestamp": "2026-08-14 22:24",
+    "timestamp": "2026-08-28 20:59",
     "alert_type": "MONITORING_STATUS",
     "severity": "INFO",
     "title": "Monitoring ready",
@@ -19,56 +19,11 @@
   },
   {
     "alert_id": "gen_timeline_updated",
-    "timestamp": "2026-08-14 22:24",
+    "timestamp": "2026-08-28 20:59",
     "alert_type": "TIMELINE_UPDATED",
     "severity": "LOW",
     "title": "Portfolio history updated",
     "description": "1 timeline snapshot entries available.",
     "status": "ACTIVE"
-  },
-  {
-    "alert_id": "gen_changes_detected",
-    "timestamp": "2026-08-15 10:18",
-    "alert_type": "CHANGE_DETECTED",
-    "severity": "MEDIUM",
-    "title": "Portfolio changes detected",
-    "description": "3 portfolio health changes detected.",
-    "status": "ACTIVE"
-  },
-  {
-    "alert_id": "gen_score_changed",
-    "timestamp": "2026-08-15 10:18",
-    "alert_type": "HEALTH_SCORE_CHANGED",
-    "severity": "MEDIUM",
-    "title": "Portfolio health score changed",
-    "description": "Portfolio health score updated across snapshots.",
-    "status": "ACTIVE"
-  },
-  {
-    "alert_id": "1",
-    "timestamp": "2026-08-08",
-    "alert_type": "TYPE1",
-    "severity": "HIGH",
-    "title": "Title 1",
-    "description": "Desc 1",
-    "status": "ACTIVE"
-  },
-  {
-    "alert_id": "2",
-    "timestamp": "2026-08-06",
-    "alert_type": "TYPE2",
-    "severity": "LOW",
-    "title": "Title 2",
-    "description": "Desc 2",
-    "status": "ACKNOWLEDGED"
-  },
-  {
-    "alert_id": "3",
-    "timestamp": "2026-08-07 10:00",
-    "alert_type": "TIMELINE_UPDATED",
-    "severity": "LOW",
-    "title": "Timeline",
-    "description": "Desc",
-    "status": "ACKNOWLEDGED"
   }
 ]
