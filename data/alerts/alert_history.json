@@ -1,7 +1,7 @@
 [
   {
     "alert_id": "gen_mon_unavailable",
-    "timestamp": "2026-08-29 07:02",
+    "timestamp": "2026-08-29 21:56",
     "alert_type": "MONITORING_STATUS",
     "severity": "HIGH",
     "title": "Monitoring unavailable",
@@ -10,7 +10,7 @@
   },
   {
     "alert_id": "gen_mon_ready",
-    "timestamp": "2026-08-29 07:02",
+    "timestamp": "2026-08-29 21:56",
     "alert_type": "MONITORING_STATUS",
     "severity": "INFO",
     "title": "Monitoring ready",
@@ -19,7 +19,7 @@
   },
   {
     "alert_id": "gen_timeline_updated",
-    "timestamp": "2026-08-29 07:02",
+    "timestamp": "2026-08-29 21:56",
     "alert_type": "TIMELINE_UPDATED",
     "severity": "LOW",
     "title": "Portfolio history updated",
