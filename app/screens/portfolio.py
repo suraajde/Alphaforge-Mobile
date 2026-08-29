@@ -398,6 +398,22 @@ class Portfolio(QWidget):
             "GROWTH MULTIPLE"
         )
 
+        # Create Total Running P&L KPI Card
+        self.card_total_pnl = QFrame()
+        self.card_total_pnl.setObjectName("metricCard")
+        pnl_layout = QVBoxLayout(self.card_total_pnl)
+        pnl_layout.setContentsMargins(16, 12, 16, 12)
+        pnl_layout.setSpacing(4)
+
+        self.lbl_pnl_title = QLabel("TOTAL RUNNING P&L")
+        self.lbl_pnl_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #8FA0B8; letter-spacing: 0.5px;")
+
+        self.lbl_total_pnl_val = QLabel("₹0.00 (+0.00%)")
+        self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
+
+        pnl_layout.addWidget(self.lbl_pnl_title)
+        pnl_layout.addWidget(self.lbl_total_pnl_val)
+
         metrics_layout.addWidget(
             self.portfolio_value_card,
             0,
@@ -411,9 +427,15 @@ class Portfolio(QWidget):
         )
 
         metrics_layout.addWidget(
-            self.cash_balance_card,
+            self.card_total_pnl,
             0,
             2,
+        )
+
+        metrics_layout.addWidget(
+            self.cash_balance_card,
+            0,
+            3,
         )
 
         metrics_layout.addWidget(
@@ -3588,9 +3610,17 @@ class Portfolio(QWidget):
 
     def _render_performance_snapshot(self, snapshot) -> None:
         """Render PortfolioPerformanceSnapshot capital metrics into the metrics grid."""
-        # Growth Multiple (replaces SNAPSHOTS card value)
-        if snapshot is not None and hasattr(snapshot, "growth_multiple"):
-            self.snapshots_value.setText(f"{snapshot.growth_multiple:.2f}x")
+        if snapshot is not None:
+            if hasattr(snapshot, "growth_multiple"):
+                self.snapshots_value.setText(f"{snapshot.growth_multiple:.2f}x")
+
+            if hasattr(self, "lbl_total_pnl_val") and hasattr(snapshot, "absolute_return") and hasattr(snapshot, "absolute_return_pct"):
+                abs_ret = getattr(snapshot, "absolute_return", 0.0)
+                abs_ret_pct = getattr(snapshot, "absolute_return_pct", 0.0)
+                sign = "+" if abs_ret >= 0 else ""
+                color = "#10B981" if abs_ret >= 0 else "#EF4444"
+                self.lbl_total_pnl_val.setText(f"₹{abs_ret:,.2f} ({sign}{abs_ret_pct:.2f}%)")
+                self.lbl_total_pnl_val.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
 
     def _render_benchmark_summary(self, bm_summary: dict, summary: Optional[dict] = None) -> None:
         """Render BenchmarkService scorecard and PortfolioPerformanceService capital metrics."""

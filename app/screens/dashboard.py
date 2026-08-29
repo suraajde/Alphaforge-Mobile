@@ -98,6 +98,23 @@ class Dashboard(QWidget):
         self.card_val, self.lbl_val_val = self._create_card(
             "PORTFOLIO VALUE", "N/A"
         )
+
+        # Create Total Running P&L KPI Card
+        self.card_total_pnl = QFrame()
+        self.card_total_pnl.setObjectName("metricCard")
+        pnl_layout = QVBoxLayout(self.card_total_pnl)
+        pnl_layout.setContentsMargins(16, 12, 16, 12)
+        pnl_layout.setSpacing(4)
+
+        self.lbl_pnl_title = QLabel("TOTAL RUNNING P&L")
+        self.lbl_pnl_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #8FA0B8; letter-spacing: 0.5px;")
+
+        self.lbl_total_pnl_val = QLabel("₹0.00 (+0.00%)")
+        self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
+
+        pnl_layout.addWidget(self.lbl_pnl_title)
+        pnl_layout.addWidget(self.lbl_total_pnl_val)
+
         self.card_stab, self.lbl_stab_val = self._create_card(
             "ALPHA 12 STABILITY", "N/A"
         )
@@ -107,6 +124,7 @@ class Dashboard(QWidget):
 
         cards_layout.addWidget(self.card_health)
         cards_layout.addWidget(self.card_val)
+        cards_layout.addWidget(self.card_total_pnl)
         cards_layout.addWidget(self.card_stab)
         cards_layout.addWidget(self.card_alerts)
         root_layout.addLayout(cards_layout)
@@ -159,12 +177,16 @@ class Dashboard(QWidget):
             snapshot = self.portfolio_health_service.build_snapshot()
             pos_cnt = getattr(snapshot, "position_count", 0)
             val = getattr(snapshot, "portfolio_value", 0.0)
+            invested = getattr(snapshot, "invested_value", 0.0)
 
             if pos_cnt <= 0:
                 self.lbl_health_val.setText("N/A")
                 self.lbl_health_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
                 self.lbl_val_val.setText("₹0.00")
                 self.lbl_val_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
+                if hasattr(self, "lbl_total_pnl_val"):
+                    self.lbl_total_pnl_val.setText("₹0.00 (+0.00%)")
+                    self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
                 return
 
             res = self.portfolio_health_service.evaluate()
@@ -172,6 +194,14 @@ class Dashboard(QWidget):
             grade = getattr(res, "grade", "N/A")
             self.lbl_health_val.setText(f"{score}/100 ({grade})")
             self.lbl_val_val.setText(f"₹{val:,.2f}")
+
+            if hasattr(self, "lbl_total_pnl_val"):
+                pnl = val - invested
+                pnl_pct = (pnl / invested * 100.0) if invested > 0 else 0.0
+                sign = "+" if pnl >= 0 else ""
+                color = "#10B981" if pnl >= 0 else "#EF4444"
+                self.lbl_total_pnl_val.setText(f"₹{pnl:,.2f} ({sign}{pnl_pct:.2f}%)")
+                self.lbl_total_pnl_val.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
         except Exception:
             self.lbl_health_val.setText("N/A")
             self.lbl_val_val.setText("₹0.00")
