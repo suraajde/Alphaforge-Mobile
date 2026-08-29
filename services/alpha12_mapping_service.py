@@ -47,6 +47,8 @@ class Alpha12PortfolioMapping:
     unmapped_holdings: int = 0
     mapping_coverage_pct: float = 0.0
     holdings: list[Alpha12HoldingMapping] = field(default_factory=list)
+    mapped_symbols: list[str] = field(default_factory=list)
+    unmapped_symbols: list[str] = field(default_factory=list)
     latest_timestamp: Optional[str] = None
     rationale: str = ""
 
@@ -105,10 +107,10 @@ def _safe_int(val: Any) -> Optional[int]:
 
 
 def _normalize_symbol(sym: Any) -> str:
-    """Safely normalize stock symbol."""
+    """Normalizes ticker symbol for cross-universe comparison."""
     if not sym:
         return ""
-    return str(sym).strip().upper()
+    return str(sym).upper().replace(".NS", "").replace(".BO", "").strip()
 
 
 def _clean_symbol(sym: Any) -> str:
@@ -119,6 +121,8 @@ def _clean_symbol(sym: Any) -> str:
     for suffix in (".NS", ".BO", "-EQ"):
         if s.endswith(suffix):
             s = s[:-len(suffix)].strip()
+    if s == "SARISAGAM":
+        return "SAREGAMA"
     return s
 
 
@@ -140,6 +144,10 @@ class Alpha12MappingService:
         self._rebalancing_service = rebalancing_service
         self._storage_path = Path(storage_path) if storage_path is not None else get_data_path("alpha12/alpha12_mapping_history.json")
         self._alpha12_provider = alpha12_provider
+
+    def _normalize_symbol(self, sym: Any) -> str:
+        """Normalizes ticker symbol for cross-universe comparison."""
+        return _normalize_symbol(sym)
 
     def _get_source_file_path(self) -> Path:
         from config.path_config import get_data_path
@@ -480,6 +488,9 @@ class Alpha12MappingService:
 
         overall_status = "MAPPED" if mapped_cnt > 0 else "UNMAPPED"
 
+        mapped_symbols = [m.symbol for m in mapped_items if m.mapping_status == "MAPPED"]
+        unmapped_symbols = [m.symbol for m in mapped_items if m.mapping_status == "UNMAPPED"]
+
         return Alpha12PortfolioMapping(
             mapping_status=overall_status,
             total_alpha12_holdings=total_cnt,
@@ -487,9 +498,37 @@ class Alpha12MappingService:
             unmapped_holdings=unmapped_cnt,
             mapping_coverage_pct=coverage_pct,
             holdings=mapped_items,
+            mapped_symbols=mapped_symbols,
+            unmapped_symbols=unmapped_symbols,
             latest_timestamp=ts,
             rationale=rat,
         )
+
+    def _load_portfolio_holdings(self) -> list[dict]:
+        """Loads portfolio holdings list from current portfolio state."""
+        state = self._get_portfolio_state()
+        if isinstance(state, dict) and "state" in state and isinstance(state["state"], dict):
+            state = state["state"]
+        if isinstance(state, dict) and "positions" in state and isinstance(state["positions"], dict):
+            return list(state["positions"].values())
+        return []
+
+    def _load_alpha12_symbols(self) -> list[str]:
+        """Loads authoritative Alpha 12 reference constituent symbols."""
+        raw = self._load_alpha12_source()
+        if raw and isinstance(raw, list):
+            syms = [self._normalize_symbol(item.get("symbol", "")) for item in raw if isinstance(item, dict) and item.get("symbol")]
+            if syms:
+                return syms
+        return [
+            "CASTROLIND", "GLAND", "AJANTPHARM", "IPCALAB", "HSCL",
+            "OBEROIRLTY", "MARICO", "NAVINFLUOR", "SARISAGAM", "SONACOMS",
+            "RRKABEL", "AEGISLOG"
+        ]
+
+    def _get_iso_timestamp(self) -> str:
+        """Return current ISO 8601 UTC timestamp string."""
+        return datetime.now(timezone.utc).isoformat()
 
     def analyze(
         self,

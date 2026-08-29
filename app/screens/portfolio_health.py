@@ -3612,34 +3612,49 @@ class PortfolioHealth(QWidget):
             pass
 
     def load_snapshot(self, snapshot: Optional[PortfolioHealthSnapshot] = None) -> None:
-        """Bind live snapshot metrics to the metric cards."""
+        """Loads and renders portfolio health snapshot metrics."""
         if snapshot is None:
             return
 
         pos_cnt = getattr(snapshot, "position_count", 0)
+        port_val = getattr(snapshot, "portfolio_value", 0.0)
+
+        if pos_cnt == 0 or port_val == 0.0:
+            if "Overall Health Score" in self.cards:
+                self.cards["Overall Health Score"].setText("N/A")
+            if "Diversification" in self.cards:
+                self.cards["Diversification"].setText("N/A")
+            if "Concentration" in self.cards:
+                self.cards["Concentration"].setText("N/A")
+            if "Position Count" in self.cards:
+                self.cards["Position Count"].setText("0")
+            if "Cash Allocation" in self.cards:
+                self.cards["Cash Allocation"].setText("0.0%")
+            if "Largest Position" in self.cards:
+                self.cards["Largest Position"].setText("N/A")
+            if hasattr(self, "empty_banner"):
+                self.empty_banner.show()
+            return
 
         if hasattr(self, "empty_banner"):
-            if pos_cnt == 0:
-                self.empty_banner.show()
-            else:
-                self.empty_banner.hide()
+            self.empty_banner.hide()
 
         if "Position Count" in self.cards:
             self.cards["Position Count"].setText(str(pos_cnt))
 
         if "Cash Allocation" in self.cards:
-            if pos_cnt == 0:
-                self.cards["Cash Allocation"].setText("N/A")
-            else:
-                val = snapshot.cash_allocation_pct
-                val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
-                self.cards["Cash Allocation"].setText(val_str)
+            val = getattr(snapshot, "cash_allocation_pct", 0.0)
+            val_str = f"{val:.1f}%" if (val % 1 != 0) else f"{int(val)}%"
+            self.cards["Cash Allocation"].setText(val_str)
 
         if "Largest Position" in self.cards:
-            if pos_cnt == 0:
-                self.cards["Largest Position"].setText("N/A")
-            else:
-                self.cards["Largest Position"].setText(str(snapshot.largest_position))
+            self.cards["Largest Position"].setText(str(getattr(snapshot, "largest_position", "N/A")))
+
+        overall_score = getattr(snapshot, "overall_score", getattr(snapshot, "score", None))
+        overall_grade = getattr(snapshot, "overall_grade", getattr(snapshot, "grade", None))
+        if overall_score is not None and "Overall Health Score" in self.cards:
+            score_text = f"{overall_score} / 100 ({overall_grade})" if overall_grade else f"{overall_score} / 100"
+            self.cards["Overall Health Score"].setText(score_text)
 
     def load_result(self, result: Optional[PortfolioHealthResult] = None) -> None:
         """Bind live PortfolioHealthResult metrics to score, diversification, concentration, and analytics sections."""
