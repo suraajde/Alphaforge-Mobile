@@ -1,4 +1,4 @@
-from services.fundamental_service import (
+﻿from services.fundamental_service import (
     get_fundamental_metrics,
 )
 
@@ -25,7 +25,7 @@ from services.alpha_composite_service import (
 
 symbols = [
     "INFY",
-    "KPITTECH",
+    "CASTROLIND",
     "BSE",
 ]
 

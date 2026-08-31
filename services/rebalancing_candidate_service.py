@@ -21,38 +21,23 @@ from typing import Any, Optional
 
 
 @dataclass
-
 class RebalancingCandidate:
-
     """Represents a measured candidate for potential rebalancing evaluation."""
 
-
-
     symbol: str
-
     name: str
-
     asset_type: str
-
     current_weight: float
-
     target_weight: float
-
     drift: float
-
     absolute_drift: float
-
     direction: str
-
     impact_value: float
-
     scenario_weight: float
-
     scenario_delta: float
-
     candidate_score: float
-
     rank: int
+    action: str = "HOLD"
 
 
 
@@ -203,33 +188,14 @@ class RebalancingCandidateService:
 
 
     def identify_candidates(
-
         self,
-
         rebalancing_state: Optional[Any] = None,
-
         allocation_analysis: Optional[Any] = None,
-
         drift_detection: Optional[Any] = None,
-
     ) -> RebalancingCandidateResult:
-
         """Identify, score, and rank potential rebalancing candidates from portfolio data."""
-
         try:
-
             if rebalancing_state is None:
-
-                svc = self._get_rebalancing_service()
-
-                if svc is not None and hasattr(svc, "get_state"):
-
-                    rebalancing_state = svc.get_state()
-
-
-
-            if rebalancing_state is None:
-
                 return _empty_result()
 
 
@@ -309,81 +275,67 @@ class RebalancingCandidateService:
 
 
                     if drift_metric is not None:
-
                         drift = _safe_float(getattr(drift_metric, "drift", None), c_wt - t_wt) or (c_wt - t_wt)
-
                         abs_drift = _safe_float(getattr(drift_metric, "absolute_drift", None), abs(drift)) or abs(drift)
-
                         direction = str(getattr(drift_metric, "direction", "") or "").strip()
-
+                        action = str(getattr(drift_metric, "action", "") or "").strip()
                     else:
-
                         drift = c_wt - t_wt
-
                         abs_drift = abs(drift)
-
                         direction = ""
-
-
+                        action = ""
 
                     if not direction:
-
                         if abs(drift) < 1e-4:
-
                             direction = "ON_TARGET"
-
                         elif drift > 0:
-
                             direction = "OVERWEIGHT"
-
                         else:
-
                             direction = "UNDERWEIGHT"
 
+                    if not action:
+                        if direction == "OVERWEIGHT":
+                            action = "HOLD" if c_wt < 30.0 else "REDUCE"
+                        elif direction == "UNDERWEIGHT":
+                            action = "BUY"
+                        else:
+                            action = "HOLD"
 
-
-                    impact_val = (abs_drift / 100.0) * total_val if total_val > 0 else 0.0
+                    # Impact value: Let winners run under 30% trim ceiling.
+                    # If OVERWEIGHT and current_weight >= 30.0%, calculate partial trim back to baseline target weight.
+                    # If OVERWEIGHT and current_weight < 30.0%, suppress trim (HOLD) with impact_val = 0.0.
+                    # If UNDERWEIGHT, impact_val is whole absolute drift dollar amount.
+                    if direction == "OVERWEIGHT":
+                        if c_wt < 30.0:
+                            impact_val = 0.0
+                        else:
+                            impact_val = ((c_wt - t_wt) / 100.0) * total_val if total_val > 0 else 0.0
+                    elif direction == "UNDERWEIGHT":
+                        impact_val = (abs_drift / 100.0) * total_val if total_val > 0 else 0.0
+                    else:
+                        impact_val = 0.0
 
                     scenario_wt = t_wt
-
                     scenario_dl = t_wt - c_wt
-
                     candidate_sc = abs_drift
 
-
-
                     unranked_candidates.append(
-
                         RebalancingCandidate(
-
                             symbol=sym or name,
-
                             name=name,
-
                             asset_type=asset_type,
-
                             current_weight=round(c_wt, 2),
-
                             target_weight=round(t_wt, 2),
-
                             drift=round(drift, 2),
-
                             absolute_drift=round(abs_drift, 2),
-
                             direction=direction,
-
                             impact_value=round(impact_val, 2),
-
                             scenario_weight=round(scenario_wt, 2),
-
                             scenario_delta=round(scenario_dl, 2),
-
                             candidate_score=round(candidate_sc, 2),
-
                             rank=0,  # Will be assigned during sorting
-
+                            action=action,
                         )
-
                     )
 
                 except Exception:

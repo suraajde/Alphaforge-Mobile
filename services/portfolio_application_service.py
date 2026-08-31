@@ -336,6 +336,16 @@ class PortfolioApplicationService:
 
             snapshots = []
 
+        pos_iterable = positions.values() if isinstance(positions, dict) else positions
+        total_invested_cost = sum(
+            self._safe_float(p.get("invested_cost", 0.0)) for p in pos_iterable if isinstance(p, dict)
+        )
+        total_current_value = sum(
+            self._safe_float(p.get("current_value", p.get("market_value", 0.0))) for p in pos_iterable if isinstance(p, dict)
+        )
+        running_pnl = total_current_value - total_invested_cost
+        running_pnl_pct = (running_pnl / total_invested_cost * 100.0) if total_invested_cost > 0 else 0.0
+
         return {
 
             "status":
@@ -365,10 +375,52 @@ class PortfolioApplicationService:
                     self._safe_float(
                         state.get(
                             "invested_market_value",
-                            0.0,
+                            total_current_value,
                         )
                     ),
                     2,
+                ),
+
+            "total_invested_cost":
+                round(
+                    total_invested_cost,
+                    2,
+                ),
+
+            "total_cost":
+                round(
+                    total_invested_cost,
+                    2,
+                ),
+
+            "total_current_value":
+                round(
+                    total_current_value,
+                    2,
+                ),
+
+            "total_running_pnl":
+                round(
+                    running_pnl,
+                    2,
+                ),
+
+            "running_pnl":
+                round(
+                    running_pnl,
+                    2,
+                ),
+
+            "total_running_pnl_pct":
+                round(
+                    running_pnl_pct,
+                    4,
+                ),
+
+            "running_pnl_pct":
+                round(
+                    running_pnl_pct,
+                    4,
                 ),
 
             "portfolio_value":
@@ -1220,6 +1272,15 @@ class PortfolioApplicationService:
 
             snapshots = []
 
+        total_invested_cost = sum(
+            self._safe_float(p.get("invested_cost", 0.0)) for p in positions if isinstance(p, dict)
+        )
+        total_current_value = sum(
+            self._safe_float(p.get("market_value", p.get("current_value", 0.0))) for p in positions if isinstance(p, dict)
+        )
+        running_pnl = total_current_value - total_invested_cost
+        running_pnl_pct = (running_pnl / total_invested_cost * 100.0) if total_invested_cost > 0 else 0.0
+
         return {
 
             "status":
@@ -1252,10 +1313,52 @@ class PortfolioApplicationService:
                     self._safe_float(
                         state.get(
                             "invested_market_value",
-                            0.0,
+                            total_current_value,
                         )
                     ),
                     2,
+                ),
+
+            "total_invested_cost":
+                round(
+                    total_invested_cost,
+                    2,
+                ),
+
+            "total_cost":
+                round(
+                    total_invested_cost,
+                    2,
+                ),
+
+            "total_current_value":
+                round(
+                    total_current_value,
+                    2,
+                ),
+
+            "total_running_pnl":
+                round(
+                    running_pnl,
+                    2,
+                ),
+
+            "running_pnl":
+                round(
+                    running_pnl,
+                    2,
+                ),
+
+            "total_running_pnl_pct":
+                round(
+                    running_pnl_pct,
+                    4,
+                ),
+
+            "running_pnl_pct":
+                round(
+                    running_pnl_pct,
+                    4,
                 ),
 
             "portfolio_value":
@@ -1340,6 +1443,117 @@ class PortfolioApplicationService:
                 "health": None,
                 "recommendations": None,
                 "decisions": None,
+            }
+
+    # ======================================================
+    # EMERGENCY EJECT & RESERVE PROMOTION
+    # ======================================================
+
+    def emergency_replace_position(
+        self,
+        symbol_to_remove,
+        replacement_stock=None,
+        transaction_date=None,
+    ):
+        """
+        AlphaForge Emergency Eject & Reserve 8 Promotion.
+
+        Execution:
+        1. Validates and removes symbol_to_remove from active portfolio state['positions'].
+        2. Queries the Research Radar universe (top 20 ranked stocks) and identifies
+           the highest-ranked stock not currently in the portfolio (Reserve 8 bench).
+        3. Injects this Reserve 8 candidate with quantity = 0 and invested_cost = 0.00,
+           establishing an UNDER_TARGET (massive UNDERWEIGHT) position for Smart SIP capital routing.
+        4. Persists the updated state.
+        """
+        symbol_to_remove = self._normalize_symbol(symbol_to_remove)
+        if not symbol_to_remove:
+            return {
+                "status": "ERROR",
+                "mode": "EMERGENCY_REPLACE_POSITION",
+                "confirmed": False,
+                "error": "Invalid symbol to remove",
+            }
+
+        loaded = self._require_state()
+        if loaded.get("status") != "OK":
+            return {
+                "status": loaded.get("status", "ERROR"),
+                "mode": "EMERGENCY_REPLACE_POSITION",
+                "confirmed": False,
+                "error": loaded.get("error", "Unable to load active portfolio state"),
+            }
+
+        state = loaded.get("state", {})
+        positions = state.get("positions", {})
+        if not isinstance(positions, dict) or symbol_to_remove not in positions:
+            return {
+                "status": "ERROR",
+                "mode": "EMERGENCY_REPLACE_POSITION",
+                "confirmed": False,
+                "error": f"Symbol '{symbol_to_remove}' is not present in active portfolio holdings",
+            }
+
+        # Resolve replacement from Reserve 8 bench if not explicitly provided
+        if replacement_stock is None:
+            try:
+                from services.alpha12_mapping_service import Alpha12MappingService
+                mapping_svc = Alpha12MappingService()
+                replacement_stock = mapping_svc.get_highest_reserve_candidate(active_symbols=positions)
+            except Exception:
+                replacement_stock = None
+
+        if not replacement_stock or not isinstance(replacement_stock, dict):
+            # Fallback to authoritative top 30 symbols with strict uppercase set matching
+            active_symbols = {str(k).strip().upper() for k in positions.keys() if str(k).strip()}
+            authoritative_top30 = [
+                "CASTROLIND", "GLAND", "AJANTPHARM", "IPCALAB", "HSCL",
+                "OBEROIRLTY", "MARICO", "NAVINFLUOR", "SAREGAMA", "SONACOMS",
+                "AEGISLOG", "RRKABEL", "APARINDS", "JBCHEPHARM", "KIMS",
+                "TRENT", "POLYMED", "ERIS", "PNCINFRA", "CENTURYPLY",
+                "GLAXO", "RADICO", "COFORGE", "LALPATHLAB", "ACE",
+                "ACUTAAS", "CPPLUS", "AARTIIND", "GLENMARK", "FINCABLES"
+            ]
+            cand_sym = None
+            for s in authoritative_top30:
+                clean_s = str(s).strip().upper()
+                if clean_s not in active_symbols and clean_s != symbol_to_remove:
+                    cand_sym = clean_s
+                    break
+            if cand_sym:
+                replacement_stock = {
+                    "symbol": cand_sym,
+                    "name": cand_sym,
+                    "company_name": cand_sym,
+                    "sector": "UNKNOWN",
+                    "category": "UNKNOWN",
+                    "current_price": 0.0,
+                    "rank": 13,
+                }
+            else:
+                return {
+                    "status": "ERROR",
+                    "mode": "EMERGENCY_REPLACE_POSITION",
+                    "confirmed": False,
+                    "error": "No eligible Reserve 8 replacement candidate found in Research Radar universe",
+                }
+
+        try:
+            res = self.orchestrator.emergency_replace_position(
+                symbol_to_remove=symbol_to_remove,
+                replacement_stock=replacement_stock,
+                state=state,
+                transaction_date=transaction_date,
+                save=True,
+                path=self.state_path,
+            )
+            return res
+        except Exception as exc:
+            return {
+                "status": "ERROR",
+                "mode": "EMERGENCY_REPLACE_POSITION",
+                "confirmed": False,
+                "error": str(exc),
             }
 
 

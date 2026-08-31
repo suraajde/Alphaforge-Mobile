@@ -1,11 +1,11 @@
-from services.technical_service import (
+﻿from services.technical_service import (
     get_technical_metrics,
 )
 
 
 for symbol in [
     "INFY",
-    "KPITTECH",
+    "CASTROLIND",
     "BSE",
 ]:
 

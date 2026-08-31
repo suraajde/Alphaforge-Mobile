@@ -1,4 +1,4 @@
-"""Sprint 14.1.8 Acceptance Test Suite — SIP & Lump-Sum Investment Allocation Engine
+﻿"""Sprint 14.1.8 Acceptance Test Suite — SIP & Lump-Sum Investment Allocation Engine
 
 Verifies dynamic whole-share allocation, continuous SIP money deployment,
 intelligent residual cash minimization, and strict execution bounds (executable_amount <= input_amount).
@@ -30,11 +30,11 @@ def mock_price_provider():
 
 
 def test_sip_6000_continuous_deployment(mock_price_provider):
-    """Test ₹6,000 monthly SIP deployment.
+    """Test Rs. 6,000 monthly SIP deployment.
     Verifies:
-    - Executable total <= ₹6,000.
-    - Continuous deployment: Executable total > ₹5,000 (residual cash intelligently minimized).
-    - Unallocated residual cash < ₹1,000 (NOT ₹4,967).
+    - Executable total <= Rs. 6,000.
+    - Continuous deployment: Executable total > Rs. 5,000 (residual cash intelligently minimized).
+    - Unallocated residual cash < Rs. 1,000 (NOT Rs. 4,967).
     - Whole shares strictly enforced.
     - No selling required.
     """
@@ -56,7 +56,7 @@ def test_sip_6000_continuous_deployment(mock_price_provider):
 
 
 def test_sip_10000_deployment(mock_price_provider):
-    """Test ₹10,000 monthly SIP deployment."""
+    """Test Rs. 10,000 monthly SIP deployment."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_monthly_investment(10000.0)
 
@@ -69,7 +69,7 @@ def test_sip_10000_deployment(mock_price_provider):
 
 
 def test_sip_30000_deployment(mock_price_provider):
-    """Test ₹30,000 monthly SIP deployment."""
+    """Test Rs. 30,000 monthly SIP deployment."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_monthly_investment(30000.0)
 
@@ -82,18 +82,18 @@ def test_sip_30000_deployment(mock_price_provider):
 
 
 def test_small_sip_amount(mock_price_provider):
-    """Test small ₹2,000 monthly SIP deployment with high stock prices."""
+    """Test small Rs. 2,000 monthly SIP deployment with high stock prices."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_monthly_investment(2000.0)
 
     assert result.total_input_amount == 2000.0
     assert result.total_allocated_amount <= 2000.0
-    # For ₹2,000, stocks priced <= ₹2,000 (e.g. HDFCBANK ₹1600, INFY ₹1800, ICICIBANK ₹1200, ITC ₹480) will absorb funds
+    # For Rs. 2,000, stocks priced <= Rs. 2,000 (e.g. HDFCBANK Rs. 1600, INFY Rs. 1800, ICICIBANK Rs. 1200, ITC Rs. 480) will absorb funds
     assert result.total_allocated_amount > 0.0
 
 
 def test_high_priced_candidates_sip():
-    """Test SIP when all candidate prices are high (e.g. ₹2,500, ₹3,500, ₹4,500)."""
+    """Test SIP when all candidate prices are high (e.g. Rs. 2,500, Rs. 3,500, Rs. 4,500)."""
     high_prices = {
         "STOCK_A": 2500.0,
         "STOCK_B": 3500.0,
@@ -145,7 +145,7 @@ def test_existing_holdings_underrepresentation_bonus(mock_price_provider):
 
 
 def test_lump_sum_10k_allocation(mock_price_provider):
-    """Test ₹10,000 lump-sum investment allocation."""
+    """Test Rs. 10,000 lump-sum investment allocation."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_lump_sum_investment(10000.0)
 
@@ -156,7 +156,7 @@ def test_lump_sum_10k_allocation(mock_price_provider):
 
 
 def test_lump_sum_50k_allocation(mock_price_provider):
-    """Test ₹50,000 lump-sum investment allocation."""
+    """Test Rs. 50,000 lump-sum investment allocation."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_lump_sum_investment(50000.0)
 
@@ -166,7 +166,7 @@ def test_lump_sum_50k_allocation(mock_price_provider):
 
 
 def test_lump_sum_100k_allocation(mock_price_provider):
-    """Test ₹1,00,000 lump-sum investment allocation."""
+    """Test Rs. 1,00,000 lump-sum investment allocation."""
     service = InvestmentAllocationService(price_provider=mock_price_provider)
     result = service.allocate_lump_sum_investment(100000.0)
 

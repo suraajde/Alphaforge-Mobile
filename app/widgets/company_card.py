@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import (
+﻿from PySide6.QtWidgets import (
     QFrame,
     QLabel,
     QVBoxLayout,
@@ -50,7 +50,7 @@ class CompanyCard(QFrame):
             color:#BBBBBB;
         """)
 
-        self.price = QLabel("₹ --")
+        self.price = QLabel("Rs.  --")
 
         self.price.setStyleSheet("""
             font-size:22px;

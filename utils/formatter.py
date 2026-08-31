@@ -1,12 +1,12 @@
-def format_price(price):
+﻿def format_price(price):
     """
     Format stock price.
     Example:
-    1328.5 -> ₹ 1,328.50
+    1328.5 -> Rs.  1,328.50
     """
 
     if isinstance(price, (int, float)):
-        return f"₹ {price:,.2f}"
+        return f"Rs.  {price:,.2f}"
 
     return "N/A"
 
@@ -42,7 +42,7 @@ def format_market_cap(value):
     Example:
     4130000000000
     ->
-    ₹ 4.13 Lakh Cr
+    Rs.  4.13 Lakh Cr
     """
 
     if not isinstance(value, (int, float)):
@@ -51,11 +51,11 @@ def format_market_cap(value):
     lakh_crore = value / 1e12
 
     if lakh_crore >= 1:
-        return f"₹ {lakh_crore:.2f} Lakh Cr"
+        return f"Rs.  {lakh_crore:.2f} Lakh Cr"
 
     crore = value / 1e7
 
     if crore >= 1:
-        return f"₹ {crore:,.2f} Cr"
+        return f"Rs.  {crore:,.2f} Cr"
 
-    return f"₹ {value:,.0f}"
+    return f"Rs.  {value:,.0f}"

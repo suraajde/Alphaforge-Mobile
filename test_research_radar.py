@@ -1,11 +1,11 @@
-from services.research_radar_service import (
+﻿from services.research_radar_service import (
     build_research_radar,
 )
 
 
 symbols = [
     "INFY",
-    "KPITTECH",
+    "CASTROLIND",
     "BSE",
     "TCS",
     "RELIANCE",

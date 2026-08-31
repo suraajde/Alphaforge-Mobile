@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 from PySide6.QtWidgets import QApplication, QFrame, QLabel
 
 @pytest.fixture(scope="session", autouse=True)
@@ -23,7 +23,7 @@ def test_portfolio_total_pnl_kpi_card(qapp):
 
     assert hasattr(portfolio, "lbl_total_pnl_val")
     assert isinstance(portfolio.lbl_total_pnl_val, QLabel)
-    assert "₹" in portfolio.lbl_total_pnl_val.text()
+    assert "Rs. " in portfolio.lbl_total_pnl_val.text()
     assert "%" in portfolio.lbl_total_pnl_val.text()
 
 
@@ -41,5 +41,5 @@ def test_dashboard_total_pnl_kpi_card(qapp):
 
     assert hasattr(dashboard, "lbl_total_pnl_val")
     assert isinstance(dashboard.lbl_total_pnl_val, QLabel)
-    assert "₹" in dashboard.lbl_total_pnl_val.text()
+    assert "Rs. " in dashboard.lbl_total_pnl_val.text()
     assert "%" in dashboard.lbl_total_pnl_val.text()

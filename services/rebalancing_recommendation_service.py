@@ -1174,47 +1174,9 @@ class RebalancingRecommendationService:
 
 
 
-                cand_svc = self._get_candidate_service()
-
-
-
-
-
-
-
-                if cand_svc is not None and hasattr(cand_svc, "get_candidates"):
-
-
-
-
-
-
-
-                    candidates = cand_svc.get_candidates()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            if candidates is None:
-
-
-
-
-
-
-
                 return _empty_result()
+
+
 
 
 
@@ -1535,6 +1497,15 @@ class RebalancingRecommendationService:
 
 
                     elif direction == "OVERWEIGHT":
+                        if c_wt < 30.0:
+                            action = "MAINTAIN"
+                            maint_count += 1
+                            impact_val = 0.0
+                            rationale = f"Current allocation ({c_wt:.2f}%) is in positive drift but below 30.0% trim ceiling; winner is allowed to run."
+                        else:
+                            action = "DECREASE"
+                            dec_count += 1
+                            rationale = f"Current allocation ({c_wt:.2f}%) exceeds 30.0% trim ceiling; partial trim to baseline target ({t_wt:.2f}%)."
 
 
 
@@ -1542,23 +1513,7 @@ class RebalancingRecommendationService:
 
 
 
-                        action = "DECREASE"
 
-
-
-
-
-
-
-                        dec_count += 1
-
-
-
-
-
-
-
-                        rationale = f"Current allocation ({c_wt:.2f}%) is above configured target ({t_wt:.2f}%)."
 
 
 

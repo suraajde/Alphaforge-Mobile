@@ -1360,10 +1360,16 @@ class PortfolioStateService:
                 )
             )
 
-            current_value = (
-                quantity
-                * price
-            )
+            if price > 0 and quantity > 0:
+                current_value = (
+                    quantity
+                    * price
+                )
+            else:
+                current_value = self._safe_float(
+                    position.get("current_value", 0.0),
+                    self._safe_float(position.get("invested_cost", 0.0), 0.0)
+                )
 
             position[
                 "current_price"
@@ -1913,24 +1919,147 @@ class PortfolioStateService:
             }
 
         return {
-
-            "status":
-                "OK",
-
-            "path":
-                str(
-                    target
-                ),
-
-            "state_version":
-                payload.get(
-                    "state_version"
-                ),
-
-            "state":
-                payload,
-
+            "status": "OK",
+            "path": str(target),
+            "state_version": payload.get("state_version"),
+            "state": payload,
         }
+
+    # ======================================================
+    # EMERGENCY EJECT & RESERVE PROMOTION
+    # ======================================================
+
+    def emergency_replace_position(
+        self,
+        state,
+        symbol_to_remove,
+        replacement_stock,
+        target_weight=None,
+        transaction_date=None,
+    ):
+        """
+        Emergency Eject & Reserve Promotion.
+
+        Deletes symbol_to_remove from active state['positions'] and injects
+        replacement_stock as a 1:1 capital transfer placeholder:
+        - Sets invested_cost and current_value strictly equal to exited_value.
+        - Calculates placeholder quantity = round(exited_value / replacement_current_price, 2).
+        - Keeps capital entirely within the new holding placeholder (does not route to cash balance).
+        """
+        if not isinstance(state, dict):
+            raise TypeError("state must be a dictionary")
+
+        if not isinstance(replacement_stock, dict):
+            raise TypeError("replacement_stock must be a dictionary")
+
+        updated = deepcopy(state)
+        positions = updated.get("positions", {})
+        if not isinstance(positions, dict):
+            raise ValueError("Invalid portfolio state positions")
+
+        symbol_to_remove = self._normalize_symbol(symbol_to_remove)
+        if not symbol_to_remove or symbol_to_remove not in positions:
+            raise ValueError(f"Target symbol to remove is not in active portfolio positions: {symbol_to_remove}")
+
+        removed_pos = positions.pop(symbol_to_remove)
+
+        # 1:1 Capital Transfer: capture exact market value (or invested cost fallback) of ejected stock
+        exited_value = self._safe_float(
+            removed_pos.get("current_value", 0.0),
+            0.0
+        )
+        if exited_value <= 0.0:
+            exited_value = self._safe_float(
+                removed_pos.get("invested_cost", 0.0),
+                0.0
+            )
+
+        # Update position_order list if present
+        order = updated.get("position_order", [])
+        if isinstance(order, list) and symbol_to_remove in order:
+            order.remove(symbol_to_remove)
+
+        rep_symbol = self._normalize_symbol(replacement_stock.get("symbol") or replacement_stock.get("ticker"))
+        if not rep_symbol:
+            raise ValueError("Replacement stock must have a valid symbol")
+
+        if rep_symbol in positions:
+            raise ValueError(f"Replacement symbol is already in active portfolio positions: {rep_symbol}")
+
+        # Target weight: inherit removed position's target weight or use explicit target_weight
+        inherited_target = self._safe_float(
+            target_weight if target_weight is not None else removed_pos.get("target_weight", 8.3333),
+            8.3333
+        )
+
+        rep_price = self._safe_float(
+            replacement_stock.get("current_price") or replacement_stock.get("price") or replacement_stock.get("ltp") or 0.0,
+            0.0
+        )
+
+        # Calculate estimated placeholder quantity
+        if rep_price > 0.0 and exited_value > 0.0:
+            qty = round(exited_value / rep_price, 2)
+            avg_cost = round(rep_price, 2)
+        else:
+            qty = int(removed_pos.get("quantity", 0) or 0)
+            avg_cost = rep_price if rep_price > 0.0 else (round(exited_value / qty, 2) if qty > 0 else 0.0)
+
+        timestamp = transaction_date or self._timestamp()
+
+        new_position = {
+            "symbol": rep_symbol,
+            "company_name": replacement_stock.get("name") or replacement_stock.get("company_name") or replacement_stock.get("universe_company") or rep_symbol,
+            "sector": replacement_stock.get("sector", "UNKNOWN"),
+            "category": replacement_stock.get("category", "UNKNOWN"),
+            "alpha12_rank": replacement_stock.get("alpha12_rank", replacement_stock.get("reserve_rank", 13)),
+            "radar_rank": replacement_stock.get("radar_rank", replacement_stock.get("rank", 13)),
+            "target_weight": round(inherited_target, 4),
+            "quantity": qty,
+            "average_cost": round(avg_cost, 2),
+            "invested_cost": round(exited_value, 2),
+            "current_price": round(rep_price, 2),
+            "current_value": round(exited_value, 2),
+            "actual_weight": round(removed_pos.get("actual_weight", inherited_target), 4),
+            "drift_pct": round(removed_pos.get("drift_pct", 0.0), 4),
+            "allocation_state": "BALANCED" if exited_value > 0 else "UNDER_TARGET",
+            "last_transaction_at": timestamp,
+        }
+
+        positions[rep_symbol] = new_position
+        if isinstance(order, list):
+            order.append(rep_symbol)
+            updated["position_order"] = order
+
+        updated.setdefault("transactions", []).append({
+            "type": "EMERGENCY_REPLACE",
+            "symbol_removed": symbol_to_remove,
+            "symbol_injected": rep_symbol,
+            "capital_transferred": round(exited_value, 2),
+            "quantity": qty,
+            "price": round(rep_price, 2),
+            "source": "EMERGENCY_EJECT_RESERVE_PROMOTION",
+            "timestamp": timestamp,
+        })
+        updated["transaction_count"] = len(updated.get("transactions", []))
+
+        # Re-mark to market to ensure all actual weights and drift are consistent
+        price_map = {}
+        for pos_k, pos_v in positions.items():
+            if isinstance(pos_v, dict):
+                p_curr = self._safe_float(pos_v.get("current_price"), 0.0)
+                if p_curr > 0:
+                    price_map[pos_k] = p_curr
+        if rep_price > 0:
+            price_map[rep_symbol] = rep_price
+
+        updated = self.mark_to_market(state=updated, price_map=price_map)
+        if rep_symbol in updated.get("positions", {}):
+            updated["positions"][rep_symbol]["invested_cost"] = round(exited_value, 2)
+            updated["positions"][rep_symbol]["current_value"] = round(exited_value, 2)
+        updated["updated_at"] = timestamp
+
+        return updated
 
 
 def create_portfolio_state(

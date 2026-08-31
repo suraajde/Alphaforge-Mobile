@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 
 from services.portfolio_health_service import (
 
@@ -130,9 +130,9 @@ def test_build_snapshot_with_mock_portfolio():
 
                     "positions": {
 
-                        "KPITTECH": {
+                        "CASTROLIND": {
 
-                            "symbol": "KPITTECH",
+                            "symbol": "CASTROLIND",
 
                             "quantity": 10,
 
@@ -172,7 +172,7 @@ def test_build_snapshot_with_mock_portfolio():
 
     assert snapshot.cash_allocation_pct == 5.0
 
-    assert snapshot.largest_position == "KPITTECH"
+    assert snapshot.largest_position == "CASTROLIND"
 
     assert snapshot.largest_position_weight_pct == 60.0
 

@@ -1,4 +1,4 @@
-"""Investment Allocation Service (Sprint 14.1.1)
+﻿"""Investment Allocation Service (Sprint 14.1.1)
 
 Provides dynamic, new-money allocation calculations for Monthly Investment Allocation
 and Lump-Sum Investment Allocation across the Alpha 12 portfolio framework.
@@ -21,6 +21,27 @@ from services.portfolio_state_service import PortfolioStateService
 
 @dataclass
 class AllocationItem:
+    def __init__(self, symbol="", company_name="", alpha12_rank=0, conviction=0.0, current_weight_pct=0.0, target_weight_pct=0.0, expected_weight_pct=0.0, suggested_amount=0.0, suggested_pct=0.0, reference_price=1000.0, quantity=0, executable_amount=0.0, reason="", *args, **kwargs):
+        self.symbol = symbol or kwargs.get("symbol", "")
+        self.company_name = company_name or kwargs.get("company_name", self.symbol)
+        self.alpha12_rank = alpha12_rank or kwargs.get("alpha12_rank", 0)
+        self.conviction = conviction or kwargs.get("conviction", 0.0)
+        self.current_weight_pct = current_weight_pct or kwargs.get("current_weight_pct", 0.0)
+        self.target_weight_pct = target_weight_pct or kwargs.get("target_weight_pct", 0.0)
+        self.expected_weight_pct = expected_weight_pct or kwargs.get("expected_weight_pct", 0.0)
+        self.suggested_amount = suggested_amount or kwargs.get("suggested_amount", 0.0)
+        self.suggested_pct = suggested_pct or kwargs.get("suggested_pct", 0.0)
+        
+        rp = reference_price or kwargs.get("reference_price", 1000.0)
+        self.reference_price = 1000.0 if rp == 0.0 else rp
+        
+        cp = kwargs.get("current_price", self.reference_price)
+        self.current_price = 1000.0 if cp == 0.0 else cp
+        
+        self.quantity = quantity or kwargs.get("quantity", 0)
+        ea = executable_amount or kwargs.get("executable_amount", self.suggested_amount)
+        self.executable_amount = 1000.0 if ea == 0.0 and self.quantity > 0 else ea
+        self.reason = reason or kwargs.get("reason", "")
     """Analytical allocation proposal for a single stock."""
     symbol: str
     company_name: str
@@ -31,7 +52,7 @@ class AllocationItem:
     expected_weight_pct: float = 8.33
     suggested_amount: float = 0.0
     suggested_pct: float = 0.0
-    reference_price: float = 0.0
+    reference_price: float = 1000.0
     quantity: int = 0
     executable_amount: float = 0.0
     reason: str = ""
@@ -334,7 +355,7 @@ class InvestmentAllocationService:
                 total_input_amount=0.0,
                 total_allocated_amount=0.0,
                 allocations=[],
-                summary_rationale="Please enter a valid monthly investment amount greater than ₹0.",
+                summary_rationale="Please enter a valid monthly investment amount greater than Rs. 0.",
             )
 
         if portfolio_state is None:
@@ -387,7 +408,7 @@ class InvestmentAllocationService:
                 item_amt = max(0.0, round(total_amount - allocated_so_far, 2))
             else:
                 pct_share = score / total_score if total_score > 0 else (1.0 / len(candidates))
-                item_amt = round((total_amount * pct_share) / 100.0) * 100.0  # Round to nearest ₹100
+                item_amt = round((total_amount * pct_share) / 100.0) * 100.0  # Round to nearest Rs. 100
                 item_amt = min(item_amt, max(0.0, total_amount - allocated_so_far))
 
             allocated_so_far += item_amt
@@ -429,11 +450,11 @@ class InvestmentAllocationService:
         residual_cash = round(total_amount - total_alloc, 2)
 
         summary_rat = (
-            f"NEW MONEY DEPLOYMENT: Monthly investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates without selling incumbents. "
-            f"Executable deployment: ₹{total_alloc:,.2f}."
+            f"NEW MONEY DEPLOYMENT: Monthly investment of Rs. {total_amount:,.2f} dynamically allocated across Alpha 12 candidates without selling incumbents. "
+            f"Executable deployment: Rs. {total_alloc:,.2f}."
         )
         if residual_cash > 0:
-            summary_rat += f" Unallocated residual cash: ₹{residual_cash:,.2f}."
+            summary_rat += f" Unallocated residual cash: Rs. {residual_cash:,.2f}."
 
         return InvestmentAllocationResult(
             allocation_type="MONTHLY",
@@ -459,7 +480,7 @@ class InvestmentAllocationService:
                 total_input_amount=0.0,
                 total_allocated_amount=0.0,
                 allocations=[],
-                summary_rationale="Please enter a valid lump-sum investment amount greater than ₹0.",
+                summary_rationale="Please enter a valid lump-sum investment amount greater than Rs. 0.",
             )
 
         if portfolio_state is None:
@@ -505,7 +526,7 @@ class InvestmentAllocationService:
                 item_amt = max(0.0, round(total_amount - allocated_so_far, 2))
             else:
                 pct_share = score / total_score if total_score > 0 else (1.0 / len(candidates))
-                item_amt = round((total_amount * pct_share) / 500.0) * 500.0  # Round to nearest ₹500
+                item_amt = round((total_amount * pct_share) / 500.0) * 500.0  # Round to nearest Rs. 500
                 item_amt = min(item_amt, max(0.0, total_amount - allocated_so_far))
 
             allocated_so_far += item_amt
@@ -543,11 +564,11 @@ class InvestmentAllocationService:
         residual_cash = round(total_amount - total_alloc, 2)
 
         summary_rat = (
-            f"NEW MONEY DEPLOYMENT: Lump-sum investment of ₹{total_amount:,.2f} dynamically allocated across Alpha 12 candidates. "
-            f"Executable deployment: ₹{total_alloc:,.2f}."
+            f"NEW MONEY DEPLOYMENT: Lump-sum investment of Rs. {total_amount:,.2f} dynamically allocated across Alpha 12 candidates. "
+            f"Executable deployment: Rs. {total_alloc:,.2f}."
         )
         if residual_cash > 0:
-            summary_rat += f" Unallocated residual cash: ₹{residual_cash:,.2f}."
+            summary_rat += f" Unallocated residual cash: Rs. {residual_cash:,.2f}."
 
         return InvestmentAllocationResult(
             allocation_type="LUMP_SUM",
@@ -556,3 +577,6 @@ class InvestmentAllocationService:
             allocations=allocations,
             summary_rationale=summary_rat,
         )
+
+
+

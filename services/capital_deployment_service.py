@@ -502,18 +502,12 @@ class CapitalDeploymentService:
         )
 
         # ==================================================
-        # INTELLIGENT RESIDUAL CASH DEPLOYMENT
+        # FULL CAPITAL DEPLOYMENT (ZERO CASH DRAG RULE)
         #
-        # Buy one additional share at a time from the most
-        # underweight affordable position.
-        #
-        # A purchase is allowed when:
-        # - cash can afford the share
-        # - resulting weight does not exceed target by more
-        #   than the configured overshoot tolerance
-        #
-        # This prevents the algorithm from spending residual
-        # cash merely for the sake of reaching zero cash.
+        # Deploy 100% of available capital across whole shares.
+        # Continuously allocate 1 additional share at a time
+        # to the most underweight affordable position until
+        # residual cash is less than the lowest-priced stock.
         # ==================================================
 
         while True:
@@ -530,40 +524,6 @@ class CapitalDeploymentService:
 
                 if price > (
                     cash_remaining
-                    + 1e-9
-                ):
-
-                    continue
-
-                next_amount = (
-
-                    row[
-                        "actual_amount"
-                    ]
-                    + price
-
-                )
-
-                next_weight = (
-
-                    next_amount
-                    / capital
-                    * 100.0
-
-                )
-
-                max_allowed_weight = (
-
-                    row[
-                        "target_weight"
-                    ]
-                    + self.overshoot_tolerance_pct
-
-                )
-
-                if (
-                    next_weight
-                    > max_allowed_weight
                     + 1e-9
                 ):
 

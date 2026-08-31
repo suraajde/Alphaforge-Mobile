@@ -46,6 +46,8 @@ class DriftMetric:
 
     direction: str  # OVERWEIGHT, UNDERWEIGHT, ON_TARGET
 
+    action: str = "HOLD"  # HOLD (for ON_TARGET or OVERWEIGHT < 30%), REDUCE (for OVERWEIGHT >= 30%), BUY (for UNDERWEIGHT)
+
 
 
 
@@ -246,29 +248,23 @@ class DriftDetectionService:
 
 
     def _get_rebalancing_service(self) -> Optional[Any]:
-
-        """Safely retrieve the RebalancingService dependency if explicitly provided."""
-
-        return self._rebalancing_service
-
-
+        """Safely retrieve or instantiate the RebalancingService."""
+        if self._rebalancing_service is not None:
+            return self._rebalancing_service
+        try:
+            from services.rebalancing_service import RebalancingService
+            return RebalancingService()
+        except Exception:
+            return None
 
     def detect_drift(
-
         self,
-
         rebalancing_state: Optional[Any] = None,
-
         allocation_analysis: Optional[Any] = None,
-
     ) -> DriftDetectionResult:
-
         """Detect target-vs-actual drift for all positions in the given RebalancingState."""
-
         try:
-
             if rebalancing_state is None:
-
                 return _empty_result()
 
 
@@ -330,37 +326,25 @@ class DriftDetectionService:
 
 
                     if abs(drift) < 1e-4:
-
                         direction = "ON_TARGET"
-
+                        action = "HOLD"
                     elif drift > 0:
-
                         direction = "OVERWEIGHT"
-
+                        action = "HOLD" if c_wt < 30.0 else "REDUCE"
                     else:
-
                         direction = "UNDERWEIGHT"
-
-
+                        action = "BUY"
 
                     metrics.append(
-
                         DriftMetric(
-
                             name=name,
-
                             current_weight=round(c_wt, 2),
-
                             target_weight=round(t_wt, 2),
-
                             drift=round(drift, 2),
-
                             absolute_drift=round(abs_drift, 2),
-
                             direction=direction,
-
+                            action=action,
                         )
-
                     )
 
                 except Exception:

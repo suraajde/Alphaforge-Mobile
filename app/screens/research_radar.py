@@ -390,6 +390,9 @@ class ResearchRadar(QWidget):
         # ==================================================
 
         self.table = QTableWidget()
+        self.table.setMinimumHeight(450)
+        self.table.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
         columns = [
 
@@ -1200,6 +1203,7 @@ class ResearchRadar(QWidget):
             "ranked",
             [],
         )
+        ranked = list(ranked)[:30] if isinstance(ranked, list) else []
 
         self._set_active_view_button(
             "TOP30"
@@ -1327,68 +1331,81 @@ class ResearchRadar(QWidget):
         self,
         view_name,
     ):
-
         if not isinstance(
             self.last_result,
             dict,
         ):
-
             self.status_label.setText(
                 "Run Production Radar first."
             )
-
             self._set_active_view_button(
                 "TOP30"
             )
-
             return
 
         self._set_active_view_button(
             view_name
         )
 
-        if view_name == "ALPHA12":
+        # Dynamically synchronize Alpha 12 and Reserve 8 with live portfolio state
+        try:
+            from services.portfolio_application_service import PortfolioApplicationService
+            from services.portfolio_state_service import PortfolioStateService
+            from config.path_config import get_data_path
+            from services.alpha12_mapping_service import Alpha12MappingService
 
+            status_resp = PortfolioApplicationService().get_status()
+            state = status_resp.get("state", {}) if isinstance(status_resp, dict) else {}
+            if not state:
+                state_path = get_data_path("portfolio/portfolio_state.json")
+                state_res = PortfolioStateService().load_state(path=state_path)
+                state = state_res.get("state", {}) if isinstance(state_res, dict) else {}
+            positions = state.get("positions", {}) if isinstance(state, dict) else {}
+
+            if positions:
+                mapping_svc = Alpha12MappingService()
+                dynamic_sync = mapping_svc.get_dynamic_alpha12_and_reserves(
+                    active_symbols=positions,
+                    radar_snapshot=self.last_result,
+                )
+                self.last_result["alpha12"] = dynamic_sync.get("alpha12", [])
+                self.last_result["alpha12_reserves"] = dynamic_sync.get("alpha12_reserves", [])
+        except Exception:
+            pass
+
+        if view_name == "ALPHA12":
             rows = self.last_result.get(
                 "alpha12",
                 [],
             )
-
             self.populate_alpha12_table(
                 rows,
                 reserve=False,
             )
-
             self.status_label.setText(
-                f"Alpha 12 | "
-                f"{len(rows)} selected investment candidates"
+                f"Alpha 12 | {len(rows)} selected investment candidates"
             )
-
             return
 
         if view_name == "RESERVE8":
-
             rows = self.last_result.get(
                 "alpha12_reserves",
                 [],
             )
-
             self.populate_alpha12_table(
                 rows,
                 reserve=True,
             )
-
             self.status_label.setText(
-                f"Alpha 12 Reserve Pool | "
-                f"{len(rows)} replacement candidates"
+                f"Alpha 12 Reserve Pool | {len(rows)} replacement candidates"
             )
-
             return
 
         rows = self.last_result.get(
             "ranked",
             [],
         )
+        rows = list(rows)[:30] if isinstance(rows, list) else []
 
         self.populate_table(
             rows
@@ -1527,15 +1544,20 @@ class ResearchRadar(QWidget):
         for row_index, stock in enumerate(
             rows
         ):
-
             for column_index, field in enumerate(
                 fields
             ):
-
-                value = stock.get(
-                    field,
-                    "",
-                )
+                if field in ("alpha12_rank", "reserve_rank"):
+                    val_rank = stock.get(field)
+                    if val_rank is None or val_rank == "" or val_rank == 0:
+                        value = row_index + 1
+                    else:
+                        value = val_rank
+                else:
+                    value = stock.get(
+                        field,
+                        "",
+                    )
 
                 # ------------------------------------------
                 # COMPANY FALLBACK
@@ -1630,6 +1652,9 @@ class ResearchRadar(QWidget):
         self,
         ranked,
     ):
+        if ranked is None:
+            ranked = []
+        ranked_items = list(ranked)[:30]
 
         self.table.setSortingEnabled(
             False
@@ -1638,7 +1663,6 @@ class ResearchRadar(QWidget):
         self.table.clearContents()
 
         columns = [
-
             "Rank",
             "Symbol",
             "Category",
@@ -1653,7 +1677,6 @@ class ResearchRadar(QWidget):
             "Coverage",
             "Data Status",
             "Classification",
-
         ]
 
         self.table.setColumnCount(
@@ -1665,7 +1688,6 @@ class ResearchRadar(QWidget):
         )
 
         column_widths = {
-
             0: 55,
             1: 100,
             2: 90,
@@ -1680,25 +1702,22 @@ class ResearchRadar(QWidget):
             11: 90,
             12: 110,
             13: 210,
-
         }
 
         for (
             column_index,
             column_width,
         ) in column_widths.items():
-
             self.table.setColumnWidth(
                 column_index,
                 column_width,
             )
 
         self.table.setRowCount(
-            len(ranked)
+            len(ranked_items)
         )
 
         fields = [
-
             "rank",
             "symbol",
             "category",
@@ -1713,11 +1732,9 @@ class ResearchRadar(QWidget):
             "coverage_score",
             "data_status",
             "classification",
-
         ]
 
         numeric_columns = {
-
             0,
             5,
             6,
@@ -1725,21 +1742,25 @@ class ResearchRadar(QWidget):
             8,
             9,
             11,
-
         }
 
         for row, stock in enumerate(
-            ranked
+            ranked_items
         ):
-
             for column, field in enumerate(
                 fields
             ):
-
-                value = stock.get(
-                    field,
-                    "",
-                )
+                if field == "rank":
+                    val_rank = stock.get("rank")
+                    if val_rank is None or val_rank == "" or val_rank == 0:
+                        value = row + 1
+                    else:
+                        value = val_rank
+                else:
+                    value = stock.get(
+                        field,
+                        "",
+                    )
 
                 # ------------------------------------------
                 # COMPANY FALLBACK

@@ -1,0 +1,16 @@
+{
+  "total_snapshots": 1,
+  "latest_score": 100,
+  "latest_grade": "A",
+  "latest_timestamp": "2026-08-30T04:56:44.520568+00:00",
+  "snapshots": [
+    {
+      "snapshot_id": "snap_init_001",
+      "timestamp": "2026-08-30T04:56:44.520568+00:00",
+      "score": 100,
+      "grade": "A",
+      "position_count": 12,
+      "rationale": "Baseline snapshot"
+    }
+  ]
+}

@@ -16,6 +16,8 @@ from PySide6.QtWidgets import (
     QLabel,
     QListWidget,
     QListWidgetItem,
+    QMessageBox,
+    QPushButton,
     QScrollArea,
     QTableWidget,
     QTableWidgetItem,
@@ -139,6 +141,28 @@ class PortfolioActionCenter(QWidget):
         self.container_layout.addWidget(deferred_box)
 
         # --------------------------------------------------
+        # 3b. ACTIVE HOLDINGS & EMERGENCY GOVERNANCE
+        # --------------------------------------------------
+        holdings_gov_box = QFrame()
+        holdings_gov_box.setObjectName("metricCard")
+        holdings_gov_layout = QVBoxLayout(holdings_gov_box)
+        holdings_gov_layout.setContentsMargins(16, 14, 16, 14)
+
+        holdings_gov_title = QLabel("Active Holdings & Emergency Governance")
+        holdings_gov_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #f87171;")
+        holdings_gov_layout.addWidget(holdings_gov_title)
+
+        self.holdings_gov_table = QTableWidget(0, 7)
+        self.holdings_gov_table.setHorizontalHeaderLabels([
+            "Symbol", "Company / Sector", "Weight", "Target", "Drift", "Status", "Emergency Swap"
+        ])
+        self._style_table(self.holdings_gov_table)
+        self.holdings_gov_table.setMinimumHeight(180)
+        self.holdings_gov_table.setMaximumHeight(260)
+        holdings_gov_layout.addWidget(self.holdings_gov_table)
+        self.container_layout.addWidget(holdings_gov_box)
+
+        # --------------------------------------------------
         # 4. REBALANCE RATIONALE
         # --------------------------------------------------
         rationale_box = QFrame()
@@ -207,13 +231,26 @@ class PortfolioActionCenter(QWidget):
         review_date: Optional[str] = None,
     ) -> None:
         """Populate the Action Center UI widgets using ActionCenterService view model."""
+        from services.portfolio_application_service import PortfolioApplicationService
         from services.portfolio_state_service import PortfolioStateService
         from config.path_config import get_data_path
         from app.theme import UIColors, get_status_color
 
-        state_path = get_data_path("portfolio/portfolio_state.json")
-        state_res = PortfolioStateService().load_state(path=state_path)
-        state = state_res.get("state", {}) if isinstance(state_res, dict) else {}
+        self.approved_table.clearContents()
+        self.approved_table.setRowCount(0)
+        self.deferred_table.clearContents()
+        self.deferred_table.setRowCount(0)
+        self.holdings_gov_table.clearContents()
+        self.holdings_gov_table.setRowCount(0)
+        self.rationale_list.clear()
+
+        app_service = PortfolioApplicationService()
+        status_resp = app_service.get_status()
+        state = status_resp.get("state", {}) if isinstance(status_resp, dict) else {}
+        if not state:
+            state_path = get_data_path("portfolio/portfolio_state.json")
+            state_res = PortfolioStateService().load_state(path=state_path)
+            state = state_res.get("state", {}) if isinstance(state_res, dict) else {}
         positions = state.get("positions", {}) if isinstance(state, dict) else {}
 
         date_str = review_date or datetime.now().strftime("%Y-%m-%d")
@@ -225,9 +262,6 @@ class PortfolioActionCenter(QWidget):
             self.lbl_approved_count_val.setText("0")
             self.lbl_deferred_count_val.setText("0")
             self.lbl_turnover_val.setText("0.0%")
-            self.approved_table.setRowCount(0)
-            self.deferred_table.setRowCount(0)
-            self.rationale_list.clear()
             self.rationale_list.addItem(
                 QListWidgetItem("• No active portfolio data — Create or import a portfolio to evaluate portfolio actions.")
             )
@@ -269,6 +303,43 @@ class PortfolioActionCenter(QWidget):
             self.deferred_table.setItem(i, 3, QTableWidgetItem(d.reason))
             self.deferred_table.setItem(i, 4, QTableWidgetItem(f"{d.confidence:.1f}%"))
 
+        # 3b. Render Active Holdings & Emergency Governance Table
+        self.holdings_gov_table.setRowCount(0)
+        pos_items = list(positions.values()) if isinstance(positions, dict) else []
+        for i, pos in enumerate(pos_items):
+            if not isinstance(pos, dict):
+                continue
+            sym = str(pos.get("symbol", "")).strip().upper()
+            comp_name = pos.get("company_name", sym) or sym
+            sector = pos.get("sector", "UNKNOWN") or "UNKNOWN"
+            comp_label = f"{comp_name} ({sector})"
+            act_wt = float(pos.get("actual_weight", 0.0) or 0.0)
+            tgt_wt = float(pos.get("target_weight", 0.0) or 0.0)
+            drift = float(pos.get("drift_pct", 0.0) or 0.0)
+            status_str = str(pos.get("allocation_state", "ACTIVE") or "ACTIVE")
+
+            self.holdings_gov_table.insertRow(i)
+            self.holdings_gov_table.setItem(i, 0, QTableWidgetItem(sym))
+            self.holdings_gov_table.setItem(i, 1, QTableWidgetItem(comp_label))
+            self.holdings_gov_table.setItem(i, 2, QTableWidgetItem(f"{act_wt:.2f}%"))
+            self.holdings_gov_table.setItem(i, 3, QTableWidgetItem(f"{tgt_wt:.2f}%"))
+            self.holdings_gov_table.setItem(i, 4, QTableWidgetItem(f"{drift:+.2f}%"))
+            self.holdings_gov_table.setItem(i, 5, QTableWidgetItem(status_str))
+
+            action_widget = QWidget()
+            action_layout = QHBoxLayout(action_widget)
+            action_layout.setContentsMargins(4, 2, 4, 2)
+            action_layout.setAlignment(Qt.AlignCenter)
+
+            eject_btn = QPushButton("🚨 Emergency Swap")
+            eject_btn.setStyleSheet(
+                "QPushButton { background-color: #ef4444; color: white; font-weight: bold; font-size: 11px; padding: 4px 10px; border-radius: 4px; }"
+                "QPushButton:hover { background-color: #dc2626; }"
+            )
+            eject_btn.clicked.connect(lambda _, s=sym: self.confirm_and_emergency_eject(s))
+            action_layout.addWidget(eject_btn)
+            self.holdings_gov_table.setCellWidget(i, 6, action_widget)
+
         # 4. Render Rationale
         self.rationale_list.clear()
         for r in vm.rationale:
@@ -281,6 +352,60 @@ class PortfolioActionCenter(QWidget):
         self.lbl_gov_max.setText(vm.governance_snapshot.max_replacements)
         self.lbl_gov_budget.setText(vm.governance_snapshot.turnover_budget)
         self.lbl_gov_emergency.setText(vm.governance_snapshot.emergency_override)
+
+    def confirm_and_emergency_eject(self, symbol: str) -> None:
+        symbol = str(symbol).strip().upper()
+        if not symbol:
+            return
+
+        reply = QMessageBox.warning(
+            self,
+            "Confirm Emergency Eject",
+            f"Are you sure you want to emergency eject '{symbol}' from your active portfolio?\n\n"
+            f"• '{symbol}' will be permanently deleted from active holdings.\n"
+            f"• The #1 highest-ranked candidate from the Reserve 8 bench will be automatically promoted into your portfolio with 0 quantity.\n"
+            f"• Your Smart SIP engine will automatically route the next capital allocation into this new holding.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+
+        if reply != QMessageBox.Yes:
+            return
+
+        from services.portfolio_application_service import PortfolioApplicationService
+        app_service = PortfolioApplicationService()
+        result = app_service.emergency_replace_position(symbol)
+
+        if isinstance(result, dict) and result.get("status") == "OK":
+            replacement = result.get("replacement_symbol", "Reserve 8 candidate")
+
+            # Explicitly reset all table views to prevent stale UI state
+            self.holdings_gov_table.clearContents()
+            self.holdings_gov_table.setRowCount(0)
+            self.approved_table.clearContents()
+            self.approved_table.setRowCount(0)
+            self.deferred_table.clearContents()
+            self.deferred_table.setRowCount(0)
+            self.load_plan(None)
+
+            QMessageBox.information(
+                self,
+                "Emergency Swap Successful",
+                f"Successfully ejected '{symbol}'.\n\n"
+                f"Promoted '{replacement}' from the Reserve 8 bench into your active portfolio.\n\n"
+                f"Action Center has been refreshed.",
+            )
+        else:
+            err_msg = (
+                result.get("error", "Unknown error during emergency replace.")
+                if isinstance(result, dict)
+                else "Unknown error."
+            )
+            QMessageBox.critical(
+                self,
+                "Emergency Eject Failed",
+                f"Failed to eject '{symbol}':\n\n{err_msg}",
+            )
 
     # ======================================================
     # PRIVATE UI HELPERS

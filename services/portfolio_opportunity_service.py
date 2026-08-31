@@ -1,4 +1,4 @@
-"""Portfolio Opportunity Engine Service (Sprint 13.8.3)
+﻿"""Portfolio Opportunity Engine Service (Sprint 13.8.3)
 
 Provides a structured, factual, deterministic analytical layer that identifies potentially notable
 portfolio opportunities from information already available inside AlphaForge.
@@ -418,10 +418,10 @@ class PortfolioOpportunityService:
                 else:
                     ev = [
                         f"SIP transaction count: {tx_count}",
-                        f"Total SIP invested: ₹{tx_amt:,.2f}",
+                        f"Total SIP invested: Rs. {tx_amt:,.2f}",
                         f"Current weight: {c_weight:.2f}% | Target weight: {t_weight:.2f}%",
                     ]
-                    rat = f"Position {symbol} has {tx_count} confirmed SIP transactions totaling ₹{tx_amt:,.2f}."
+                    rat = f"Position {symbol} has {tx_count} confirmed SIP transactions totaling Rs. {tx_amt:,.2f}."
 
                 score, priority = self._score_opportunity(
                     opportunity_type="SIP_COVERAGE",

@@ -1,4 +1,4 @@
-"""Unit and navigation test suite for Dashboard Screen (Sprint 14.0.0)."""
+﻿"""Unit and navigation test suite for Dashboard Screen (Sprint 14.0.0)."""
 
 import pytest
 from PySide6.QtWidgets import QApplication
@@ -74,4 +74,4 @@ def test_dashboard_defensive_exception_handling(qapp):
     )
     assert screen is not None
     assert screen.lbl_health_val.text() in ("N/A", "Unavailable")
-    assert screen.lbl_val_val.text() in ("₹0.00", "Unavailable")
+    assert screen.lbl_val_val.text() in ("Rs. 0.00", "Unavailable")

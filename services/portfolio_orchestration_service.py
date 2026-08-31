@@ -1442,18 +1442,52 @@ class PortfolioOrchestrationService:
             )
         )
 
+    def emergency_replace_position(
+        self,
+        symbol_to_remove,
+        replacement_stock,
+        state=None,
+        target_weight=None,
+        transaction_date=None,
+        save=True,
+        path=None,
+    ):
+        if state is None:
+            load_result = self.load_state(path=path)
+            if not isinstance(load_result, dict) or load_result.get("status") != "OK":
+                raise ValueError("Unable to load valid portfolio state")
+            state = load_result.get("state")
+
+        updated_state = self.state_service.emergency_replace_position(
+            state=state,
+            symbol_to_remove=symbol_to_remove,
+            replacement_stock=replacement_stock,
+            target_weight=target_weight,
+            transaction_date=transaction_date,
+        )
+
+        save_result = None
+        if save:
+            save_result = self.save_state(state=updated_state, path=path)
+
+        return {
+            "status": "OK",
+            "mode": "EMERGENCY_REPLACE_POSITION",
+            "confirmed": True,
+            "removed_symbol": str(symbol_to_remove).strip().upper(),
+            "replacement_symbol": str(replacement_stock.get("symbol", "")).strip().upper(),
+            "state": updated_state,
+            "save_result": save_result,
+        }
+
     def save_state(
         self,
         state,
         path=None,
     ):
-
-        return (
-            self.state_service
-            .save_state(
-                state=state,
-                path=path,
-            )
+        return self.state_service.save_state(
+            state=state,
+            path=path,
         )
 
 

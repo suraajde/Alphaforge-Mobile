@@ -1,4 +1,4 @@
-"""Full Regression and User Acceptance Test Suite for AlphaForge v1.0.
+﻿"""Full Regression and User Acceptance Test Suite for AlphaForge v1.0.
 
 Covers Portfolio Reset, Create Portfolio workflow, Portfolio Health empty state,
 Action Center zero-mock data, Rebalancing decisions, Monthly & Lump-Sum allocations,
@@ -124,7 +124,7 @@ def test_rebalancing_governance_decision_scenarios():
 
 
 def test_monthly_and_lumpsum_allocations_exact_totals():
-    """Verify Monthly (₹30,000) and Lump-Sum (₹100,000) allocations match exact user input."""
+    """Verify Monthly (Rs. 30,000) and Lump-Sum (Rs. 100,000) allocations match exact user input."""
     alloc_svc = InvestmentAllocationService()
 
     monthly_res = alloc_svc.allocate_monthly_investment(30000.0)

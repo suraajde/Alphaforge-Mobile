@@ -1,0 +1,97 @@
+{
+  "total_entries": 10,
+  "earliest_timestamp": "2026-08-30T04:34:11.277986+00:00",
+  "latest_timestamp": "2026-08-30T04:55:20.958901+00:00",
+  "entries": [
+    {
+      "timestamp": "2026-08-30T04:34:11.277986+00:00",
+      "stability_score": 87.5,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 6,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:35:25.740972+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:38:10.797190+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:38:56.003500+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:39:26.292050+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:41:03.626229+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:44:52.985705+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:48:28.566613+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:49:43.340711+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    },
+    {
+      "timestamp": "2026-08-30T04:55:20.958901+00:00",
+      "stability_score": 97.9,
+      "stability_rating": "VERY_STABLE",
+      "turnover_rate": 0.0,
+      "churn_prevention_ratio": 100.0,
+      "mapped_holdings": 11,
+      "total_alpha12_holdings": 12
+    }
+  ]
+}

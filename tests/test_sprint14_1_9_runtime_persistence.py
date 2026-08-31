@@ -1,4 +1,4 @@
-"""Sprint 14.1.9 Acceptance Test Suite — Runtime Persistence & Cross-Screen Consistency
+﻿"""Sprint 14.1.9 Acceptance Test Suite — Runtime Persistence & Cross-Screen Consistency
 
 Validates:
 A. Production Radar persistence
@@ -279,7 +279,7 @@ def test_sip_and_lumpsum_allocation_with_concentration_safety(temp_data_dir):
         for i in range(1, 7)
     ]
 
-    # Test ₹6,000 monthly allocation
+    # Test Rs. 6,000 monthly allocation
     result_sip = alloc_svc.allocate_monthly_investment(
         total_amount=6000.0,
         alpha12_candidates=candidates,
@@ -297,7 +297,7 @@ def test_sip_and_lumpsum_allocation_with_concentration_safety(temp_data_dir):
         if item.reference_price <= 1800.0:
             assert (item.executable_amount / 6000.0) <= 0.35
 
-    # Test ₹1,00,000 lump-sum allocation
+    # Test Rs. 1,00,000 lump-sum allocation
     result_lump = alloc_svc.allocate_lump_sum_investment(
         total_amount=100000.0,
         alpha12_candidates=candidates,

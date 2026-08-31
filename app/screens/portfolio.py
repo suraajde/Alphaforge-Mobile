@@ -408,7 +408,7 @@ class Portfolio(QWidget):
         self.lbl_pnl_title = QLabel("TOTAL RUNNING P&L")
         self.lbl_pnl_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #8FA0B8; letter-spacing: 0.5px;")
 
-        self.lbl_total_pnl_val = QLabel("₹0.00 (+0.00%)")
+        self.lbl_total_pnl_val = QLabel("Rs. 0.00 (+0.00%)")
         self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
 
         pnl_layout.addWidget(self.lbl_pnl_title)
@@ -769,9 +769,9 @@ class Portfolio(QWidget):
                 "Symbol",
                 "Name",
                 "Quantity",
-                "Current Price (₹)",
-                "Invested Value (₹)",
-                "Current Value (₹)",
+                "Current Price (Rs. )",
+                "Invested Value (Rs. )",
+                "Current Value (Rs. )",
                 "Weight (%)",
             ]
         )
@@ -1286,8 +1286,26 @@ class Portfolio(QWidget):
             self.correct_selected_purchase
         )
 
+        self.emergency_eject_button = QPushButton(
+            "🚨 Emergency Eject"
+        )
+        self.emergency_eject_button.setEnabled(
+            False
+        )
+        self.emergency_eject_button.setStyleSheet(
+            "QPushButton { background-color: #ef4444; color: white; font-weight: bold; padding: 6px 14px; border-radius: 6px; font-size: 13px; }"
+            "QPushButton:hover { background-color: #dc2626; }"
+            "QPushButton:disabled { background-color: #fca5a5; color: #fef2f2; }"
+        )
+        self.emergency_eject_button.clicked.connect(
+            self._on_emergency_eject_clicked
+        )
+
         holdings_header.addWidget(
             self.correct_purchase_button
+        )
+        holdings_header.addWidget(
+            self.emergency_eject_button
         )
 
         holdings_layout.addLayout(
@@ -1300,7 +1318,7 @@ class Portfolio(QWidget):
         self.table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.table.setColumnCount(
-            14
+            15
         )
 
         self.table.setHorizontalHeaderLabels([
@@ -1318,6 +1336,7 @@ class Portfolio(QWidget):
             "Drift %",
             "Sector",
             "Category",
+            "Actions",
         ])
 
         self.table.setAlternatingRowColors(
@@ -1465,7 +1484,7 @@ class Portfolio(QWidget):
             pass
 
         default_symbols = [
-            ("KPITTECH", "KPIT Technologies"),
+            ("CASTROLIND", "Castrol India Ltd"),
             ("PERSISTENT", "Persistent Systems"),
             ("COFORGE", "Coforge Ltd"),
             ("TATAELXSI", "Tata Elxsi"),
@@ -1517,7 +1536,7 @@ class Portfolio(QWidget):
             QInputDialog.getDouble(
                 self,
                 "Initial Investment",
-                "Enter investment capital (₹):",
+                "Enter investment capital (Rs. ):",
                 500000.0,
                 1.0,
                 1000000000.0,
@@ -2795,12 +2814,83 @@ class Portfolio(QWidget):
             self,
             "correct_purchase_button",
         ):
-
             return
 
+        has_selection = self.table.currentRow() >= 0
         self.correct_purchase_button.setEnabled(
-            self.table.currentRow() >= 0
+            has_selection
         )
+        if hasattr(self, "emergency_eject_button"):
+            self.emergency_eject_button.setEnabled(
+                has_selection
+            )
+
+    def _on_emergency_eject_clicked(
+        self,
+    ):
+        symbol = (
+            self._selected_portfolio_symbol()
+        )
+        if not symbol:
+            QMessageBox.information(
+                self,
+                "Emergency Eject",
+                "Please select a portfolio holding to eject first.",
+            )
+            return
+        self.confirm_and_emergency_eject(
+            symbol
+        )
+
+    def confirm_and_emergency_eject(
+        self,
+        symbol: str,
+    ):
+        symbol = str(symbol).strip().upper()
+        if not symbol:
+            return
+
+        reply = QMessageBox.warning(
+            self,
+            "Confirm Emergency Eject",
+            f"Are you sure you want to emergency eject '{symbol}' from your active portfolio?\n\n"
+            f"• '{symbol}' will be permanently deleted from active holdings.\n"
+            f"• The #1 highest-ranked candidate from the Reserve 8 bench will be automatically promoted into your portfolio with 0 quantity.\n"
+            f"• Your Smart SIP engine will automatically route the next capital allocation into this new holding.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+
+        if reply != QMessageBox.Yes:
+            return
+
+        result = self.portfolio_service.emergency_replace_position(
+            symbol
+        )
+
+        if isinstance(result, dict) and result.get("status") == "OK":
+            replacement = result.get("replacement_symbol", "Reserve 8 candidate")
+            self.table.clearContents()
+            self.table.setRowCount(0)
+            self.load_portfolio()
+            QMessageBox.information(
+                self,
+                "Emergency Swap Successful",
+                f"Successfully ejected '{symbol}'.\n\n"
+                f"Promoted '{replacement}' from the Reserve 8 bench into your active portfolio.\n\n"
+                f"Your portfolio has been refreshed.",
+            )
+        else:
+            err_msg = (
+                result.get("error", "Unknown error during emergency replace.")
+                if isinstance(result, dict)
+                else "Unknown error."
+            )
+            QMessageBox.critical(
+                self,
+                "Emergency Eject Failed",
+                f"Failed to eject '{symbol}':\n\n{err_msg}",
+            )
 
     def _selected_portfolio_symbol(
         self,
@@ -3619,7 +3709,7 @@ class Portfolio(QWidget):
                 abs_ret_pct = getattr(snapshot, "absolute_return_pct", 0.0)
                 sign = "+" if abs_ret >= 0 else ""
                 color = "#10B981" if abs_ret >= 0 else "#EF4444"
-                self.lbl_total_pnl_val.setText(f"₹{abs_ret:,.2f} ({sign}{abs_ret_pct:.2f}%)")
+                self.lbl_total_pnl_val.setText(f"Rs. {abs_ret:,.2f} ({sign}{abs_ret_pct:.2f}%)")
                 self.lbl_total_pnl_val.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
 
     def _render_benchmark_summary(self, bm_summary: dict, summary: Optional[dict] = None) -> None:
@@ -3702,8 +3792,21 @@ class Portfolio(QWidget):
         invested = 0.0
         current = 0.0
         if isinstance(summary, dict):
-            invested = self._safe_float(summary.get("total_cost", summary.get("invested_market_value", 0.0)), 0.0)
-            current = self._safe_float(summary.get("portfolio_value", 0.0), 0.0)
+            # Total Invested Cost of holdings
+            invested = self._safe_float(
+                summary.get("total_invested_cost", summary.get("total_cost", 0.0)),
+                0.0,
+            )
+            # Total Current Value of holdings
+            current = self._safe_float(
+                summary.get("invested_market_value", summary.get("total_current_value", summary.get("portfolio_value", 0.0))),
+                0.0,
+            )
+            if invested == 0.0 and current == 0.0 and summary.get("positions"):
+                pos_list = summary.get("positions", [])
+                if isinstance(pos_list, list):
+                    invested = sum(self._safe_float(p.get("invested_cost", 0.0)) for p in pos_list if isinstance(p, dict))
+                    current = sum(self._safe_float(p.get("market_value", p.get("current_value", 0.0))) for p in pos_list if isinstance(p, dict))
 
         snapshot = self.performance_service.calculate_performance(
             initial_value=invested,
@@ -4098,7 +4201,7 @@ class Portfolio(QWidget):
 
             values = [
                 str(
-                    rank
+                    row_index + 1
                 ),
                 str(
                     symbol
@@ -4187,6 +4290,29 @@ class Portfolio(QWidget):
                     item,
                 )
 
+            # Column 14: Actions (Emergency Eject / Swap)
+            action_widget = QWidget()
+            action_layout = QHBoxLayout(action_widget)
+            action_layout.setContentsMargins(4, 2, 4, 2)
+            action_layout.setAlignment(Qt.AlignCenter)
+
+            eject_btn = QPushButton("🚨 Eject")
+            eject_btn.setToolTip(f"Emergency eject {symbol} and promote #1 Reserve 8 candidate")
+            eject_btn.setStyleSheet(
+                "QPushButton { background-color: #ef4444; color: white; font-weight: bold; font-size: 11px; padding: 4px 10px; border-radius: 4px; }"
+                "QPushButton:hover { background-color: #dc2626; }"
+            )
+            eject_btn.clicked.connect(
+                lambda _, sym=str(symbol): self.confirm_and_emergency_eject(sym)
+            )
+            action_layout.addWidget(eject_btn)
+
+            self.table.setCellWidget(
+                row_index,
+                14,
+                action_widget,
+            )
+
 
 
     # ======================================================
@@ -4203,7 +4329,7 @@ class Portfolio(QWidget):
         self.holdings_frame.hide()
 
         self.empty_title.setText(
-            "Portfolio Unavailable"
+            "No portfolio created yet."
         )
 
         self.empty_text.setText(
@@ -4316,7 +4442,7 @@ class Portfolio(QWidget):
         lbl_mb_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #16a34a;")
         mb_layout.addWidget(lbl_mb_title)
 
-        lbl_mb_desc = QLabel("Enter total monthly contribution (₹):")
+        lbl_mb_desc = QLabel("Enter total monthly contribution (Rs. ):")
         lbl_mb_desc.setStyleSheet("font-size: 12px; color: #475569;")
         mb_layout.addWidget(lbl_mb_desc)
 
@@ -4343,7 +4469,7 @@ class Portfolio(QWidget):
         lbl_lb_title.setStyleSheet("font-size: 14px; font-weight: 700; color: #2563eb;")
         lb_layout.addWidget(lbl_lb_title)
 
-        lbl_lb_desc = QLabel("Enter lump-sum investment (₹):")
+        lbl_lb_desc = QLabel("Enter lump-sum investment (Rs. ):")
         lbl_lb_desc.setStyleSheet("font-size: 12px; color: #475569;")
         lb_layout.addWidget(lbl_lb_desc)
 
@@ -4443,11 +4569,11 @@ class Portfolio(QWidget):
         ])
         residual_cash = max(0.0, round(res.total_input_amount - res.total_allocated_amount, 2))
         summary_text = (
-            f"USER INPUT: {alloc_type} ₹{res.total_input_amount:,.2f}  |  "
-            f"ALPHAFORGE RECOMMENDATION: Recommended deployment: ₹{res.total_allocated_amount:,.2f}"
+            f"USER INPUT: {alloc_type} Rs. {res.total_input_amount:,.2f}  |  "
+            f"ALPHAFORGE RECOMMENDATION: Recommended deployment: Rs. {res.total_allocated_amount:,.2f}"
         )
         if residual_cash > 0:
-            summary_text += f"  |  Unallocated Cash: ₹{residual_cash:,.2f}"
+            summary_text += f"  |  Unallocated Cash: Rs. {residual_cash:,.2f}"
         self.lbl_alloc_summary.setText(summary_text)
         self.lbl_alloc_summary.setStyleSheet("font-size: 13px; font-weight: 700; color: #15803d; padding: 4px 0px;")
 
@@ -4461,8 +4587,8 @@ class Portfolio(QWidget):
             self.alloc_table.setItem(i, 4, QTableWidgetItem(f"{item.current_weight_pct:.1f}%"))
             self.alloc_table.setItem(i, 5, QTableWidgetItem(f"{item.target_weight_pct:.1f}%"))
             self.alloc_table.setItem(i, 6, QTableWidgetItem(f"{item.expected_weight_pct:.1f}%"))
-            self.alloc_table.setItem(i, 7, QTableWidgetItem(f"₹{item.reference_price:,.2f}"))
+            self.alloc_table.setItem(i, 7, QTableWidgetItem(f"Rs. {item.reference_price:,.2f}"))
             self.alloc_table.setItem(i, 8, QTableWidgetItem(str(item.quantity)))
-            self.alloc_table.setItem(i, 9, QTableWidgetItem(f"₹{item.executable_amount:,.2f}"))
+            self.alloc_table.setItem(i, 9, QTableWidgetItem(f"Rs. {item.executable_amount:,.2f}"))
             self.alloc_table.setItem(i, 10, QTableWidgetItem(f"{item.suggested_pct:.1f}%"))
             self.alloc_table.setItem(i, 11, QTableWidgetItem(item.reason))

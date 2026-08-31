@@ -1,4 +1,4 @@
-"""Regression coverage for executable whole-share investment allocations."""
+﻿"""Regression coverage for executable whole-share investment allocations."""
 
 import pytest
 from PySide6.QtWidgets import QApplication
@@ -80,7 +80,7 @@ def test_monthly_ui_renders_sip_shares_before_sip_amount(qapp):
     first = result.allocations[0]
     assert headers[7:10] == ["Price", "SIP Shares", "SIP Amount"]
     assert screen.alloc_table.item(0, 8).text() == str(first.quantity)
-    assert screen.alloc_table.item(0, 9).text() == f"₹{first.executable_amount:,.2f}"
+    assert screen.alloc_table.item(0, 9).text() == f"Rs. {first.executable_amount:,.2f}"
     assert screen.alloc_table.item(0, 8).text() != f"{first.executable_amount:,.2f}"
 
 
@@ -97,7 +97,7 @@ def test_lump_sum_ui_renders_shares_to_buy_before_investment(qapp):
     first = result.allocations[0]
     assert headers[7:10] == ["Price", "Shares to Buy", "Investment"]
     assert screen.alloc_table.item(0, 8).text() == str(first.quantity)
-    assert screen.alloc_table.item(0, 9).text() == f"₹{first.executable_amount:,.2f}"
+    assert screen.alloc_table.item(0, 9).text() == f"Rs. {first.executable_amount:,.2f}"
     assert screen.alloc_table.item(0, 8).text() != f"{first.executable_amount:,.2f}"
 
 

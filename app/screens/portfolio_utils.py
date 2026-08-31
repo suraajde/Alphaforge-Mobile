@@ -1,4 +1,4 @@
-"""
+﻿"""
 Portfolio utility helpers.
 
 These functions are intentionally stateless so they can be reused
@@ -22,7 +22,7 @@ def money(value):
     except (TypeError, ValueError):
         value = 0.0
 
-    return f"₹{value:,.2f}"
+    return f"Rs. {value:,.2f}"
 
 
 def number(value):

@@ -139,6 +139,7 @@ class PortfolioHealth(QWidget):
         alpha12_mapping_service: Optional[Alpha12MappingService] = None,
         alpha12_stability_service: Optional[Alpha12StabilityService] = None,
         alpha12_provider: Optional[Any] = None,
+        portfolio_app_service: Optional[Any] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -222,7 +223,16 @@ class PortfolioHealth(QWidget):
 
         self.decision_audit_trend_service = decision_audit_trend_service if decision_audit_trend_service is not None else DecisionAuditTrendService(audit_service=self.decision_audit_service)
 
-        self.rebalancing_service = rebalancing_service if rebalancing_service is not None else RebalancingService()
+        if portfolio_app_service is not None:
+            self.portfolio_app_service = portfolio_app_service
+        else:
+            try:
+                from services.portfolio_application_service import PortfolioApplicationService
+                self.portfolio_app_service = PortfolioApplicationService()
+            except Exception:
+                self.portfolio_app_service = None
+
+        self.rebalancing_service = rebalancing_service if rebalancing_service is not None else RebalancingService(portfolio_service=self.portfolio_app_service)
 
         self.allocation_analysis_service = allocation_analysis_service if allocation_analysis_service is not None else AllocationAnalysisService(rebalancing_service=self.rebalancing_service)
 
@@ -233,7 +243,7 @@ class PortfolioHealth(QWidget):
         self.rebalancing_recommendation_service = rebalancing_recommendation_service if rebalancing_recommendation_service is not None else RebalancingRecommendationService(rebalancing_service=self.rebalancing_service, allocation_analysis_service=self.allocation_analysis_service, drift_detection_service=self.drift_detection_service, rebalancing_candidate_service=self.rebalancing_candidate_service, audit_service=decision_audit_service)
 
         self.portfolio_intelligence_service = portfolio_intelligence_service if portfolio_intelligence_service is not None else PortfolioIntelligenceService()
-        self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService()
+        self.holding_quality_service = holding_quality_service if holding_quality_service is not None else HoldingQualityService(portfolio_service=self.portfolio_app_service)
         self.sip_optimization_service = sip_optimization_service if sip_optimization_service is not None else SIPOptimizationService()
         self.portfolio_opportunity_service = portfolio_opportunity_service if portfolio_opportunity_service is not None else PortfolioOpportunityService()
         self.portfolio_risk_intelligence_service = portfolio_risk_intelligence_service if portfolio_risk_intelligence_service is not None else PortfolioRiskIntelligenceService()
@@ -298,6 +308,7 @@ class PortfolioHealth(QWidget):
 
             alpha12_mapping_service=self.alpha12_mapping_service,
             alpha12_stability_service=self.alpha12_stability_service,
+            portfolio_app_service=self.portfolio_app_service,
 
         )
 
@@ -312,24 +323,15 @@ class PortfolioHealth(QWidget):
             self.alpha12_mapping_service._alpha12_provider = provider
 
 
-    def refresh_data(self) -> None:
-
+    def refresh_data(self, *args, **kwargs) -> None:
         """Fetch and bind live portfolio health snapshot, evaluation, and history data."""
-
         if self.service is not None:
-
             snapshot = None
-
             if hasattr(self.service, "build_snapshot"):
-
                 try:
-
                     snapshot = self.service.build_snapshot()
-
                     self.load_snapshot(snapshot)
-
                 except Exception:
-
                     pass
 
             if hasattr(self.service, "evaluate"):
@@ -580,7 +582,7 @@ class PortfolioHealth(QWidget):
 
         if hasattr(self, "lbl_rr_total_impact_val"):
 
-            self.lbl_rr_total_impact_val.setText(f"Total Impact Value: ${tot_impact:,.2f}")
+            self.lbl_rr_total_impact_val.setText(f"Total Impact Value: Rs. {tot_impact:,.2f}")
 
         if hasattr(self, "rebalancing_recommendations_container"):
 
@@ -700,7 +702,7 @@ class PortfolioHealth(QWidget):
 
                 total_holdings = getattr(summary, "total_holdings", getattr(summary, "holding_count", 0))
 
-                val_lbl = QLabel(f"Portfolio Value: ${summary.total_value:,.2f} | Holdings: {total_holdings} | Accounts: {summary.account_count}")
+                val_lbl = QLabel(f"Portfolio Value: Rs. {summary.total_value:,.2f} | Holdings: {total_holdings} | Accounts: {summary.account_count}")
 
                 val_lbl.setStyleSheet("font-size: 14px; font-weight: bold; color: #1e293b;")
 
@@ -896,7 +898,7 @@ class PortfolioHealth(QWidget):
 
                 summary_str = (
 
-                    f"Total Positions: {tot_pos} | SIP Invested Capital: ₹{tot_invested:,.2f} | SIP Transactions: {tot_txns}\n"
+                    f"Total Positions: {tot_pos} | SIP Invested Capital: Rs. {tot_invested:,.2f} | SIP Transactions: {tot_txns}\n"
 
                     f"SIP Coverage: {cov_pct:.1f}% | Top Recipient Concentration: {top_conc:.1f}%"
 
@@ -952,7 +954,7 @@ class PortfolioHealth(QWidget):
 
                             f"• {sym} ({nm}) | Target: {target_w:.1f}% | Actual: {actual_w:.1f}% | Drift: {drift:+.1f}%\n"
 
-                            f"  SIP Tx Count: {tx_cnt} | SIP Invested: ₹{tx_amt:,.2f} | Schedule Amount: {sched_amt} | Frequency: {freq}"
+                            f"  SIP Tx Count: {tx_cnt} | SIP Invested: Rs. {tx_amt:,.2f} | Schedule Amount: {sched_amt} | Frequency: {freq}"
 
                         )
 
@@ -1457,7 +1459,7 @@ class PortfolioHealth(QWidget):
 
                         c_v = getattr(h, "current_value", None)
 
-                        c_v_str = f"₹{c_v:,.2f}" if c_v is not None else "N/A"
+                        c_v_str = f"Rs. {c_v:,.2f}" if c_v is not None else "N/A"
 
                         atype = getattr(h, "asset_type", "EQUITY")
 
@@ -1623,7 +1625,7 @@ class PortfolioHealth(QWidget):
 
         if hasattr(self, "lbl_rc_total_impact_val"):
 
-            self.lbl_rc_total_impact_val.setText(f"Total Impact Value: ${tot_impact:,.2f}")
+            self.lbl_rc_total_impact_val.setText(f"Total Impact Value: Rs. {tot_impact:,.2f}")
 
         if hasattr(self, "rebalancing_candidates_container"):
 
@@ -1677,7 +1679,7 @@ class PortfolioHealth(QWidget):
 
                     wt_lbl.setStyleSheet("font-size: 13px; color: #1f2937;")
 
-                    eval_lbl = QLabel(f"Impact Value: ${impact:,.2f} | Scenario Target: {sc_wt:.2f}% (Delta: {sc_dl:+.2f}%) | Candidate Score: {score:.2f}")
+                    eval_lbl = QLabel(f"Impact Value: Rs. {impact:,.2f} | Scenario Target: {sc_wt:.2f}% (Delta: {sc_dl:+.2f}%) | Candidate Score: {score:.2f}")
 
                     eval_lbl.setStyleSheet("font-size: 13px; color: #173b67; font-weight: 600;")
 
@@ -1897,7 +1899,7 @@ class PortfolioHealth(QWidget):
 
         if hasattr(self, "lbl_aa_total_val"):
 
-            self.lbl_aa_total_val.setText(f"Total Portfolio Value: ${total_val:,.2f}")
+            self.lbl_aa_total_val.setText(f"Total Portfolio Value: Rs. {total_val:,.2f}")
 
         if hasattr(self, "allocation_analysis_container"):
 
@@ -1937,7 +1939,7 @@ class PortfolioHealth(QWidget):
 
                     cnt = getattr(cat, "position_count", 0)
 
-                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+                    lbl = QLabel(f"{nm}: Rs. {val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
 
                     lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
 
@@ -1961,7 +1963,7 @@ class PortfolioHealth(QWidget):
 
                     cnt = getattr(cat, "position_count", 0)
 
-                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+                    lbl = QLabel(f"{nm}: Rs. {val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
 
                     lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
 
@@ -1985,7 +1987,7 @@ class PortfolioHealth(QWidget):
 
                     cnt = getattr(cat, "position_count", 0)
 
-                    lbl = QLabel(f"{nm}: ${val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
+                    lbl = QLabel(f"{nm}: Rs. {val:,.2f} ({wt:.2f}%) — {cnt} position(s)")
 
                     lbl.setStyleSheet("font-size: 13px; color: #1f2937; padding-left: 8px;")
 
@@ -2027,7 +2029,7 @@ class PortfolioHealth(QWidget):
 
         if hasattr(self, "lbl_reb_total_val"):
 
-            self.lbl_reb_total_val.setText(f"Total Portfolio Value: ${total_val:,.2f}")
+            self.lbl_reb_total_val.setText(f"Total Portfolio Value: Rs. {total_val:,.2f}")
 
         if hasattr(self, "lbl_reb_total_pos"):
 
@@ -2071,13 +2073,23 @@ class PortfolioHealth(QWidget):
 
                     type_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-weight: 600;")
 
-                    val_lbl = QLabel(f"Current Value: ${c_val:,.2f} | Current Weight: {c_wt:.2f}%")
+                    val_lbl = QLabel(f"Current Value: Rs. {c_val:,.2f} | Current Weight: {c_wt:.2f}%")
 
                     val_lbl.setStyleSheet("font-size: 13px; color: #1f2937;")
 
-                    tgt_lbl = QLabel("Target Weight: Not configured")
+                    t_wt = getattr(pos, "target_weight", None)
 
-                    tgt_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
+                    if t_wt is not None:
+
+                        tgt_lbl = QLabel(f"Target Weight: {t_wt:.2f}%")
+
+                        tgt_lbl.setStyleSheet("font-size: 13px; color: #173b67; font-weight: 600;")
+
+                    else:
+
+                        tgt_lbl = QLabel("Target Weight: Not configured")
+
+                        tgt_lbl.setStyleSheet("font-size: 13px; color: #64748b; font-style: italic;")
 
                     lyt.addWidget(sym_lbl)
 
@@ -4114,17 +4126,17 @@ class PortfolioHealth(QWidget):
 
         cards_spec = [
 
-            ("Overall Health Score", "85 / 100", 0, 0),
+            ("Overall Health Score", "-", 0, 0),
 
-            ("Diversification", "GOOD", 0, 1),
+            ("Diversification", "-", 0, 1),
 
-            ("Concentration", "MODERATE", 0, 2),
+            ("Concentration", "-", 0, 2),
 
-            ("Position Count", "12", 1, 0),
+            ("Position Count", "-", 1, 0),
 
-            ("Cash Allocation", "5%", 1, 1),
+            ("Cash Allocation", "-", 1, 1),
 
-            ("Largest Position", "KPITTECH", 1, 2),
+            ("Largest Position", "-", 1, 2),
 
         ]
 
@@ -5421,7 +5433,7 @@ class PortfolioHealth(QWidget):
 
         self.lbl_reb_status.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
-        self.lbl_reb_total_val = QLabel("Total Portfolio Value: $0.00")
+        self.lbl_reb_total_val = QLabel("Total Portfolio Value: Rs. 0.00")
 
         self.lbl_reb_total_val.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
@@ -5465,7 +5477,7 @@ class PortfolioHealth(QWidget):
 
         aa_layout.addWidget(lbl_aa_header)
 
-        self.lbl_aa_total_val = QLabel("Total Portfolio Value: $0.00")
+        self.lbl_aa_total_val = QLabel("Total Portfolio Value: Rs. 0.00")
 
         self.lbl_aa_total_val.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
@@ -5613,7 +5625,7 @@ class PortfolioHealth(QWidget):
 
         self.lbl_rc_on_target_candidates.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
-        self.lbl_rc_total_impact_val = QLabel("Total Impact Value: $0.00")
+        self.lbl_rc_total_impact_val = QLabel("Total Impact Value: Rs. 0.00")
 
         self.lbl_rc_total_impact_val.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
@@ -5685,7 +5697,7 @@ class PortfolioHealth(QWidget):
 
         self.lbl_rr_low_priority_count.setStyleSheet("font-size: 14px; color: #1f2937;")
 
-        self.lbl_rr_total_impact_val = QLabel("Total Impact Value: $0.00")
+        self.lbl_rr_total_impact_val = QLabel("Total Impact Value: Rs. 0.00")
 
         self.lbl_rr_total_impact_val.setStyleSheet("font-size: 14px; color: #1f2937; font-weight: 600;")
 
@@ -5892,3 +5904,4 @@ class PortfolioHealth(QWidget):
         layout.addWidget(val_lbl)
 
         return card, val_lbl
+
