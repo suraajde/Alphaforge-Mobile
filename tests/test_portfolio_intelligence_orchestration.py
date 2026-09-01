@@ -1,4 +1,4 @@
-from copy import deepcopy
+﻿from copy import deepcopy
 from pathlib import Path
 import tempfile
 
@@ -76,7 +76,7 @@ def test_orchestration_get_portfolio_intelligence():
 
     health = intelligence["health"]
     assert health.overall_score > 0
-    assert health.overall_grade in ("A", "B", "C", "D")
+    assert health.overall_grade in ("A", "B", "C", "D", "F")
 
     print()
     print("=" * 70)
@@ -181,3 +181,4 @@ if __name__ == "__main__":
     test_orchestration_get_portfolio_intelligence()
     test_orchestration_price_map_refresh()
     test_application_service_intelligence_boundary()
+

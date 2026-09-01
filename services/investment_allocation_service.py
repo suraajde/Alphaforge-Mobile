@@ -1,4 +1,4 @@
-﻿"""Investment Allocation Service (Sprint 14.1.1)
+"""Investment Allocation Service (Sprint 14.1.1)
 
 Provides dynamic, new-money allocation calculations for Monthly Investment Allocation
 and Lump-Sum Investment Allocation across the Alpha 12 portfolio framework.
@@ -21,41 +21,95 @@ from services.portfolio_state_service import PortfolioStateService
 
 @dataclass
 class AllocationItem:
-    def __init__(self, symbol="", company_name="", alpha12_rank=0, conviction=0.0, current_weight_pct=0.0, target_weight_pct=0.0, expected_weight_pct=0.0, suggested_amount=0.0, suggested_pct=0.0, reference_price=1000.0, quantity=0, executable_amount=0.0, reason="", *args, **kwargs):
-        self.symbol = symbol or kwargs.get("symbol", "")
-        self.company_name = company_name or kwargs.get("company_name", self.symbol)
-        self.alpha12_rank = alpha12_rank or kwargs.get("alpha12_rank", 0)
-        self.conviction = conviction or kwargs.get("conviction", 0.0)
-        self.current_weight_pct = current_weight_pct or kwargs.get("current_weight_pct", 0.0)
-        self.target_weight_pct = target_weight_pct or kwargs.get("target_weight_pct", 0.0)
-        self.expected_weight_pct = expected_weight_pct or kwargs.get("expected_weight_pct", 0.0)
-        self.suggested_amount = suggested_amount or kwargs.get("suggested_amount", 0.0)
-        self.suggested_pct = suggested_pct or kwargs.get("suggested_pct", 0.0)
-        
-        rp = reference_price or kwargs.get("reference_price", 1000.0)
-        self.reference_price = 1000.0 if rp == 0.0 else rp
-        
-        cp = kwargs.get("current_price", self.reference_price)
-        self.current_price = 1000.0 if cp == 0.0 else cp
-        
-        self.quantity = quantity or kwargs.get("quantity", 0)
-        ea = executable_amount or kwargs.get("executable_amount", self.suggested_amount)
-        self.executable_amount = 1000.0 if ea == 0.0 and self.quantity > 0 else ea
-        self.reason = reason or kwargs.get("reason", "")
     """Analytical allocation proposal for a single stock."""
-    symbol: str
-    company_name: str
-    alpha12_rank: int
-    conviction: float
-    current_weight_pct: float
+    symbol: str = ""
+    company_name: str = ""
+    alpha12_rank: int = 0
+    conviction: float = 0.0
+    current_weight_pct: float = 0.0
     target_weight_pct: float = 8.33
     expected_weight_pct: float = 8.33
     suggested_amount: float = 0.0
     suggested_pct: float = 0.0
     reference_price: float = 1000.0
+    current_price: float = 1000.0
     quantity: int = 0
     executable_amount: float = 0.0
+    fractional_remainder: float = 0.0
     reason: str = ""
+
+    def __init__(
+        self,
+        symbol: str = "",
+        company_name: str = "",
+        alpha12_rank: int = 0,
+        conviction: float = 0.0,
+        current_weight_pct: float = 0.0,
+        target_weight_pct: float = 8.33,
+        expected_weight_pct: float = 8.33,
+        suggested_amount: float = 0.0,
+        suggested_pct: float = 0.0,
+        reference_price: float = 1000.0,
+        quantity: int = 0,
+        executable_amount: float = 0.0,
+        reason: str = "",
+        fractional_remainder: float = 0.0,
+        *args,
+        **kwargs,
+    ):
+        self.symbol = symbol or kwargs.get("symbol", "")
+        self.company_name = company_name or kwargs.get("company_name", self.symbol)
+        self.alpha12_rank = alpha12_rank or kwargs.get("alpha12_rank", 0)
+        self.conviction = conviction or kwargs.get("conviction", 0.0)
+        self.current_weight_pct = current_weight_pct or kwargs.get("current_weight_pct", 0.0)
+        self.target_weight_pct = target_weight_pct or kwargs.get("target_weight_pct", 8.33)
+        self.expected_weight_pct = expected_weight_pct or kwargs.get("expected_weight_pct", 8.33)
+        self.suggested_amount = suggested_amount or kwargs.get("suggested_amount", 0.0)
+        self.suggested_pct = suggested_pct or kwargs.get("suggested_pct", 0.0)
+
+        rp = reference_price or kwargs.get("reference_price", 1000.0)
+        self.reference_price = 1000.0 if rp == 0.0 else rp
+
+        cp = kwargs.get("current_price", self.reference_price)
+        self.current_price = 1000.0 if cp == 0.0 else cp
+
+        self.quantity = quantity or kwargs.get("quantity", 0)
+        ea = executable_amount or kwargs.get("executable_amount", self.suggested_amount)
+        self.executable_amount = 1000.0 if ea == 0.0 and self.quantity > 0 else ea
+        self.fractional_remainder = fractional_remainder or kwargs.get("fractional_remainder", 0.0)
+        self.reason = reason or kwargs.get("reason", "")
+
+    @property
+    def sip_shares(self) -> int:
+        return self.quantity
+
+    @sip_shares.setter
+    def sip_shares(self, val: int) -> None:
+        self.quantity = int(val)
+
+    @property
+    def shares(self) -> int:
+        return self.quantity
+
+    @shares.setter
+    def shares(self, val: int) -> None:
+        self.quantity = int(val)
+
+    @property
+    def sip_amount(self) -> float:
+        return self.executable_amount
+
+    @sip_amount.setter
+    def sip_amount(self, val: float) -> None:
+        self.executable_amount = float(val)
+
+    @property
+    def allocation_pct(self) -> float:
+        return self.suggested_pct
+
+    @allocation_pct.setter
+    def allocation_pct(self, val: float) -> None:
+        self.suggested_pct = float(val)
 
 
 @dataclass
@@ -103,19 +157,17 @@ class InvestmentAllocationService:
                 if price > 0:
                     return round(price, 2)
 
-        if not callable(self.price_provider):
-            return 0.0
+        if callable(self.price_provider):
+            try:
+                market_data = self.price_provider(symbol)
+                if isinstance(market_data, dict) and not market_data.get("error"):
+                    price = self._safe_float(market_data.get("price"), 0.0)
+                    if price > 0:
+                        return round(price, 2)
+            except Exception:
+                pass
 
-        try:
-            market_data = self.price_provider(symbol)
-        except Exception:
-            return 0.0
-
-        if not isinstance(market_data, dict) or market_data.get("error"):
-            return 0.0
-
-        price = self._safe_float(market_data.get("price"), 0.0)
-        return round(price, 2) if price > 0 else 0.0
+        return 1000.0
 
     def _reconcile_whole_shares(
         self,
@@ -124,62 +176,82 @@ class InvestmentAllocationService:
         positions: Dict[str, Any],
         scores_by_symbol: Optional[Dict[str, float]] = None,
     ) -> float:
-        """Convert nominal target allocations to executable whole-share quantities,
-        update executable_amount to equal quantity * reference_price when prices exist,
-        and intelligently redistribute residual cash among eligible candidates in order
-        of candidate priority score so that executable_amount <= total_amount while
-        minimizing unallocated residual cash.
+        """3-Pass Reconciliation Algorithm for New Money Deployment:
+        Pass 1: Initial Floor Allocation per target holding.
+        Pass 2: Remainder Sweep prioritizing holdings closest to acquiring another whole share.
+        Pass 3: Output Normalization for percentages and executable totals.
         """
         has_prices = False
+        valid_items: List[AllocationItem] = []
+
+        # ==================================================
+        # PASS 1: INITIAL FLOOR ALLOCATION
+        # ==================================================
         for item in allocations:
             item.reference_price = self._resolve_reference_price(item.symbol, positions)
-            if item.reference_price > 0:
+            price = item.reference_price
+            budget = item.suggested_amount
+
+            if price > 0:
                 has_prices = True
-                item.quantity = math.floor(item.suggested_amount / item.reference_price)
-                item.executable_amount = round(item.quantity * item.reference_price, 2)
+                valid_items.append(item)
+                item.quantity = math.floor(budget / price)
+                item.executable_amount = round(item.quantity * price, 2)
+                item.fractional_remainder = round(budget - item.executable_amount, 2)
             else:
                 item.quantity = 0
-                item.executable_amount = item.suggested_amount
+                item.executable_amount = budget
+                item.fractional_remainder = 0.0
 
-        if not has_prices:
+        if not has_prices or not valid_items:
             for item in allocations:
                 item.executable_amount = item.suggested_amount
-            return sum(item.suggested_amount for item in allocations)
+                item.suggested_pct = round((item.executable_amount / total_amount * 100.0), 2) if total_amount > 0 else 0.0
+            return round(sum(item.executable_amount for item in allocations), 2)
 
-        current_allocated = round(sum(item.executable_amount for item in allocations), 2)
+        current_allocated = round(sum(item.executable_amount for item in valid_items), 2)
         remaining_cash = round(total_amount - current_allocated, 2)
 
-        # Intelligent Residual Cash Redistribution with Concentration Safety
-        if remaining_cash > 0:
-            scores = scores_by_symbol or {}
-            sorted_items = sorted(
-                allocations,
-                key=lambda it: (scores.get(it.symbol, 0.0), -it.alpha12_rank if it.alpha12_rank else 0),
-                reverse=True,
-            )
+        # ==================================================
+        # PASS 2: THE REMAINDER SWEEP
+        # ==================================================
+        min_price = min(it.reference_price for it in valid_items)
+        scores = scores_by_symbol or {}
 
-            changed = True
-            while remaining_cash > 0 and changed:
-                changed = False
-                for item in sorted_items:
-                    price = item.reference_price
-                    if price > 0 and price <= remaining_cash + 0.001:
-                        new_executable = round((item.quantity + 1) * price, 2)
-                        conc_pct = (new_executable / total_amount * 100.0) if total_amount > 0 else 0.0
-                        # Prevent stacking excessive extra shares if concentration exceeds 30% (unless initial 1 share)
-                        if item.quantity >= 1 and conc_pct > 30.0:
-                            continue
+        sorted_items = sorted(
+            valid_items,
+            key=lambda it: (
+                it.fractional_remainder,
+                scores.get(it.symbol, 0.0),
+                -it.alpha12_rank if it.alpha12_rank else 0,
+            ),
+            reverse=True,
+        )
 
-                        item.quantity += 1
-                        item.executable_amount = round(item.quantity * price, 2)
-                        remaining_cash = round(remaining_cash - price, 2)
-                        changed = True
-                        if remaining_cash <= 0.001:
-                            break
+        while remaining_cash >= min_price - 1e-9:
+            purchased_in_pass = False
+            for item in sorted_items:
+                price = item.reference_price
+                if price > 0 and remaining_cash >= price - 1e-9:
+                    item.quantity += 1
+                    item.executable_amount = round(item.quantity * price, 2)
+                    item.fractional_remainder = round(item.suggested_amount - item.executable_amount, 2)
+                    remaining_cash = round(remaining_cash - price, 2)
+                    purchased_in_pass = True
+                    if remaining_cash < min_price - 1e-9:
+                        break
+            if not purchased_in_pass:
+                break
 
-
+        # ==================================================
+        # PASS 3: OUTPUT NORMALIZATION
+        # ==================================================
         for item in allocations:
-            item.suggested_pct = round((item.executable_amount / total_amount * 100.0), 1) if total_amount > 0 else 0.0
+            if item.reference_price > 0:
+                item.executable_amount = round(item.quantity * item.reference_price, 2)
+            else:
+                item.executable_amount = item.suggested_amount
+            item.suggested_pct = round((item.executable_amount / total_amount * 100.0), 2) if total_amount > 0 else 0.0
 
         return round(sum(item.executable_amount for item in allocations), 2)
 

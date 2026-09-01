@@ -1538,6 +1538,18 @@ class PortfolioApplicationService:
                     "error": "No eligible Reserve 8 replacement candidate found in Research Radar universe",
                 }
 
+        if replacement_stock and isinstance(replacement_stock, dict):
+            if not replacement_stock.get("current_price"):
+                try:
+                    from services.stock_service import get_stock_data
+                    sdata = get_stock_data(replacement_stock.get("symbol", ""))
+                    if isinstance(sdata, dict) and "price" in sdata:
+                        raw_p = sdata.get("price")
+                        if raw_p and raw_p != "N/A":
+                            replacement_stock["current_price"] = float(raw_p)
+                except Exception:
+                    pass
+
         try:
             res = self.orchestrator.emergency_replace_position(
                 symbol_to_remove=symbol_to_remove,

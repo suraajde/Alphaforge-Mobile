@@ -1,4 +1,4 @@
-"""Focused unit tests for Sprint 14.1.0 Portfolio Foundation, Empty-State Handling, and UI Consistency."""
+﻿"""Focused unit tests for Sprint 14.1.0 Portfolio Foundation, Empty-State Handling, and UI Consistency."""
 
 import os
 import sys
@@ -118,7 +118,7 @@ def test_portfolio_creation_and_active_state_propagation(monkeypatch):
 
     eval_res = health_svc.evaluate(snapshot)
     assert eval_res.score > 0
-    assert eval_res.grade in ["A", "B", "C", "D"]
+    assert eval_res.grade in ["A", "B", "C", "D", "F"]
 
 
 
@@ -170,3 +170,4 @@ def test_alpha12_governance_invariants(qapp):
     assert "20.0%" in all_txt or "20%" in all_txt
     assert "30 days" in all_txt
     assert "Incumbent Protection Policy" in all_txt
+

@@ -262,10 +262,24 @@ class MainWindow(QMainWindow):
                 screen = getter()
                 if screen is not None:
                     self.pages.setCurrentWidget(screen)
+                    if hasattr(screen, "refresh_data") and callable(screen.refresh_data):
+                        try:
+                            screen.refresh_data()
+                        except Exception:
+                            pass
+                    elif hasattr(screen, "load_portfolio") and callable(screen.load_portfolio):
+                        try:
+                            screen.load_portfolio()
+                        except Exception:
+                            pass
             except Exception as exc:
                 fallback = ErrorFallbackWidget(target.replace("_", " ").title(), str(exc))
                 self.pages.addWidget(fallback)
                 self.pages.setCurrentWidget(fallback)
+
+    def switch_to_dashboard(self) -> None:
+        """Switch to Dashboard and refresh data."""
+        self.navigate_to("dashboard")
 
 
     def _current_alpha12(self):

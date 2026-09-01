@@ -33,6 +33,15 @@ class Alpha12MappingService(IAlpha12MappingService):
         "TRENT", "POLYMED", "ERIS", "PNCINFRA", "CENTURYPLY"
     ]
 
+    AUTHORITATIVE_TOP30_SYMBOLS = [
+        "CASTROLIND", "GLAND", "AJANTPHARM", "IPCALAB", "HSCL",
+        "OBEROIRLTY", "MARICO", "NAVINFLUOR", "SAREGAMA", "SONACOMS",
+        "AEGISLOG", "RRKABEL", "APARINDS", "JBCHEPHARM", "KIMS",
+        "TRENT", "POLYMED", "ERIS", "PNCINFRA", "CENTURYPLY",
+        "GLAXO", "RADICO", "COFORGE", "LALPATHLAB", "ACE",
+        "ACUTAAS", "CPPLUS", "AARTIIND", "GLENMARK", "FINCABLES"
+    ]
+
     DEFAULT_PORTFOLIO_SYMBOLS = [
         "CASTROLIND", "GLAND", "AJANTPHARM", "IPCALAB", "HSCL",
         "OBEROIRLTY", "MARICO", "NAVINFLUOR", "SARISAGAM", "SONACOMS",
@@ -237,7 +246,7 @@ class Alpha12MappingService(IAlpha12MappingService):
                 "radar_rank": idx + 1,
                 "rank": idx + 1,
             }
-            for idx, s in enumerate(self.AUTHORITATIVE_TOP20_SYMBOLS)
+            for idx, s in enumerate(self.AUTHORITATIVE_TOP30_SYMBOLS)
         ]
 
     def get_top20_universe(self) -> List[Dict[str, Any]]:
@@ -256,7 +265,17 @@ class Alpha12MappingService(IAlpha12MappingService):
         active_set = set()
         if active_symbols:
             if isinstance(active_symbols, dict):
-                active_set = {str(k).strip().upper() for k in active_symbols.keys() if str(k).strip()}
+                if "positions" in active_symbols and isinstance(active_symbols["positions"], dict):
+                    pos_dict = active_symbols["positions"]
+                elif "positions" in active_symbols and isinstance(active_symbols["positions"], list):
+                    pos_dict = {
+                        str(p.get("symbol") or p.get("ticker") or "").strip().upper(): p
+                        for p in active_symbols["positions"]
+                        if isinstance(p, dict) and (p.get("symbol") or p.get("ticker"))
+                    }
+                else:
+                    pos_dict = active_symbols
+                active_set = {str(k).strip().upper() for k in pos_dict.keys() if str(k).strip()}
             elif isinstance(active_symbols, (list, tuple, set)):
                 for item in active_symbols:
                     if isinstance(item, dict):
@@ -291,8 +310,18 @@ class Alpha12MappingService(IAlpha12MappingService):
         active_positions_map = {}
         if active_symbols:
             if isinstance(active_symbols, dict):
-                active_set = {str(k).strip().upper() for k in active_symbols.keys() if str(k).strip()}
-                active_positions_map = {str(k).strip().upper(): v for k, v in active_symbols.items() if str(k).strip()}
+                if "positions" in active_symbols and isinstance(active_symbols["positions"], dict):
+                    pos_dict = active_symbols["positions"]
+                elif "positions" in active_symbols and isinstance(active_symbols["positions"], list):
+                    pos_dict = {
+                        str(p.get("symbol") or p.get("ticker") or "").strip().upper(): p
+                        for p in active_symbols["positions"]
+                        if isinstance(p, dict) and (p.get("symbol") or p.get("ticker"))
+                    }
+                else:
+                    pos_dict = active_symbols
+                active_set = {str(k).strip().upper() for k in pos_dict.keys() if str(k).strip()}
+                active_positions_map = {str(k).strip().upper(): v for k, v in pos_dict.items() if str(k).strip()}
             elif isinstance(active_symbols, (list, tuple, set)):
                 for item in active_symbols:
                     if isinstance(item, dict):
@@ -360,7 +389,7 @@ class Alpha12MappingService(IAlpha12MappingService):
                     cand_copy["selection_reason"] = "Authoritative Top 12 Candidate"
                     alpha12_list.append(cand_copy)
 
-        # 2. Compute dynamic Reserve 8 bench (top 8 non-active constituents)
+        # 2. Compute dynamic Reserve 8 bench (top 8 non-active constituents from Top 30)
         reserve8_list = []
         for idx, item in enumerate(ranked_list):
             if not isinstance(item, dict):
@@ -378,7 +407,7 @@ class Alpha12MappingService(IAlpha12MappingService):
                 break
 
         if len(reserve8_list) < 8:
-            for fallback_sym in self.AUTHORITATIVE_TOP20_SYMBOLS + self.AUTHORITATIVE_RESERVE8_SYMBOLS:
+            for fallback_sym in self.AUTHORITATIVE_TOP30_SYMBOLS:
                 clean_sym = fallback_sym.strip().upper()
                 if clean_sym not in active_set and clean_sym not in {r["symbol"] for r in reserve8_list}:
                     reserve8_list.append({
@@ -399,7 +428,7 @@ class Alpha12MappingService(IAlpha12MappingService):
 
         return {
             "alpha12": alpha12_list,
-            "alpha12_reserves": reserve8_list,
+            "alpha12_reserves": reserve8_list[:8],
         }
 
     def _load_portfolio_holdings(self) -> List[Dict[str, Any]]:

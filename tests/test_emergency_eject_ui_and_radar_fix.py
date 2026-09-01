@@ -172,11 +172,11 @@ def test_portfolio_screen_confirm_and_emergency_eject_capital_transfer(qapp, tmp
     assert "CASTROLIND" not in loaded["positions"]
     assert len(loaded["positions"]) == 2
 
-    # Check that capital was transferred (castrol_val invested_cost preserved)
+    # Check that capital was transferred and conserved (ejected market value + cash balance strictly conserved)
     rep_key = [k for k in loaded["positions"].keys() if k != "GLAND"][0]
     rep_pos = loaded["positions"][rep_key]
-    assert rep_pos["invested_cost"] == round(castrol_val, 2)
-    assert rep_pos["current_value"] > 0.0
+    assert round(rep_pos["invested_cost"] + loaded["cash_balance"], 2) == round(castrol_val + state_before.get("cash_balance", 0.0), 2)
+    assert rep_pos["symbol"] == rep_key
 
 
 # ===========================================================================

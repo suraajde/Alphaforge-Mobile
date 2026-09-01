@@ -1,4 +1,4 @@
-﻿"""Sprint 14.1.8 Acceptance Test Suite — SIP & Lump-Sum Investment Allocation Engine
+"""Sprint 14.1.8 Acceptance Test Suite — SIP & Lump-Sum Investment Allocation Engine
 
 Verifies dynamic whole-share allocation, continuous SIP money deployment,
 intelligent residual cash minimization, and strict execution bounds (executable_amount <= input_amount).
@@ -173,3 +173,102 @@ def test_lump_sum_100k_allocation(mock_price_provider):
     assert result.total_input_amount == 100000.0
     assert result.total_allocated_amount <= 100000.0
     assert result.total_allocated_amount >= 98000.0
+
+
+# ===========================================================================
+# REMAINDER SWEEP (CAPITAL DRAG FIX) TESTS
+# ===========================================================================
+
+def test_remainder_sweep_564_cash_buys_511_stock():
+    """Mock a scenario where Pass 1 leaves Rs. 564 in pooled cash, and the cheapest stock costs Rs. 511.
+    Verifies:
+    1. Pass 2 Remainder Sweep buys 1 additional share of the Rs. 511 stock.
+    2. Final remaining cash is strictly less than min(target_prices) (53.0 < 511.0).
+    3. Total allocated + remaining cash strictly equals total input amount (2022.0 + 53.0 = 2075.0).
+    """
+    prices = {
+        "EXPENSIVE_STOCK": 1000.0,
+        "CHEAP_STOCK": 511.0,
+    }
+    candidates = [
+        {"symbol": "EXPENSIVE_STOCK", "company_name": "Expensive Stock", "rank": 1, "conviction": 90.0, "target_weight": 72.82},
+        {"symbol": "CHEAP_STOCK", "company_name": "Cheap Stock", "rank": 2, "conviction": 80.0, "target_weight": 27.18},
+    ]
+    # Total input: Rs. 2,075
+    # Budget EXPENSIVE: ~1511 -> Pass 1 floor = 1 share @ 1000 = 1000 (rem: 511)
+    # Budget CHEAP: ~564 -> Pass 1 floor = 1 share @ 511 = 511 (rem: 53)
+    # Pass 1 total cost: 1000 + 511 = 1511. Remaining pooled cash = 2075 - 1511 = 564.
+    # Pass 2 Sweep: CHEAP_STOCK is affordable (511 <= 564), gets 1 extra share (total 2 shares @ 511 = 1022).
+    # Final remaining cash = 564 - 511 = 53.
+    price_provider = lambda sym: {"symbol": sym, "price": prices.get(sym, 1000.0)}
+    service = InvestmentAllocationService(price_provider=price_provider)
+
+    result = service.allocate_monthly_investment(2075.0, alpha12_candidates=candidates)
+
+    cheap_alloc = next((a for a in result.allocations if a.symbol == "CHEAP_STOCK"), None)
+    exp_alloc = next((a for a in result.allocations if a.symbol == "EXPENSIVE_STOCK"), None)
+
+    assert cheap_alloc is not None
+    assert exp_alloc is not None
+
+    # 1. Sweep bought 1 extra share of CHEAP_STOCK (final quantity = 2, executable amount = 1022.0)
+    assert cheap_alloc.quantity == 2
+    assert cheap_alloc.executable_amount == 1022.0
+
+    assert exp_alloc.quantity == 1
+    assert exp_alloc.executable_amount == 1000.0
+
+    # 2. Total allocated = 2022.0, remaining cash = 53.0
+    assert result.total_allocated_amount == 2022.0
+    remaining_cash = round(result.total_input_amount - result.total_allocated_amount, 2)
+    assert remaining_cash == 53.0
+
+    # 3. Remaining cash < min price of all target stocks
+    min_target_price = min(prices.values())
+    assert remaining_cash < min_target_price
+
+    # 4. Strict balance conservation
+    assert round(result.total_allocated_amount + remaining_cash, 2) == 2075.0
+
+
+def test_remainder_sweep_guarantees_cash_lower_than_cheapest_stock(mock_price_provider):
+    """Across various investment amounts, remaining cash is guaranteed to be lower than cheapest stock."""
+    service = InvestmentAllocationService(price_provider=mock_price_provider)
+
+    for amt in (3000.0, 7500.0, 15000.0, 50000.0, 100000.0):
+        res = service.allocate_monthly_investment(amt)
+        target_prices = [a.reference_price for a in res.allocations if a.reference_price > 0]
+        if target_prices:
+            min_p = min(target_prices)
+            remaining_cash = round(res.total_input_amount - res.total_allocated_amount, 2)
+            assert remaining_cash < min_p, f"At amount {amt}, remaining cash {remaining_cash} >= min price {min_p}"
+            assert round(res.total_allocated_amount + remaining_cash, 2) == amt
+
+
+def test_allocation_item_properties():
+    """Verify AllocationItem dataclass property compatibility for quantity, shares, sip_shares, sip_amount, allocation_pct."""
+    from services.investment_allocation_service import AllocationItem
+    item = AllocationItem(
+        symbol="TEST",
+        reference_price=500.0,
+        quantity=3,
+        executable_amount=1500.0,
+        suggested_pct=15.0,
+    )
+    assert item.quantity == 3
+    assert item.shares == 3
+    assert item.sip_shares == 3
+    assert item.executable_amount == 1500.0
+    assert item.sip_amount == 1500.0
+    assert item.suggested_pct == 15.0
+    assert item.allocation_pct == 15.0
+
+    item.sip_shares = 5
+    assert item.quantity == 5
+    assert item.shares == 5
+
+    item.sip_amount = 2500.0
+    assert item.executable_amount == 2500.0
+
+    item.allocation_pct = 25.0
+    assert item.suggested_pct == 25.0

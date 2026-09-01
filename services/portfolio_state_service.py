@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from datetime import datetime, timezone
 import json
+import math
 from pathlib import Path
 
 from config.path_config import get_data_path
@@ -1940,11 +1941,12 @@ class PortfolioStateService:
         """
         Emergency Eject & Reserve Promotion.
 
-        Deletes symbol_to_remove from active state['positions'] and injects
-        replacement_stock as a 1:1 capital transfer placeholder:
-        - Sets invested_cost and current_value strictly equal to exited_value.
-        - Calculates placeholder quantity = round(exited_value / replacement_current_price, 2).
-        - Keeps capital entirely within the new holding placeholder (does not route to cash balance).
+        Deletes symbol_to_remove from active state['positions'] and executes value-based capital sweep:
+        1. Calculates total value of ejected holding: ejected_value = old_qty * old_current_price.
+        2. Calculates new share quantity using floor division: new_qty = math.floor(ejected_value / new_candidate_price).
+        3. Calculates leftover cash: residual_cash = ejected_value - (new_qty * new_candidate_price).
+        4. Assigns new_qty and invested_amount = new_qty * new_candidate_price to the new holding.
+        5. Adds residual_cash to global portfolio cash_balance.
         """
         if not isinstance(state, dict):
             raise TypeError("state must be a dictionary")
@@ -1963,13 +1965,18 @@ class PortfolioStateService:
 
         removed_pos = positions.pop(symbol_to_remove)
 
-        # 1:1 Capital Transfer: capture exact market value (or invested cost fallback) of ejected stock
-        exited_value = self._safe_float(
-            removed_pos.get("current_value", 0.0),
-            0.0
-        )
-        if exited_value <= 0.0:
-            exited_value = self._safe_float(
+        old_qty = self._safe_float(removed_pos.get("quantity", 0.0), 0.0)
+        old_current_price = self._safe_float(removed_pos.get("current_price", 0.0), 0.0)
+
+        # 1. Total value of the ejected holding
+        ejected_value = old_qty * old_current_price
+        if ejected_value <= 0.0:
+            ejected_value = self._safe_float(
+                removed_pos.get("current_value", 0.0),
+                0.0
+            )
+        if ejected_value <= 0.0:
+            ejected_value = self._safe_float(
                 removed_pos.get("invested_cost", 0.0),
                 0.0
             )
@@ -1992,21 +1999,31 @@ class PortfolioStateService:
             8.3333
         )
 
-        rep_price = self._safe_float(
+        new_candidate_price = self._safe_float(
             replacement_stock.get("current_price") or replacement_stock.get("price") or replacement_stock.get("ltp") or 0.0,
             0.0
         )
 
-        # Calculate estimated placeholder quantity
-        if rep_price > 0.0 and exited_value > 0.0:
-            qty = round(exited_value / rep_price, 2)
-            avg_cost = round(rep_price, 2)
+        # 2. Calculate new share quantity using floor division
+        # 3. Calculate leftover cash: residual_cash = ejected_value - (new_qty * new_candidate_price)
+        if new_candidate_price > 0.0 and ejected_value > 0.0:
+            new_qty = math.floor(ejected_value / new_candidate_price)
+            residual_cash = ejected_value - (new_qty * new_candidate_price)
+            invested_amount = new_qty * new_candidate_price
+            avg_cost = new_candidate_price
         else:
-            qty = int(removed_pos.get("quantity", 0) or 0)
-            avg_cost = rep_price if rep_price > 0.0 else (round(exited_value / qty, 2) if qty > 0 else 0.0)
+            new_qty = 0
+            residual_cash = ejected_value
+            invested_amount = 0.0
+            avg_cost = new_candidate_price if new_candidate_price > 0.0 else 0.0
+
+        # 5. Add residual_cash to global portfolio cash_balance
+        current_cash = self._safe_float(updated.get("cash_balance", 0.0), 0.0)
+        updated["cash_balance"] = round(current_cash + residual_cash, 2)
 
         timestamp = transaction_date or self._timestamp()
 
+        # 4. Assign new_qty to new holding
         new_position = {
             "symbol": rep_symbol,
             "company_name": replacement_stock.get("name") or replacement_stock.get("company_name") or replacement_stock.get("universe_company") or rep_symbol,
@@ -2015,14 +2032,15 @@ class PortfolioStateService:
             "alpha12_rank": replacement_stock.get("alpha12_rank", replacement_stock.get("reserve_rank", 13)),
             "radar_rank": replacement_stock.get("radar_rank", replacement_stock.get("rank", 13)),
             "target_weight": round(inherited_target, 4),
-            "quantity": qty,
+            "quantity": int(new_qty),
             "average_cost": round(avg_cost, 2),
-            "invested_cost": round(exited_value, 2),
-            "current_price": round(rep_price, 2),
-            "current_value": round(exited_value, 2),
+            "invested_cost": round(invested_amount, 2),
+            "invested_value": round(invested_amount, 2),
+            "current_price": round(new_candidate_price, 2),
+            "current_value": round(invested_amount, 2),
             "actual_weight": round(removed_pos.get("actual_weight", inherited_target), 4),
             "drift_pct": round(removed_pos.get("drift_pct", 0.0), 4),
-            "allocation_state": "BALANCED" if exited_value > 0 else "UNDER_TARGET",
+            "allocation_state": "BALANCED" if invested_amount > 0 else "UNDER_TARGET",
             "last_transaction_at": timestamp,
         }
 
@@ -2035,9 +2053,11 @@ class PortfolioStateService:
             "type": "EMERGENCY_REPLACE",
             "symbol_removed": symbol_to_remove,
             "symbol_injected": rep_symbol,
-            "capital_transferred": round(exited_value, 2),
-            "quantity": qty,
-            "price": round(rep_price, 2),
+            "capital_transferred": round(ejected_value, 2),
+            "invested_amount": round(invested_amount, 2),
+            "residual_cash": round(residual_cash, 2),
+            "quantity": int(new_qty),
+            "price": round(new_candidate_price, 2),
             "source": "EMERGENCY_EJECT_RESERVE_PROMOTION",
             "timestamp": timestamp,
         })
@@ -2050,13 +2070,14 @@ class PortfolioStateService:
                 p_curr = self._safe_float(pos_v.get("current_price"), 0.0)
                 if p_curr > 0:
                     price_map[pos_k] = p_curr
-        if rep_price > 0:
-            price_map[rep_symbol] = rep_price
+        if new_candidate_price > 0:
+            price_map[rep_symbol] = new_candidate_price
 
         updated = self.mark_to_market(state=updated, price_map=price_map)
         if rep_symbol in updated.get("positions", {}):
-            updated["positions"][rep_symbol]["invested_cost"] = round(exited_value, 2)
-            updated["positions"][rep_symbol]["current_value"] = round(exited_value, 2)
+            updated["positions"][rep_symbol]["invested_cost"] = round(invested_amount, 2)
+            updated["positions"][rep_symbol]["invested_value"] = round(invested_amount, 2)
+            updated["positions"][rep_symbol]["current_value"] = round(invested_amount, 2)
         updated["updated_at"] = timestamp
 
         return updated

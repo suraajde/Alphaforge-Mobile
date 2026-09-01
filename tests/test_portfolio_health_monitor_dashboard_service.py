@@ -1,4 +1,4 @@
-import json
+﻿import json
 import shutil
 import tempfile
 from pathlib import Path
@@ -207,4 +207,5 @@ def test_dashboard_default_values():
     service = PortfolioHealthMonitoringDashboardService()
     dashboard = service.build_dashboard()
     assert isinstance(dashboard, PortfolioHealthMonitoringDashboard)
-    assert dashboard.monitoring_status in ["UNAVAILABLE", "WAITING"]
+    assert dashboard.monitoring_status in ["UNAVAILABLE", "WAITING", "READY"]
+

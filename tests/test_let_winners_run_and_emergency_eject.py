@@ -173,7 +173,7 @@ def test_alpha12_mapping_service_highest_reserve():
 
 
 def test_emergency_replace_position_1_to_1_capital_transfer(sample_initial_state):
-    """emergency_replace_position injects replacement stock with 1:1 capital transfer."""
+    """emergency_replace_position executes value-based capital sweep for replacement stock."""
     initial_state, state_file, symbol_to_remove = sample_initial_state
 
     app_svc = PortfolioApplicationService(state_path=state_file)
@@ -194,11 +194,9 @@ def test_emergency_replace_position_1_to_1_capital_transfer(sample_initial_state
     assert replacement_symbol in positions
 
     injected = positions[replacement_symbol]
-    # Direct 1:1 capital transfer: exited position had 10,000.0 invested/market value
-    assert injected["invested_cost"] == 10000.0
-    assert injected["current_value"] == 10000.0
+    # Capital sweep: exited position had 10,000.0 market value; invested + cash == 10,000.0
+    assert round(injected["invested_cost"] + loaded["cash_balance"], 2) == 10000.0
     assert injected["target_weight"] == 8.3333
-    assert loaded["cash_balance"] == 0.0
 
     # Check transaction audit trail
     txs = loaded["transactions"]
@@ -207,20 +205,22 @@ def test_emergency_replace_position_1_to_1_capital_transfer(sample_initial_state
     assert eject_tx[0]["symbol_removed"] == symbol_to_remove
     assert eject_tx[0]["symbol_injected"] == replacement_symbol
     assert eject_tx[0]["capital_transferred"] == 10000.0
+    assert round(eject_tx[0]["invested_amount"] + eject_tx[0]["residual_cash"], 2) == 10000.0
 
 
 def test_emergency_replace_position_priced_placeholder_quantity(sample_initial_state):
-    """emergency_replace_position calculates estimated placeholder quantity as round(exited_value / rep_price, 2)."""
+    """emergency_replace_position calculates floor quantity as math.floor(exited_value / rep_price) and sweeps residual cash."""
     initial_state, state_file, symbol_to_remove = sample_initial_state
 
     state_svc = PortfolioStateService()
     current_state = state_svc.load_state(path=state_file)["state"]
 
     # Replacement stock priced at Rs. 3,000 against Rs. 10,000 exited value:
-    # quantity = round(10000 / 3000, 2) = 3.33
-    # invested_cost = 10000.0
-    # current_value = 10000.0
-    # cash_balance remains 0.0 (no routing to cash balance)
+    # new_qty = math.floor(10000 / 3000) = 3
+    # invested_cost = 3 * 3000 = 9000.0
+    # current_value = 3 * 3000 = 9000.0
+    # residual_cash = 10000 - 9000 = 1000.0
+    # cash_balance increases by residual_cash to 1000.0
     replacement_stock = {
         "symbol": "TRENT",
         "name": "Trent Ltd",
@@ -242,12 +242,12 @@ def test_emergency_replace_position_priced_placeholder_quantity(sample_initial_s
     assert "TRENT" in positions
 
     injected = positions["TRENT"]
-    assert injected["quantity"] == 3.33
-    assert injected["invested_cost"] == 10000.0
-    assert injected["current_value"] == 10000.0
+    assert injected["quantity"] == 3
+    assert injected["invested_cost"] == 9000.0
+    assert injected["current_value"] == 9000.0
     assert injected["current_price"] == 3000.0
     assert injected["average_cost"] == 3000.0
-    assert updated["cash_balance"] == 0.0
+    assert updated["cash_balance"] == 1000.0
 
     # Total portfolio value should remain exactly balanced at Rs. 120,000.00
     total_val = sum(p["current_value"] for p in positions.values()) + updated["cash_balance"]
@@ -281,3 +281,101 @@ def test_smart_sip_with_swapped_portfolio(sample_initial_state):
     assert sip_prep["status"] == "OK"
     allocations = sip_prep.get("allocations", [])
     assert len(allocations) > 0
+
+
+def test_emergency_eject_sonacoms_gland_capital_sweep_and_reserve8_sync(tmp_path):
+    """Test emergency eject of SONACOMS (qty: 100 @ 500 = 50,000) for GLAND (price: 2,000).
+    Verifies:
+    1. new_qty = floor(50000 / 2000) = 25 (NOT copied 100 shares!).
+    2. residual_cash = 50000 - (25 * 2000) = 0.0.
+    3. GLAND position has invested_value = 50,000 and current_value = 50,000.
+    4. Reserve 8 dynamically excludes active GLAND and active holdings, retaining exactly 8 candidates.
+    """
+    state_svc = PortfolioStateService()
+    mapping_svc = Alpha12MappingService()
+
+    initial_positions = [
+        {"symbol": "SONACOMS", "company_name": "Sona BLW", "target_weight": 8.3333},
+        {"symbol": "CASTROLIND", "company_name": "Castrol India", "target_weight": 8.3333},
+    ]
+    state = state_svc.create_state(portfolio=initial_positions, cash_balance=65000.0)
+    state = state_svc.apply_confirmed_buys(
+        state=state,
+        buys=[
+            {"symbol": "SONACOMS", "quantity": 100, "price": 500.0},
+            {"symbol": "CASTROLIND", "quantity": 50, "price": 200.0},
+        ],
+    )
+    state_file = str(tmp_path / "portfolio_state.json")
+    state_svc.save_state(state, path=state_file)
+
+    app_svc = PortfolioApplicationService(state_path=state_file)
+    gland_stock = {
+        "symbol": "GLAND",
+        "name": "Gland Pharma Ltd.",
+        "company_name": "Gland Pharma Ltd.",
+        "sector": "Healthcare",
+        "category": "MIDCAP",
+        "current_price": 2000.0,
+        "rank": 2,
+    }
+
+    res = app_svc.emergency_replace_position(
+        symbol_to_remove="SONACOMS",
+        replacement_stock=gland_stock,
+    )
+    assert res["status"] == "OK"
+    assert res["confirmed"] is True
+
+    loaded = state_svc.load_state(path=state_file)["state"]
+    positions = loaded["positions"]
+    assert "SONACOMS" not in positions
+    assert "GLAND" in positions
+
+    gland_pos = positions["GLAND"]
+    # 1. new_qty must be 25 (floor(50,000 / 2,000)), NEVER the old 100 shares!
+    assert gland_pos["quantity"] == 25
+    assert gland_pos["current_price"] == 2000.0
+    assert gland_pos["average_cost"] == 2000.0
+    assert gland_pos["invested_cost"] == 50000.0
+    assert gland_pos["current_value"] == 50000.0
+    assert gland_pos["invested_value"] == 50000.0
+    assert loaded["cash_balance"] == 5000.0
+
+    # Test with non-exact divisor: e.g. exited value 55,000 against 2,000 price
+    state2 = state_svc.create_state(
+        portfolio=[{"symbol": "SONACOMS", "company_name": "Sona BLW", "target_weight": 8.3333}],
+        cash_balance=60000.0,
+    )
+    state2 = state_svc.apply_confirmed_buys(
+        state=state2,
+        buys=[{"symbol": "SONACOMS", "quantity": 100, "price": 550.0}],
+    )
+    updated2 = state_svc.emergency_replace_position(
+        state=state2,
+        symbol_to_remove="SONACOMS",
+        replacement_stock=gland_stock,
+    )
+    # floor(55,000 / 2,000) = 27 shares = 54,000; residual cash = 1,000 added to 5,000 = 6,000 cash balance
+    assert updated2["positions"]["GLAND"]["quantity"] == 27
+    assert updated2["positions"]["GLAND"]["current_value"] == 54000.0
+    assert updated2["positions"]["GLAND"]["invested_cost"] == 54000.0
+    assert updated2["positions"]["GLAND"]["invested_value"] == 54000.0
+    assert updated2["cash_balance"] == 6000.0
+
+    # Reserve 8 synchronization check: active holdings MUST NOT appear in Reserve 8
+    radar_top_30 = [
+        {"symbol": s, "name": s, "rank": idx + 1, "sector": "TECH"}
+        for idx, s in enumerate(mapping_svc.AUTHORITATIVE_TOP30_SYMBOLS)
+    ]
+    dynamic_sync = mapping_svc.get_dynamic_alpha12_and_reserves(
+        active_symbols=positions, # Contains GLAND, CASTROLIND
+        radar_snapshot={"ranked": radar_top_30},
+    )
+    reserves = dynamic_sync["alpha12_reserves"]
+    reserve_symbols = {r["symbol"] for r in reserves}
+    assert len(reserves) == 8
+    assert "GLAND" not in reserve_symbols
+    assert "CASTROLIND" not in reserve_symbols
+    assert "SONACOMS" in reserve_symbols # Ejected stock is available on reserve bench
+

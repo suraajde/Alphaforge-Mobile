@@ -29,6 +29,8 @@ class Dashboard(QWidget):
         portfolio_health_service: Optional[PortfolioHealthService] = None,
         alpha12_stability_service: Optional[Alpha12StabilityService] = None,
         alert_center_service: Optional[AlertCenterService] = None,
+        portfolio_service: Optional[Any] = None,
+        portfolio_state_service: Optional[Any] = None,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -46,6 +48,16 @@ class Dashboard(QWidget):
         self.alert_center_service = (
             alert_center_service if alert_center_service is not None else AlertCenterService()
         )
+        if portfolio_state_service is not None:
+            self.portfolio_state_service = portfolio_state_service
+        else:
+            from services.portfolio_state_service import PortfolioStateService
+            self.portfolio_state_service = PortfolioStateService()
+
+        if portfolio_service is not None:
+            self.portfolio_service = portfolio_service
+        else:
+            self.portfolio_service = self.portfolio_state_service
 
         self._build_ui()
         self.refresh_data()
@@ -74,7 +86,7 @@ class Dashboard(QWidget):
         title_lbl.setStyleSheet("font-size: 24px; font-weight: bold; color: #1e3a8a;")
 
         welcome_lbl = QLabel(
-            f"Welcome to AlphaForge â€” AI Portfolio Construction Engine (v{APP_VERSION} Stable)"
+            f"Welcome to AlphaForge — AI Portfolio Construction Engine (v{APP_VERSION} Stable)"
         )
         welcome_lbl.setStyleSheet("font-size: 14px; color: #475569; font-weight: 600;")
 
@@ -99,6 +111,7 @@ class Dashboard(QWidget):
         self.card_val, self.lbl_val_val = self._create_card(
             "PORTFOLIO VALUE", "N/A"
         )
+        self.lbl_portfolio_value = self.lbl_val_val
 
         # Create Total Running P&L KPI Card
         self.card_total_pnl = QFrame()
@@ -111,7 +124,8 @@ class Dashboard(QWidget):
         self.lbl_pnl_title.setStyleSheet("font-size: 11px; font-weight: bold; color: #8FA0B8; letter-spacing: 0.5px;")
 
         self.lbl_total_pnl_val = QLabel("Rs. 0.00 (+0.00%)")
-        self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
+        self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #00C853;")
+        self.lbl_running_pnl = self.lbl_total_pnl_val
 
         pnl_layout.addWidget(self.lbl_pnl_title)
         pnl_layout.addWidget(self.lbl_total_pnl_val)
@@ -166,47 +180,109 @@ class Dashboard(QWidget):
         layout.addWidget(v_lbl)
         return card, v_lbl
 
+    def update_ui(self) -> None:
+        """Alias for refresh_data."""
+        self.refresh_data()
+
     def refresh_data(self) -> None:
         """Fetch real data safely from underlying services and update UI."""
+        self._load_portfolio_and_pnl_summary()
         self._load_health_summary()
         self._load_stability_summary()
         self._load_alerts_summary()
         self._render_executive_summary()
 
+    def _load_portfolio_and_pnl_summary(self) -> None:
+        try:
+            state_result = None
+            if hasattr(self.portfolio_service, "load_state") and callable(self.portfolio_service.load_state):
+                state_result = self.portfolio_service.load_state()
+            elif hasattr(self.portfolio_state_service, "load_state") and callable(self.portfolio_state_service.load_state):
+                state_result = self.portfolio_state_service.load_state()
+            else:
+                from services.portfolio_state_service import PortfolioStateService
+                state_result = PortfolioStateService().load_state()
+
+            state = state_result.get("state", {}) if isinstance(state_result, dict) else (state_result if isinstance(state_result, dict) else {})
+            positions = state.get("positions", {}) if isinstance(state, dict) else {}
+            pos_cnt = len(positions)
+
+            total_value = float(state.get("total_portfolio_value", 0.0))
+            invested_value = float(state.get("invested_market_value", 0.0))
+            cash_balance = float(state.get("cash_balance", 0.0))
+
+            invested_cost = 0.0
+            current_positions_value = 0.0
+            for pos in positions.values():
+                if isinstance(pos, dict):
+                    invested_cost += float(pos.get("invested_cost", pos.get("invested_value", 0.0)))
+                    current_positions_value += float(pos.get("current_value", pos.get("market_value", 0.0)))
+
+            if invested_value <= 0.0 and current_positions_value > 0.0:
+                invested_value = current_positions_value
+
+            if total_value <= 0.0 and (invested_value > 0.0 or cash_balance > 0.0):
+                total_value = invested_value + cash_balance
+
+            # Calculate total running P&L
+            total_running_pnl = state.get("total_running_pnl")
+            if total_running_pnl is None:
+                total_running_pnl = state.get("total_unrealized_pnl")
+            if total_running_pnl is None:
+                if invested_cost > 0.0:
+                    total_running_pnl = total_value - cash_balance - invested_cost
+                else:
+                    total_running_pnl = 0.0
+            else:
+                total_running_pnl = float(total_running_pnl)
+
+            # Calculate P&L Percentage
+            pnl_base = invested_cost if invested_cost > 0.0 else invested_value
+            pnl_pct = (total_running_pnl / pnl_base * 100.0) if pnl_base > 0.0 else 0.0
+
+            # Formatting and color-coding (#00C853 green, #FF3D00 red)
+            color = "#00C853" if total_running_pnl >= 0.0 else "#FF3D00"
+            sign = "+" if total_running_pnl >= 0.0 else ""
+            pnl_text = f"Rs. {total_running_pnl:,.2f} ({sign}{pnl_pct:.2f}%)"
+            val_text = f"Rs. {total_value:,.2f}"
+
+            if hasattr(self, "lbl_val_val"):
+                self.lbl_val_val.setText(val_text)
+                self.lbl_val_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #0f172a;" if (pos_cnt > 0 or total_value > 0.0) else "font-size: 18px; font-weight: 700; color: #64748b;")
+            if hasattr(self, "lbl_portfolio_value") and self.lbl_portfolio_value is not self.lbl_val_val:
+                self.lbl_portfolio_value.setText(val_text)
+
+            if hasattr(self, "lbl_total_pnl_val"):
+                self.lbl_total_pnl_val.setText(pnl_text)
+                self.lbl_total_pnl_val.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
+            if hasattr(self, "lbl_running_pnl") and self.lbl_running_pnl is not self.lbl_total_pnl_val:
+                self.lbl_running_pnl.setText(pnl_text)
+                self.lbl_running_pnl.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
+        except Exception:
+            if hasattr(self, "lbl_val_val"):
+                self.lbl_val_val.setText("Rs. 0.00")
+            if hasattr(self, "lbl_total_pnl_val"):
+                self.lbl_total_pnl_val.setText("Rs. 0.00 (+0.00%)")
+                self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #00C853;")
+
     def _load_health_summary(self) -> None:
         try:
             snapshot = self.portfolio_health_service.build_snapshot()
             pos_cnt = getattr(snapshot, "position_count", 0)
-            val = getattr(snapshot, "portfolio_value", 0.0)
-            holdings_val = getattr(snapshot, "invested_value", 0.0)
-            invested_cost = getattr(snapshot, "invested_cost", holdings_val)
 
             if pos_cnt <= 0:
                 self.lbl_health_val.setText("N/A")
                 self.lbl_health_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
-                self.lbl_val_val.setText("Rs. 0.00")
-                self.lbl_val_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
-                if hasattr(self, "lbl_total_pnl_val"):
-                    self.lbl_total_pnl_val.setText("Rs. 0.00 (+0.00%)")
-                    self.lbl_total_pnl_val.setStyleSheet("font-size: 20px; font-weight: bold; color: #10B981;")
                 return
 
             res = self.portfolio_health_service.evaluate()
             score = getattr(res, "score", 0)
             grade = getattr(res, "grade", "N/A")
             self.lbl_health_val.setText(f"{score}/100 ({grade})")
-            self.lbl_val_val.setText(f"Rs. {val:,.2f}")
-
-            if hasattr(self, "lbl_total_pnl_val"):
-                pnl = holdings_val - invested_cost
-                pnl_pct = (pnl / invested_cost * 100.0) if invested_cost > 0 else 0.0
-                sign = "+" if pnl >= 0 else ""
-                color = "#10B981" if pnl >= 0 else "#EF4444"
-                self.lbl_total_pnl_val.setText(f"Rs. {pnl:,.2f} ({sign}{pnl_pct:.2f}%)")
-                self.lbl_total_pnl_val.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
+            self.lbl_health_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #0f172a;")
         except Exception:
             self.lbl_health_val.setText("N/A")
-            self.lbl_val_val.setText("Rs. 0.00")
+            self.lbl_health_val.setStyleSheet("font-size: 18px; font-weight: 700; color: #64748b;")
 
     def _load_stability_summary(self) -> None:
         try:
