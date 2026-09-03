@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['D:/ALPHAFORGE/build/installer_payload/setup_runner.py'],
+    ['D:/alphaforge/build/installer_payload/setup_runner.py'],
     pathex=[],
     binaries=[],
-    datas=[('D:/ALPHAFORGE/build/installer_payload/app_payload.zip', '.')],
+    datas=[('D:/alphaforge/build/installer_payload/app_payload.zip', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
