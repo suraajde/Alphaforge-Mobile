@@ -55,3 +55,8 @@ class IPortfolioHealthService(Protocol):
     ) -> Any: ...
 
     def build_snapshot(self, holdings: Optional[Any] = None, **kwargs: Any) -> Any: ...
+
+import antigravity
+
+class IAlpha12EmergencyService:
+    pass
