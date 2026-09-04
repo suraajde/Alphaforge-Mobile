@@ -116,7 +116,7 @@ with t_emerg:
             else:
                 cols[2].success("HOLD")
 
-# 2. RADAR VIEW (With Diagnostic Logging & Correct Engine Call)
+# 2. RADAR VIEW (Independent Autonomous Scan)
 with t_radar:
     st.markdown("### Production Pre-Screen")
     
@@ -124,7 +124,8 @@ with t_radar:
         if radar_svc:
             try:
                 with st.spinner("Running AlphaForge Quantitative Engines..."):
-                    # 1. Get symbols to scan
+                    
+                    # 1. Look for CSV, but have a massive built-in fallback universe for true independence
                     csv_path = os.path.join(os.path.dirname(__file__), "data", "nse_stocks.csv")
                     symbols_to_scan = []
                     
@@ -134,15 +135,20 @@ with t_radar:
                         if col_name in df_univ.columns:
                             symbols_to_scan = df_univ[col_name].dropna().tolist()
                     
-                    # Fallback if CSV isn't found
+                    # 2. THE INDEPENDENT FALLBACK: If no CSV, scan a built-in high-quality universe
                     if not symbols_to_scan:
-                        symbols_to_scan = [h['symbol'] for h in active_holdings]
-                        st.info("Universe CSV not found. Scanning current holdings instead.")
+                        st.info("Initiating standalone cloud scan (Built-in Nifty Universe)...")
+                        symbols_to_scan = [
+                            "RELIANCE", "TCS", "HDFCBANK", "ICICIBANK", "INFY", 
+                            "ITC", "SBIN", "LT", "BAJFINANCE", "BHARTIARTL", 
+                            "KOTAKBANK", "HAL", "CASTROLIND", "TATASTEEL", "ASIANPAINT", 
+                            "MARUTI", "SUNPHARMA", "TITAN", "ULTRACEMCO", "WIPRO", 
+                            "NESTLEIND", "HCLTECH", "POWERGRID", "NTPC", "M&M",
+                            "AJANTPHARM", "HDFCLIFE", "BAJAJFINSV", "ONGC", "COALINDIA"
+                        ]
 
-                    # 2. Call the CORRECT function from Layer 3
+                    # 3. Fire the Layer 3 Quantitative Engine
                     radar_results = radar_svc.rank_symbols(symbols=symbols_to_scan, limit=30)
-                    
-                    # 3. Extract the 'ranked' pool
                     top_30_data = radar_results.get("ranked", [])
                     
                     if top_30_data:
@@ -156,7 +162,7 @@ with t_radar:
                 with st.expander("Show Full Crash Log"):
                     st.code(traceback.format_exc())
         else:
-             st.warning("⚠️ PC Scanning engines unlinked. Run on desktop to generate cache.")
+             st.warning("⚠️ PC Scanning engines unlinked. Verify services folder is deployed.")
              
     # Static cache fallback
     radar_path = os.path.join(os.path.dirname(__file__), "data", "cache", "production_radar_snapshot.json")
