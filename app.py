@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import json
 import os
-import hashlib
+import traceback
 
 # --- DEFENSIVE IMPORTS ---
 from services.alpha12_mapping_service import Alpha12MappingService
@@ -52,7 +52,6 @@ def load_portfolio():
             # Support both flat and nested JSON structures
             positions = data.get("positions", {})
             if isinstance(positions, list):
-                # Handle array format
                 for p in positions:
                     holdings.append({
                         'symbol': p.get('symbol', 'UNKNOWN'),
@@ -62,7 +61,6 @@ def load_portfolio():
                         'fundamental_status': 'INTACT'
                     })
             else:
-                # Handle dict format
                 for sym, p in positions.items():
                     holdings.append({
                         'symbol': sym,
@@ -72,7 +70,6 @@ def load_portfolio():
                         'fundamental_status': 'INTACT'
                     })
     
-    # Emergency fallback
     if not holdings:
         holdings = [{'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.0, 'peak_price': 186.0, 'fundamental_status': 'INTACT'}]
     return holdings
@@ -99,7 +96,7 @@ with st.container(border=True):
 # --- MAIN DASHBOARD TABS ---
 t_emerg, t_radar, t_health = st.tabs(["🚨 Emergency", "🎯 Top 30 Radar", "🩺 Health"])
 
-# 1. EMERGENCY LAYER (Our Custom Implementation)
+# 1. EMERGENCY LAYER
 with t_emerg:
     if em_res.analysis_status == "CRITICAL":
         st.error(f"**Action Required:** {em_res.summary}", icon="🚨")
@@ -119,7 +116,7 @@ with t_emerg:
             else:
                 cols[2].success("HOLD")
 
-# 2. RADAR VIEW (Layer 3 Glass)
+# 2. RADAR VIEW (With Diagnostic Logging)
 with t_radar:
     st.markdown("### Production Pre-Screen")
     
@@ -129,12 +126,15 @@ with t_radar:
                 with st.spinner("Compiling AlphaComposite scores..."):
                     df = radar_svc.get_current_radar()
                     st.dataframe(df, use_container_width=True, hide_index=True)
-            except Exception:
-                st.warning("⚠️ Local radar cache unavailable. Run scan on desktop client first.")
+            except Exception as e:
+                # 🛑 DIAGNOSTIC TRACEBACK ADDED HERE 🛑
+                st.error(f"**Engine Crash:** {str(e)}")
+                with st.expander("Show Full Crash Log"):
+                    st.code(traceback.format_exc())
         else:
              st.warning("⚠️ PC Scanning engines unlinked. Run on desktop to generate cache.")
              
-    # Try to load the static cache if available
+    # Static cache fallback
     radar_path = os.path.join(os.path.dirname(__file__), "data", "cache", "production_radar_snapshot.json")
     if os.path.exists(radar_path):
         try:
@@ -145,7 +145,7 @@ with t_radar:
         except Exception:
              pass
 
-# 3. HEALTH & STABILITY (Layer 8)
+# 3. HEALTH & STABILITY
 with t_health:
     st.markdown("### Anti-Churn Governance")
     metrics = stab_res.stability_metrics
