@@ -2,22 +2,59 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+
+# --- IMPORT LAYER 4 & 5 SERVICES ---
 from services.alpha12_mapping_service import Alpha12MappingService
 from services.alpha12_stability_service import Alpha12StabilityService
 from services.alpha12_emergency_service import Alpha12EmergencyService
 
+# --- IMPORT LAYER 3 & 7 SERVICES ---
+try:
+    from services.portfolio_market_refresh_service import PortfolioMarketRefreshService
+    from services.research_radar_service import ResearchRadarService
+    SERVICES_AVAILABLE = True
+except ImportError:
+    SERVICES_AVAILABLE = False
+
 # --- MOBILE VIEWPORT CONFIG ---
 st.set_page_config(page_title="AlphaForge", page_icon="📈", layout="centered", initial_sidebar_state="collapsed")
 
-# --- INIT SERVICES ---
+# --- INIT SERVICES (DEFENSIVE PATTERN) ---
 @st.cache_resource
 def load_services():
     mapping = Alpha12MappingService()
     stability = Alpha12StabilityService(mapping_service=mapping)
     emergency = Alpha12EmergencyService()
-    return mapping, stability, emergency
+    
+    market_refresh = None
+    research_radar = None
+    
+    if SERVICES_AVAILABLE:
+        try:
+            market_refresh = PortfolioMarketRefreshService()
+            research_radar = ResearchRadarService()
+        except Exception:
+            pass # Graceful degradation
+            
+    return mapping, stability, emergency, market_refresh, research_radar
 
-mapping_svc, stability_svc, emergency_svc = load_services()
+mapping_svc, stability_svc, emergency_svc, market_refresh_svc, radar_svc = load_services()
+
+# --- SIDEBAR: ENGINE CONTROLS ---
+with st.sidebar:
+    st.subheader("⚙️ Engine Controls")
+    if st.button("🔄 Force Refresh Live Data"):
+        if market_refresh_svc:
+            with st.spinner("Syncing live NSE prices via StockService..."):
+                try:
+                    # Trigger the Layer 7 market refresh
+                    market_refresh_svc.refresh_portfolio()
+                    st.success("Market data synchronized!")
+                    st.rerun()
+                except Exception as e:
+                    st.error("API timeout or data error. Try again.")
+        else:
+            st.warning("Refresh service unavailable on cloud.")
 
 # --- LOAD REAL PORTFOLIO STATE DYNAMICALLY ---
 json_path = os.path.join(os.path.dirname(__file__), "portfolio_state.json")
@@ -36,59 +73,60 @@ if os.path.exists(json_path):
             })
 
 if not active_holdings:
-    active_holdings = [
-        {'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.02, 'peak_price': 186.02, 'fundamental_status': 'INTACT'}
-    ]
+    active_holdings = [{'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.02, 'peak_price': 186.02, 'fundamental_status': 'INTACT'}]
 
 map_res = mapping_svc.analyze()
 stab_res = stability_svc.get_stability(mapping_result=map_res)
 em_res = emergency_svc.evaluate_holdings(active_holdings)
 
 # --- DASHBOARD UI ---
-st.markdown("<h3 style='text-align: center; color: #4CAF50;'>AlphaForge Active</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center; color: #4CAF50;'>AlphaForge Engine</h3>", unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["🚨 Radar", "🛡️ Overview", "🌐 Universe"])
+# Expanded tabs for full parity
+tab1, tab2, tab3, tab4 = st.tabs(["🚨 Emergency", "🛡️ Stability", "🎯 Top 30 Radar", "🌐 Universe"])
 
 # TAB 1: EMERGENCY RADAR
 with tab1:
     if em_res.analysis_status == "CRITICAL":
         st.error(f"🚨 {em_res.summary}")
-    elif em_res.analysis_status == "WARNING":
-        st.warning(f"⚠️ {em_res.summary}")
     else:
         st.success(f"✅ {em_res.summary}")
         
     for h in em_res.holdings_status:
         with st.container(border=True):
-            st.markdown(f"**{h.symbol}** ({h.market_cap_category})")
-            cols = st.columns(3)
-            cols[0].metric("Price", f"₹{h.current_price}")
-            cols[1].metric("Drawdown", f"{h.drawdown_pct}%")
+            cols = st.columns([2, 1, 1])
+            cols[0].markdown(f"**{h.symbol}**")
+            cols[1].metric("LTP", f"₹{h.current_price}")
             
             if h.emergency_level == "CRITICAL_EXIT":
-                cols[2].error(h.action_required)
-                st.error(" | ".join(h.triggers))
-            elif h.emergency_level in ["WARNING", "VOLATILITY_DIP"]:
-                cols[2].warning(h.action_required)
-                st.caption(" | ".join(h.triggers))
+                cols[2].error("EXIT")
             else:
-                cols[2].success(h.action_required)
+                cols[2].success("HOLD")
 
 # TAB 2: STABILITY OVERVIEW
 with tab2:
-    st.subheader("Tenure & Churn Protection")
-    metrics = stab_res.stability_metrics
+    st.subheader("Anti-Churn Governance")
     c1, c2 = st.columns(2)
-    c1.metric("Stability Score", f"{metrics.stability_score}/100")
-    c2.metric("Churn Risk", metrics.churn_risk)
-    
-    st.info(metrics.rationale)
-    st.progress(metrics.stability_score / 100.0)
+    c1.metric("Stability Score", f"{stab_res.stability_metrics.stability_score}/100")
+    c2.metric("Churn Risk", stab_res.stability_metrics.churn_risk)
+    st.progress(stab_res.stability_metrics.stability_score / 100.0)
 
-# TAB 3: UNCAPPED UNIVERSE
+# TAB 3: PRODUCTION RESEARCH RADAR (NEW)
 with tab3:
-    st.subheader(f"Candidates ({map_res.portfolio.total_alpha12_holdings})")
+    st.subheader("Elite Quality Pool")
+    if radar_svc:
+        if st.button("🚀 Run Deep Scan"):
+            with st.spinner("Running quantitative composite engines..."):
+                try:
+                    top_30_data = radar_svc.get_current_radar()
+                    st.dataframe(top_30_data, use_container_width=True)
+                except Exception:
+                    st.error("Could not fetch radar data. Ensure universe data is cached.")
+    else:
+        st.info("Research Radar service is initializing or missing dependencies.")
+
+# TAB 4: UNCAPPED UNIVERSE
+with tab4:
     df = pd.DataFrame([h.to_dict() for h in map_res.portfolio.holdings])
     if not df.empty:
-        clean_df = df[['symbol', 'market_cap_category', 'mapping_status']]
-        st.dataframe(clean_df, use_container_width=True, hide_index=True)
+        st.dataframe(df[['symbol', 'market_cap_category', 'mapping_status']], use_container_width=True)
