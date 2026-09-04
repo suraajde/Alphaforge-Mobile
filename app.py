@@ -116,7 +116,7 @@ with t_emerg:
             else:
                 cols[2].success("HOLD")
 
-# 2. RADAR VIEW (Independent Autonomous Scan)
+# 2. RADAR VIEW (Independent Autonomous Scan - Mid/Small Cap Focus)
 with t_radar:
     st.markdown("### Production Pre-Screen")
     
@@ -135,16 +135,16 @@ with t_radar:
                         if col_name in df_univ.columns:
                             symbols_to_scan = df_univ[col_name].dropna().tolist()
                     
-                    # 2. THE INDEPENDENT FALLBACK: If no CSV, scan a built-in high-quality universe
+                    # 2. THE INDEPENDENT FALLBACK: AlphaForge avoids Top 100. Target Mid/Small Caps.
                     if not symbols_to_scan:
-                        st.info("Initiating standalone cloud scan (Built-in Nifty Universe)...")
+                        st.info("Initiating standalone cloud scan (Mid/Small Cap Universe)...")
                         symbols_to_scan = [
-                            "RELIANCE", "TCS", "HDFCBANK", "ICICIBANK", "INFY", 
-                            "ITC", "SBIN", "LT", "BAJFINANCE", "BHARTIARTL", 
-                            "KOTAKBANK", "HAL", "CASTROLIND", "TATASTEEL", "ASIANPAINT", 
-                            "MARUTI", "SUNPHARMA", "TITAN", "ULTRACEMCO", "WIPRO", 
-                            "NESTLEIND", "HCLTECH", "POWERGRID", "NTPC", "M&M",
-                            "AJANTPHARM", "HDFCLIFE", "BAJAJFINSV", "ONGC", "COALINDIA"
+                            "CASTROLIND", "AJANTPHARM", "NAVINFLUOR", "ASTRAL", "POLYCAB", 
+                            "DIXON", "KPITTECH", "TATAELXSI", "DEEPAKNTR", "LALPATHLAB", 
+                            "SYNGENE", "CAMS", "CDSL", "RADICO", "DEVYANI", 
+                            "SUVENPHAR", "ANGELONE", "JBCHEPHARM", "NATCOPHARM", "GRANULES", 
+                            "BALAMINES", "ALKYLAMINE", "FINEORG", "CLEAN", "CERA", 
+                            "KEI", "RATNAMANI", "SUPREMEIND", "FINCABLES", "CENTURYPLY"
                         ]
 
                     # 3. Fire the Layer 3 Quantitative Engine
