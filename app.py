@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
+import json
+import os
 from services.alpha12_mapping_service import Alpha12MappingService
 from services.alpha12_stability_service import Alpha12StabilityService
 from services.alpha12_emergency_service import Alpha12EmergencyService
 
 # --- MOBILE VIEWPORT CONFIG ---
-st.set_page_config(page_title="AlphaForge", page_icon="??", layout="centered", initial_sidebar_state="collapsed")
-
-
+st.set_page_config(page_title="AlphaForge", page_icon="📈", layout="centered", initial_sidebar_state="collapsed")
 
 # --- INIT SERVICES ---
 @st.cache_resource
@@ -19,37 +19,50 @@ def load_services():
 
 mapping_svc, stability_svc, emergency_svc = load_services()
 
-# --- LOAD DATA ---
+# --- LOAD REAL PORTFOLIO STATE DYNAMICALLY ---
+json_path = os.path.join(os.path.dirname(__file__), "portfolio_state.json")
+active_holdings = []
+
+if os.path.exists(json_path):
+    with open(json_path, "r") as f:
+        state_data = json.load(f)
+        for symbol, details in state_data.get("positions", {}).items():
+            active_holdings.append({
+                'symbol': symbol,
+                'market_cap_category': details.get('category', 'SMALLCAP'),
+                'current_price': details.get('current_price', 0.0),
+                'peak_price': details.get('current_price', 0.0),
+                'fundamental_status': 'INTACT'
+            })
+
+if not active_holdings:
+    active_holdings = [
+        {'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.02, 'peak_price': 186.02, 'fundamental_status': 'INTACT'}
+    ]
+
 map_res = mapping_svc.analyze()
 stab_res = stability_svc.get_stability(mapping_result=map_res)
-
-# Mock active portfolio data (In production, load this from your broker/DB)
-active_holdings = [
-    {'symbol': 'MARICO', 'market_cap_category': 'LARGECAP', 'current_price': 600, 'peak_price': 610, 'fundamental_status': 'INTACT'},
-    {'symbol': 'HSCL', 'market_cap_category': 'SMALLCAP', 'current_price': 88, 'peak_price': 100, 'fundamental_status': 'INTACT'},
-    {'symbol': 'XYZ', 'market_cap_category': 'MIDCAP', 'current_price': 80, 'peak_price': 100, 'fundamental_status': 'DEGRADED'}
-]
 em_res = emergency_svc.evaluate_holdings(active_holdings)
 
 # --- DASHBOARD UI ---
 st.markdown("<h3 style='text-align: center; color: #4CAF50;'>AlphaForge Active</h3>", unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["??? Radar", "?? Overview", "?? Universe"])
+tab1, tab2, tab3 = st.tabs(["🚨 Radar", "🛡️ Overview", "🌐 Universe"])
 
 # TAB 1: EMERGENCY RADAR
 with tab1:
     if em_res.analysis_status == "CRITICAL":
-        st.error(f"?? {em_res.summary}")
+        st.error(f"🚨 {em_res.summary}")
     elif em_res.analysis_status == "WARNING":
-        st.warning(f"?? {em_res.summary}")
+        st.warning(f"⚠️ {em_res.summary}")
     else:
-        st.success(f"? {em_res.summary}")
+        st.success(f"✅ {em_res.summary}")
         
     for h in em_res.holdings_status:
         with st.container(border=True):
             st.markdown(f"**{h.symbol}** ({h.market_cap_category})")
             cols = st.columns(3)
-            cols[0].metric("Price", f"?{h.current_price}")
+            cols[0].metric("Price", f"₹{h.current_price}")
             cols[1].metric("Drawdown", f"{h.drawdown_pct}%")
             
             if h.emergency_level == "CRITICAL_EXIT":
@@ -79,4 +92,3 @@ with tab3:
     if not df.empty:
         clean_df = df[['symbol', 'market_cap_category', 'mapping_status']]
         st.dataframe(clean_df, use_container_width=True, hide_index=True)
-
