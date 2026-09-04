@@ -41,40 +41,52 @@ def load_core_services():
 map_svc, stab_svc, em_svc, refresh_svc, radar_svc = load_core_services()
 
 # --- LOAD PORTFOLIO LEDGER ---
-@st.cache_data(ttl=60) # Cache for 60s to prevent constant disk reads
+@st.cache_data(ttl=60)
 def load_portfolio():
     json_path = os.path.join(os.path.dirname(__file__), "portfolio_state.json")
     holdings = []
+    reserve = []
     
     if os.path.exists(json_path):
         with open(json_path, "r") as f:
             data = json.load(f)
-            # Support both flat and nested JSON structures
             positions = data.get("positions", {})
+            
+            # Load Active Holdings
             if isinstance(positions, list):
                 for p in positions:
                     holdings.append({
                         'symbol': p.get('symbol', 'UNKNOWN'),
-                        'market_cap_category': p.get('category', p.get('market_cap_category', 'SMALLCAP')),
+                        'category': p.get('category', 'SMALLCAP'),
                         'current_price': float(p.get('current_price', 0.0)),
-                        'peak_price': float(p.get('current_price', 0.0)),
+                        'peak_price': float(p.get('peak_price', p.get('current_price', 0.0))),
                         'fundamental_status': 'INTACT'
                     })
             else:
                 for sym, p in positions.items():
                     holdings.append({
                         'symbol': sym,
-                        'market_cap_category': p.get('category', p.get('market_cap_category', 'SMALLCAP')),
+                        'category': p.get('category', 'SMALLCAP'),
                         'current_price': float(p.get('current_price', 0.0)),
-                        'peak_price': float(p.get('current_price', 0.0)),
+                        'peak_price': float(p.get('peak_price', p.get('current_price', 0.0))),
                         'fundamental_status': 'INTACT'
                     })
-    
+            
+            # Load Reserve (if exists in JSON)
+            reserve_data = data.get("reserve_8", [])
+            if reserve_data:
+                reserve = reserve_data
+                
     if not holdings:
-        holdings = [{'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.0, 'peak_price': 186.0, 'fundamental_status': 'INTACT'}]
-    return holdings
+        holdings = [{'symbol': 'CASTROLIND', 'category': 'SMALLCAP', 'current_price': 186.0, 'peak_price': 186.0, 'fundamental_status': 'INTACT'}]
+    
+    # Fallback Reserve 8 if not found in JSON
+    if not reserve:
+        reserve = ["SYNGENE", "CAMS", "CDSL", "KPITTECH", "TATAELXSI", "ASTRAL", "POLYCAB", "DIXON"]
+        
+    return holdings, reserve
 
-active_holdings = load_portfolio()
+active_holdings, reserve_8 = load_portfolio()
 em_res = em_svc.evaluate_holdings(active_holdings)
 map_res = map_svc.analyze()
 stab_res = stab_svc.get_stability(mapping_result=map_res)
@@ -94,10 +106,11 @@ with st.container(border=True):
             st.toast("📡 Cloud Cache Loaded")
 
 # --- MAIN DASHBOARD TABS ---
-t_emerg, t_radar, t_health = st.tabs(["🚨 Emergency", "🎯 Top 30 Radar", "🩺 Health"])
+t_alpha12, t_reserve8, t_radar30, t_health, t_rebalance = st.tabs(["👑 Alpha 12", "🛡️ Reserve 8", "🎯 Radar 30", "🩺 Health", "⚖️ SIP"])
 
-# 1. EMERGENCY LAYER
-with t_emerg:
+# 1. ALPHA 12 (Active Portfolio + Emergency)
+with t_alpha12:
+    st.markdown("### Active Portfolio")
     if em_res.analysis_status == "CRITICAL":
         st.error(f"**Action Required:** {em_res.summary}", icon="🚨")
     else:
@@ -116,16 +129,22 @@ with t_emerg:
             else:
                 cols[2].success("HOLD")
 
-# 2. RADAR VIEW (Independent Autonomous Scan - Mid/Small Cap Focus)
-with t_radar:
+# 2. RESERVE 8 (Bench)
+with t_reserve8:
+    st.markdown("### High-Conviction Bench")
+    st.info("Top-ranked candidates ready for rotation upon Alpha 12 exit triggers.")
+    for idx, sym in enumerate(reserve_8, 1):
+        with st.container(border=True):
+            st.markdown(f"**{idx}. {sym}**")
+
+# 3. RADAR 30 (Engine)
+with t_radar30:
     st.markdown("### Production Pre-Screen")
     
     if st.button("🚀 Execute Remote Deep Scan", type="primary", use_container_width=True):
         if radar_svc:
             try:
                 with st.spinner("Running AlphaForge Quantitative Engines..."):
-                    
-                    # 1. Look for CSV, but have a massive built-in fallback universe for true independence
                     csv_path = os.path.join(os.path.dirname(__file__), "data", "nse_stocks.csv")
                     symbols_to_scan = []
                     
@@ -135,7 +154,6 @@ with t_radar:
                         if col_name in df_univ.columns:
                             symbols_to_scan = df_univ[col_name].dropna().tolist()
                     
-                    # 2. THE INDEPENDENT FALLBACK: AlphaForge avoids Top 100. Target Mid/Small Caps.
                     if not symbols_to_scan:
                         st.info("Initiating standalone cloud scan (Mid/Small Cap Universe)...")
                         symbols_to_scan = [
@@ -147,13 +165,18 @@ with t_radar:
                             "KEI", "RATNAMANI", "SUPREMEIND", "FINCABLES", "CENTURYPLY"
                         ]
 
-                    # 3. Fire the Layer 3 Quantitative Engine
                     radar_results = radar_svc.rank_symbols(symbols=symbols_to_scan, limit=30)
                     top_30_data = radar_results.get("ranked", [])
                     
                     if top_30_data:
                         st.success(f"Scan Complete: {radar_results.get('live_analyses')} Live | {radar_results.get('cache_hits')} Cached")
-                        st.dataframe(pd.DataFrame(top_30_data), use_container_width=True, hide_index=True)
+                        
+                        # Format the DataFrame for Mobile Readability
+                        df_display = pd.DataFrame(top_30_data)
+                        if not df_display.empty:
+                            display_cols = ['symbol', 'composite_score', 'classification', 'readiness_score']
+                            existing_cols = [c for c in display_cols if c in df_display.columns]
+                            st.dataframe(df_display[existing_cols], use_container_width=True, hide_index=True)
                     else:
                         st.warning("Scan completed but no stocks passed the Alpha 12 hard gates.")
                         
@@ -163,19 +186,8 @@ with t_radar:
                     st.code(traceback.format_exc())
         else:
              st.warning("⚠️ PC Scanning engines unlinked. Verify services folder is deployed.")
-             
-    # Static cache fallback
-    radar_path = os.path.join(os.path.dirname(__file__), "data", "cache", "production_radar_snapshot.json")
-    if os.path.exists(radar_path):
-        try:
-             with open(radar_path, 'r') as f:
-                 radar_data = json.load(f)
-             if radar_data:
-                 st.dataframe(pd.DataFrame(radar_data), use_container_width=True, hide_index=True)
-        except Exception:
-             pass
 
-# 3. HEALTH & STABILITY
+# 4. HEALTH & STABILITY
 with t_health:
     st.markdown("### Anti-Churn Governance")
     metrics = stab_res.stability_metrics
@@ -188,3 +200,28 @@ with t_health:
         
     st.progress(metrics.stability_score / 100.0)
     st.info(metrics.rationale)
+
+# 5. REBALANCING & SIP (Layer 6)
+with t_rebalance:
+    st.markdown("### Capital Allocator")
+    st.caption("Route fresh capital to target weights.")
+    
+    capital = st.number_input("Capital to Deploy (₹)", min_value=0, value=50000, step=5000)
+    
+    if st.button("Calculate SIP Targets", use_container_width=True):
+        st.success(f"Calculating optimal allocation for ₹{capital:,} across Alpha 12...")
+        
+        # Simple Equal-Weight Simulation for the UI
+        per_stock_target = capital / max(len(active_holdings), 1)
+        
+        for h in active_holdings:
+            price = h.get('current_price', 1.0)
+            if price > 0:
+                shares_to_buy = int(per_stock_target // price)
+                alloc = shares_to_buy * price
+                
+                with st.container(border=True):
+                    cols = st.columns([2, 1, 1])
+                    cols[0].markdown(f"**{h['symbol']}**")
+                    cols[1].markdown(f"{shares_to_buy} shares")
+                    cols[2].markdown(f"₹{alloc:,.0f}")
