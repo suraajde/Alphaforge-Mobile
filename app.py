@@ -2,131 +2,159 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import hashlib
 
-# --- IMPORT LAYER 4 & 5 SERVICES ---
+# --- DEFENSIVE IMPORTS ---
 from services.alpha12_mapping_service import Alpha12MappingService
 from services.alpha12_stability_service import Alpha12StabilityService
 from services.alpha12_emergency_service import Alpha12EmergencyService
 
-# --- IMPORT LAYER 3 & 7 SERVICES ---
+# Try to load PC-only services, fallback if running on cloud without local DBs
 try:
     from services.portfolio_market_refresh_service import PortfolioMarketRefreshService
     from services.research_radar_service import ResearchRadarService
-    SERVICES_AVAILABLE = True
+    PC_SERVICES_AVAILABLE = True
 except ImportError:
-    SERVICES_AVAILABLE = False
+    PC_SERVICES_AVAILABLE = False
 
-# --- MOBILE VIEWPORT CONFIG ---
-st.set_page_config(page_title="AlphaForge", page_icon="📈", layout="centered", initial_sidebar_state="collapsed")
+# --- CONFIG ---
+st.set_page_config(page_title="AlphaForge Mobile", page_icon="🗼", layout="centered")
 
-# --- INIT SERVICES (DEFENSIVE PATTERN) ---
+# --- SERVICE INITIALIZATION ---
 @st.cache_resource
-def load_services():
+def load_core_services():
     mapping = Alpha12MappingService()
     stability = Alpha12StabilityService(mapping_service=mapping)
     emergency = Alpha12EmergencyService()
     
     market_refresh = None
     research_radar = None
-    
-    if SERVICES_AVAILABLE:
+    if PC_SERVICES_AVAILABLE:
         try:
             market_refresh = PortfolioMarketRefreshService()
             research_radar = ResearchRadarService()
         except Exception:
-            pass # Graceful degradation
+            pass
             
     return mapping, stability, emergency, market_refresh, research_radar
 
-mapping_svc, stability_svc, emergency_svc, market_refresh_svc, radar_svc = load_services()
+map_svc, stab_svc, em_svc, refresh_svc, radar_svc = load_core_services()
 
-# --- SIDEBAR: ENGINE CONTROLS ---
-with st.sidebar:
-    st.subheader("⚙️ Engine Controls")
-    if st.button("🔄 Force Refresh Live Data"):
-        if market_refresh_svc:
-            with st.spinner("Syncing live NSE prices via StockService..."):
-                try:
-                    # Trigger the Layer 7 market refresh
-                    market_refresh_svc.refresh_portfolio()
-                    st.success("Market data synchronized!")
-                    st.rerun()
-                except Exception as e:
-                    st.error("API timeout or data error. Try again.")
+# --- LOAD PORTFOLIO LEDGER ---
+@st.cache_data(ttl=60) # Cache for 60s to prevent constant disk reads
+def load_portfolio():
+    json_path = os.path.join(os.path.dirname(__file__), "portfolio_state.json")
+    holdings = []
+    
+    if os.path.exists(json_path):
+        with open(json_path, "r") as f:
+            data = json.load(f)
+            # Support both flat and nested JSON structures
+            positions = data.get("positions", {})
+            if isinstance(positions, list):
+                # Handle array format
+                for p in positions:
+                    holdings.append({
+                        'symbol': p.get('symbol', 'UNKNOWN'),
+                        'market_cap_category': p.get('category', p.get('market_cap_category', 'SMALLCAP')),
+                        'current_price': float(p.get('current_price', 0.0)),
+                        'peak_price': float(p.get('current_price', 0.0)),
+                        'fundamental_status': 'INTACT'
+                    })
+            else:
+                # Handle dict format
+                for sym, p in positions.items():
+                    holdings.append({
+                        'symbol': sym,
+                        'market_cap_category': p.get('category', p.get('market_cap_category', 'SMALLCAP')),
+                        'current_price': float(p.get('current_price', 0.0)),
+                        'peak_price': float(p.get('current_price', 0.0)),
+                        'fundamental_status': 'INTACT'
+                    })
+    
+    # Emergency fallback
+    if not holdings:
+        holdings = [{'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.0, 'peak_price': 186.0, 'fundamental_status': 'INTACT'}]
+    return holdings
+
+active_holdings = load_portfolio()
+em_res = em_svc.evaluate_holdings(active_holdings)
+map_res = map_svc.analyze()
+stab_res = stab_svc.get_stability(mapping_result=map_res)
+
+# --- HEADER UI ---
+with st.container(border=True):
+    col1, col2 = st.columns([3, 1], vertical_alignment="center")
+    col1.markdown("<h2 style='margin-bottom:0;'>AlphaForge 🗼</h2>", unsafe_allow_html=True)
+    if col2.button("🔄 Sync", use_container_width=True):
+        if refresh_svc:
+            try:
+                refresh_svc.refresh_portfolio()
+                st.toast("✅ Live Data Synced")
+            except Exception:
+                st.toast("⚠️ Sync Error")
         else:
-            st.warning("Refresh service unavailable on cloud.")
+            st.toast("📡 Cloud Cache Loaded")
 
-# --- LOAD REAL PORTFOLIO STATE DYNAMICALLY ---
-json_path = os.path.join(os.path.dirname(__file__), "portfolio_state.json")
-active_holdings = []
+# --- MAIN DASHBOARD TABS ---
+t_emerg, t_radar, t_health = st.tabs(["🚨 Emergency", "🎯 Top 30 Radar", "🩺 Health"])
 
-if os.path.exists(json_path):
-    with open(json_path, "r") as f:
-        state_data = json.load(f)
-        for symbol, details in state_data.get("positions", {}).items():
-            active_holdings.append({
-                'symbol': symbol,
-                'market_cap_category': details.get('category', 'SMALLCAP'),
-                'current_price': details.get('current_price', 0.0),
-                'peak_price': details.get('current_price', 0.0),
-                'fundamental_status': 'INTACT'
-            })
-
-if not active_holdings:
-    active_holdings = [{'symbol': 'CASTROLIND', 'market_cap_category': 'SMALLCAP', 'current_price': 186.02, 'peak_price': 186.02, 'fundamental_status': 'INTACT'}]
-
-map_res = mapping_svc.analyze()
-stab_res = stability_svc.get_stability(mapping_result=map_res)
-em_res = emergency_svc.evaluate_holdings(active_holdings)
-
-# --- DASHBOARD UI ---
-st.markdown("<h3 style='text-align: center; color: #4CAF50;'>AlphaForge Engine</h3>", unsafe_allow_html=True)
-
-# Expanded tabs for full parity
-tab1, tab2, tab3, tab4 = st.tabs(["🚨 Emergency", "🛡️ Stability", "🎯 Top 30 Radar", "🌐 Universe"])
-
-# TAB 1: EMERGENCY RADAR
-with tab1:
+# 1. EMERGENCY LAYER (Our Custom Implementation)
+with t_emerg:
     if em_res.analysis_status == "CRITICAL":
-        st.error(f"🚨 {em_res.summary}")
+        st.error(f"**Action Required:** {em_res.summary}", icon="🚨")
     else:
-        st.success(f"✅ {em_res.summary}")
+        st.success(f"**System Nominal:** {em_res.summary}", icon="✅")
         
     for h in em_res.holdings_status:
         with st.container(border=True):
-            cols = st.columns([2, 1, 1])
+            cols = st.columns([2, 2, 1], vertical_alignment="center")
             cols[0].markdown(f"**{h.symbol}**")
-            cols[1].metric("LTP", f"₹{h.current_price}")
+            cols[1].markdown(f"LTP: ₹{h.current_price:.1f}")
             
             if h.emergency_level == "CRITICAL_EXIT":
                 cols[2].error("EXIT")
+            elif h.emergency_level == "WARNING":
+                cols[2].warning("REVIEW")
             else:
                 cols[2].success("HOLD")
 
-# TAB 2: STABILITY OVERVIEW
-with tab2:
-    st.subheader("Anti-Churn Governance")
-    c1, c2 = st.columns(2)
-    c1.metric("Stability Score", f"{stab_res.stability_metrics.stability_score}/100")
-    c2.metric("Churn Risk", stab_res.stability_metrics.churn_risk)
-    st.progress(stab_res.stability_metrics.stability_score / 100.0)
+# 2. RADAR VIEW (Layer 3 Glass)
+with t_radar:
+    st.markdown("### Production Pre-Screen")
+    
+    if st.button("🚀 Execute Remote Deep Scan", type="primary", use_container_width=True):
+        if radar_svc:
+            try:
+                with st.spinner("Compiling AlphaComposite scores..."):
+                    df = radar_svc.get_current_radar()
+                    st.dataframe(df, use_container_width=True, hide_index=True)
+            except Exception:
+                st.warning("⚠️ Local radar cache unavailable. Run scan on desktop client first.")
+        else:
+             st.warning("⚠️ PC Scanning engines unlinked. Run on desktop to generate cache.")
+             
+    # Try to load the static cache if available
+    radar_path = os.path.join(os.path.dirname(__file__), "data", "cache", "production_radar_snapshot.json")
+    if os.path.exists(radar_path):
+        try:
+             with open(radar_path, 'r') as f:
+                 radar_data = json.load(f)
+             if radar_data:
+                 st.dataframe(pd.DataFrame(radar_data), use_container_width=True, hide_index=True)
+        except Exception:
+             pass
 
-# TAB 3: PRODUCTION RESEARCH RADAR (NEW)
-with tab3:
-    st.subheader("Elite Quality Pool")
-    if radar_svc:
-        if st.button("🚀 Run Deep Scan"):
-            with st.spinner("Running quantitative composite engines..."):
-                try:
-                    top_30_data = radar_svc.get_current_radar()
-                    st.dataframe(top_30_data, use_container_width=True)
-                except Exception:
-                    st.error("Could not fetch radar data. Ensure universe data is cached.")
-    else:
-        st.info("Research Radar service is initializing or missing dependencies.")
-
-# TAB 4: UNCAPPED UNIVERSE
-with tab4:
-    df = pd.DataFrame([h.to_dict() for h in map_res.portfolio.holdings])
-    if not df.empty:
-        st.dataframe(df[['symbol', 'market_cap_category', 'mapping_status']], use_container_width=True)
+# 3. HEALTH & STABILITY (Layer 8)
+with t_health:
+    st.markdown("### Anti-Churn Governance")
+    metrics = stab_res.stability_metrics
+    
+    col1, col2 = st.columns(2)
+    with col1.container(border=True):
+        st.metric("Stability Score", f"{metrics.stability_score}/100")
+    with col2.container(border=True):
+        st.metric("Churn Risk", metrics.churn_risk)
+        
+    st.progress(metrics.stability_score / 100.0)
+    st.info(metrics.rationale)
